@@ -1,0 +1,62 @@
+name: Performance Report
+description: Report a performance regression or unexpected benchmark result
+labels: ["performance"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us understand the performance characteristics on your workload.
+
+  - type: input
+    id: pyforge-version
+    attributes:
+      label: PyForge version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: batch-size
+    attributes:
+      label: Batch size (number of records)
+      placeholder: "1000"
+    validations:
+      required: true
+
+  - type: textarea
+    id: field-types
+    attributes:
+      label: Model field types
+      placeholder: "CharField(max_length=120), DecimalField(max_digits=10, decimal_places=2), ..."
+    validations:
+      required: true
+
+  - type: input
+    id: measured-speedup
+    attributes:
+      label: Measured speedup (PyForge vs pure Python)
+      placeholder: "2.1x"
+    validations:
+      required: true
+
+  - type: input
+    id: expected-speedup
+    attributes:
+      label: Expected speedup (based on benchmarks)
+      placeholder: "4-6x"
+
+  - type: textarea
+    id: benchmark-method
+    attributes:
+      label: How did you measure?
+      placeholder: "timeit with 10 iterations, 3 repeats, median reported"
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment details
+      placeholder: "Python 3.12, Django 5.1, macOS ARM64, 16GB RAM"
+    validations:
+      required: true

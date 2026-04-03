@@ -1,0 +1,80 @@
+name: Bug Report
+description: Report a bug in PyForge
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug. Please fill in the details below.
+
+  - type: input
+    id: pyforge-version
+    attributes:
+      label: PyForge version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: "3.12.1"
+    validations:
+      required: true
+
+  - type: input
+    id: django-version
+    attributes:
+      label: Django version
+      placeholder: "5.1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: layer
+    attributes:
+      label: Which layer is affected?
+      options:
+        - Rust serializer
+        - Rust validator
+        - ModelSchema
+        - RustSerializerMixin (Python)
+        - Type conversion (Python ↔ Rust)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: field-types
+    attributes:
+      label: Django field types involved
+      placeholder: "DecimalField(max_digits=10, decimal_places=2), DateTimeField"
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction code
+      render: python
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "macOS 14, Ubuntu 24.04, Windows 11"

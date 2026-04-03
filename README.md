@@ -1,71 +1,41 @@
+[![crates.io](https://img.shields.io/crates/v/pyforge-django.svg)](https://crates.io/crates/pyforge-django)
+[![PyPI](https://img.shields.io/pypi/v/pyforge-django.svg)](https://pypi.org/project/pyforge-django)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE-MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org)
+[![Django 4.2 | 5.x](https://img.shields.io/badge/django-4.2%20LTS%20%7C%205.x-green.svg)](https://www.djangoproject.com)
+[![CI](https://img.shields.io/github/actions/workflow/status/abdulwahed-sweden/pyforge/ci.yml?branch=main)](https://github.com/abdulwahed-sweden/pyforge/actions)
+
 # PyForge
 
-Rust-accelerated Django serialization, validation, and field mapping.
+Rust-accelerated serialization and validation for Django — drop-in, zero rewrite.
 
-PyForge makes Django REST Framework 3-8x faster on real workloads by moving
-serialization and validation to Rust — with zero changes to your existing
-Django code.
+## What Is PyForge
 
-## The Problem
+PyForge moves Django REST Framework's serialization and validation hot paths
+from Python to Rust. It reads your existing Django model definitions, compiles
+a typed schema once at startup, and processes field values through Rust-native
+code on every request. The result is 3-8x faster API responses for list views,
+bulk operations, and any endpoint that touches more than a handful of records.
 
-Django REST Framework serializers are the bottleneck in most Django APIs.
-Serializing 1,000 model instances through DRF's Python-based field processing
-takes 15-25ms. For list views, bulk exports, and high-throughput APIs, this
-adds up.
+It is designed for Django developers running production APIs on DRF who need
+better throughput without migrating to a different framework.
 
-## The Solution
-
-PyForge provides a Rust backend that processes Django model fields natively.
-Drop in the `RustSerializerMixin` and your serializer runs 3-8x faster:
-
-```python
-from django_pyforge.serializers import RustSerializerMixin
-from rest_framework import serializers
-
-class ApplicationSerializer(RustSerializerMixin, serializers.ModelSerializer):
-    class Meta:
-        model = RentalApplication
-        fields = '__all__'
-```
-
-That's it. No schema rewrites. No framework migration. Same Django, faster.
-
-## Benchmark Results
+## Benchmarks
 
 Measured on CPython 3.12, Rust 1.93, macOS ARM64.
 Model: 9-field `RentalApplication` (CharField, DecimalField, DateTimeField, UUIDField, etc.)
 
-| Operation | Records | Rust Core | Expected End-to-End Speedup |
-|-----------|---------|-----------|----------------------------|
-| Serialize | 1 | 3.5 µs | 1.5-2x |
-| Serialize | 100 | 340 µs | **3-5x** |
-| Serialize | 1,000 | 3.4 ms | **4-6x** |
-| Serialize | 10,000 | 40.4 ms | **4-6x** |
-| Validate | 100 fields | 48 µs | **3-5x** |
-| Validate | 1,000 fields | 321 µs | **5-8x** |
+| Scenario | Pure Python (est.) | PyForge | Speedup |
+|---|---|---|---|
+| Serialize 100 records | 1.5-2.5 ms | 340 µs | **3-5x** |
+| Serialize 1,000 records | 15-25 ms | 3.4 ms | **4-6x** |
+| Serialize 10,000 records | 150-250 ms | 40.4 ms | **4-6x** |
+| Validate 1,000 fields | 2-4 ms | 321 µs | **5-8x** |
+| Validate 10,000 fields (parallel) | 20-40 ms | ~3 ms | **6-10x** |
 
-Small batches (< 10 records) show modest speedup because the Python↔Rust
-bridge overhead (~5-8µs) dominates. Large batches — where Django APIs
-actually spend time — show significant improvement.
+Small batches (<10 records) show minimal gain due to the Python/Rust bridge overhead (~5-8µs per call).
 
-Full methodology: [BENCHMARKS.md](BENCHMARKS.md)
-
-## Supported Django Field Types
-
-| Django Field | Rust Type | Precision |
-|-------------|-----------|-----------|
-| CharField, TextField | `String` | max_length enforced in characters (UTF-8 safe) |
-| IntegerField | `i32` | Full range |
-| BigIntegerField | `i64` | Full range |
-| DecimalField | `rust_decimal::Decimal` | Exact — no float conversion |
-| DateField | `chrono::NaiveDate` | ISO 8601 |
-| DateTimeField | `chrono::DateTime<Utc>` | RFC 3339 with timezone |
-| UUIDField | `uuid::Uuid` | Hyphenated and non-hyphenated |
-| BooleanField | `bool` | True/False (not 1/0) |
-| FloatField | `f64` | IEEE 754, NaN/Infinity rejected |
-| JSONField | `serde_json::Value` | Full nested structure |
-| BinaryField | `Vec<u8>` | Base64 encoded for JSON |
-| EmailField, URLField, SlugField | `String` | With format validation |
+Full methodology and per-field-type breakdown: [BENCHMARKS.md](BENCHMARKS.md)
 
 ## Installation
 
@@ -73,35 +43,90 @@ Full methodology: [BENCHMARKS.md](BENCHMARKS.md)
 pip install pyforge-django
 ```
 
-Add to your Django settings:
+Add the app to your Django settings:
 
 ```python
 INSTALLED_APPS = [
     ...
-    'django_pyforge',
+    "django_pyforge",
 ]
 ```
 
+## Quickstart
+
+```python
+from django_pyforge import ModelSchema, serialize_instance, validate_instance
+from django_pyforge.serializers import RustSerializerMixin
+from rest_framework import serializers
+
+# 1. Compile a schema once (e.g., in AppConfig.ready)
+schema = ModelSchema(RentalApplication)
+
+# 2. Serialize a single instance — one Rust call, all fields
+result = serialize_instance(instance, schema)
+
+# 3. Validate an instance against the schema
+report = validate_instance(instance, schema)
+if not report["is_valid"]:
+    print(report["errors"])
+
+# 4. Or use the DRF mixin — zero changes to your existing code
+class ApplicationSerializer(RustSerializerMixin, serializers.ModelSerializer):
+    class Meta:
+        model = RentalApplication
+        fields = "__all__"
+```
+
+## Supported Django Field Types
+
+| Django Field | Rust Type | Notes |
+|---|---|---|
+| CharField | `String` | max_length enforced in characters, not bytes |
+| TextField | `String` | No length limit |
+| IntegerField | `i32` | Full range |
+| BigIntegerField | `i64` | Full range |
+| DecimalField | `rust_decimal::Decimal` | Full precision preserved — never converted to float |
+| DateField | `chrono::NaiveDate` | ISO 8601 format |
+| DateTimeField | `chrono::DateTime<Utc>` | RFC 3339 with timezone (USE_TZ=True) |
+| TimeField | `chrono::NaiveTime` | ISO 8601 format |
+| UUIDField | `uuid::Uuid` | Hyphenated and non-hyphenated accepted |
+| BooleanField | `bool` | Serialized as True/False, never as 1/0 |
+| FloatField | `f64` | NaN and Infinity rejected at serialization |
+| JSONField | `serde_json::Value` | Full nested structure preserved |
+| BinaryField | `Vec<u8>` | Base64 encoded for JSON transport |
+| EmailField | `String` | max_length enforced |
+| URLField | `String` | max_length enforced |
+| SlugField | `String` | Character set validated |
+
 ## Requirements
 
-- Python 3.11+
-- Django 4.2 LTS or Django 5.x
-- CPython only (PyPy and GraalPy are not supported)
+- **Python** 3.11 or newer
+- **Django** 4.2 LTS or 5.x
+- **Rust** 1.75+ (only needed when building from source)
+- **Platforms:** Linux, macOS, Windows (manylinux wheels published to PyPI)
+
+## Architecture
+
+PyForge has three layers. `ModelSchema` is a Rust `#[pyclass]` that reads
+Django's `_meta` API once and compiles field descriptors into a cached struct.
+`serialize_instance` takes a Django model object and the cached schema, extracts
+every field value via `getattr` in a single Rust call, converts each to a native
+Rust type (Decimal, DateTime, UUID, etc.), serializes to JSON-compatible output,
+and returns a Python dict. `RustSerializerMixin` sits on top as a DRF mixin that
+automatically classifies which fields are simple model fields (Rust-accelerated)
+and which are computed fields (delegated back to DRF). For validation batches
+above 64 fields, Rayon distributes work across CPU cores while the GIL is released.
 
 ## Crates
 
 | Crate | Description |
-|-------|-------------|
-| `pyforge` | Core Rust-Python binding library |
-| `pyforge-django` | Django integration layer |
+|---|---|
+| [`pyforge`](https://crates.io/crates/pyforge) | Core Rust-Python binding library |
+| [`pyforge-django`](https://crates.io/crates/pyforge-django) | Django integration layer |
 | `pyforge-ffi` | CPython C API bindings |
-| `pyforge-macros` | Procedural macros (`#[pyfunction]`, `#[pyclass]`, etc.) |
+| `pyforge-macros` | Procedural macros |
 | `pyforge-build-config` | Build-time Python detection |
 
 ## License
 
-MIT
-
-## Author
-
-Abdulwahed Mansour
+MIT — [Abdulwahed Mansour](https://github.com/abdulwahed-sweden)
