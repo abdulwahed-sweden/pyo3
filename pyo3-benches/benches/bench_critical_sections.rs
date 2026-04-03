@@ -1,8 +1,8 @@
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::prelude::*;
-use pyo3::sync::critical_section::{with_critical_section, with_critical_section2};
-use pyo3::types::PyList;
+use pyforge::prelude::*;
+use pyforge::sync::critical_section::{with_critical_section, with_critical_section2};
+use pyforge::types::PyList;
 
 fn create_cs(b: &mut Bencher<'_>) {
     Python::attach(|py| {

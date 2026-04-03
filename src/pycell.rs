@@ -23,7 +23,7 @@
 //! won't need to use `PyCell` directly:
 //!
 //! ```rust,no_run
-//! use pyo3::prelude::*;
+//! use pyforge::prelude::*;
 //!
 //! #[pyclass]
 //! struct Number {
@@ -42,7 +42,7 @@
 //! using `PyCell` under the hood:
 //!
 //! ```rust,ignore
-//! # use pyo3::prelude::*;
+//! # use pyforge::prelude::*;
 //! # #[pyclass]
 //! # struct Number {
 //! #    inner: u32,
@@ -57,18 +57,18 @@
 //! #
 //! // The function which is exported to Python looks roughly like the following
 //! unsafe extern "C" fn __pymethod_increment__(
-//!     _slf: *mut pyo3::ffi::PyObject,
-//!     _args: *mut pyo3::ffi::PyObject,
-//! ) -> *mut pyo3::ffi::PyObject {
+//!     _slf: *mut pyforge::ffi::PyObject,
+//!     _args: *mut pyforge::ffi::PyObject,
+//! ) -> *mut pyforge::ffi::PyObject {
 //!     use :: pyo3 as _pyo3;
-//!     _pyo3::impl_::trampoline::noargs(_slf, _args, |py, _slf| {
+//!     _pyforge::impl_::trampoline::noargs(_slf, _args, |py, _slf| {
 //! #       #[allow(deprecated)]
 //!         let _cell = py
-//!             .from_borrowed_ptr::<_pyo3::PyAny>(_slf)
-//!             .cast::<_pyo3::PyCell<Number>>()?;
+//!             .from_borrowed_ptr::<_pyforge::PyAny>(_slf)
+//!             .cast::<_pyforge::PyCell<Number>>()?;
 //!         let mut _ref = _cell.try_borrow_mut()?;
 //!         let _slf: &mut Number = &mut *_ref;
-//!         _pyo3::impl_::callback::convert(py, Number::increment(_slf))
+//!         _pyforge::impl_::callback::convert(py, Number::increment(_slf))
 //!     })
 //! }
 //! ```
@@ -78,7 +78,7 @@
 //!
 //! However, we *do* need `PyCell` if we want to call its methods from Rust:
 //! ```rust
-//! # use pyo3::prelude::*;
+//! # use pyforge::prelude::*;
 //! #
 //! # #[pyclass]
 //! # struct Number {
@@ -118,7 +118,7 @@
 //! It is also necessary to use `PyCell` if you can receive mutable arguments that may overlap.
 //! Suppose the following function that swaps the values of two `Number`s:
 //! ```
-//! # use pyo3::prelude::*;
+//! # use pyforge::prelude::*;
 //! # #[pyclass]
 //! # pub struct Number {
 //! #     inner: u32,
@@ -132,7 +132,7 @@
 //! #         let n = Py::new(py, Number{inner: 35}).unwrap();
 //! #         let n2 = n.clone_ref(py);
 //! #         assert!(n.is(&n2));
-//! #         let fun = pyo3::wrap_pyfunction!(swap_numbers, py).unwrap();
+//! #         let fun = pyforge::wrap_pyfunction!(swap_numbers, py).unwrap();
 //! #         fun.call1((n, n2)).expect_err("Managed to create overlapping mutable references. Note: this is undefined behaviour.");
 //! #     });
 //! # }
@@ -150,7 +150,7 @@
 //! It is better to write that function like this:
 //! ```rust,ignore
 //! # #![allow(deprecated)]
-//! # use pyo3::prelude::*;
+//! # use pyforge::prelude::*;
 //! # #[pyclass]
 //! # pub struct Number {
 //! #     inner: u32,
@@ -170,7 +170,7 @@
 //! #         let n = Py::new(py, Number{inner: 35}).unwrap();
 //! #         let n2 = n.clone_ref(py);
 //! #         assert!(n.is(&n2));
-//! #         let fun = pyo3::wrap_pyfunction!(swap_numbers, py).unwrap();
+//! #         let fun = pyforge::wrap_pyfunction!(swap_numbers, py).unwrap();
 //! #         fun.call1((n, n2)).unwrap();
 //! #     });
 //! #
@@ -179,7 +179,7 @@
 //! #         let n = Py::new(py, Number{inner: 35}).unwrap();
 //! #         let n2 = Py::new(py, Number{inner: 42}).unwrap();
 //! #         assert!(!n.is(&n2));
-//! #         let fun = pyo3::wrap_pyfunction!(swap_numbers, py).unwrap();
+//! #         let fun = pyforge::wrap_pyfunction!(swap_numbers, py).unwrap();
 //! #         fun.call1((&n, &n2)).unwrap();
 //! #         let n: u32 = n.borrow(py).inner;
 //! #         let n2: u32 = n2.borrow(py).inner;
@@ -219,7 +219,7 @@ use impl_::{PyClassBorrowChecker, PyClassObjectBaseLayout, PyClassObjectLayout};
 /// - you need to access the pointer of the [`Bound`], or
 /// - you want to get a super class.
 /// ```
-/// # use pyo3::prelude::*;
+/// # use pyforge::prelude::*;
 /// #[pyclass(subclass)]
 /// struct Parent {
 ///     basename: &'static str,
@@ -239,7 +239,7 @@ use impl_::{PyClassBorrowChecker, PyClassObjectBaseLayout, PyClassObjectLayout};
 ///
 ///     fn format(slf: PyRef<'_, Self>) -> String {
 ///         // We can get *mut ffi::PyObject from PyRef
-///         let refcnt = unsafe { pyo3::ffi::Py_REFCNT(slf.as_ptr()) };
+///         let refcnt = unsafe { pyforge::ffi::Py_REFCNT(slf.as_ptr()) };
 ///         // We can get &Self::BaseType by as_ref
 ///         let basename = slf.as_ref().basename;
 ///         format!("{}(base: {}, cnt: {})", slf.name, basename, refcnt)
@@ -247,7 +247,7 @@ use impl_::{PyClassBorrowChecker, PyClassObjectBaseLayout, PyClassObjectLayout};
 /// }
 /// # Python::attach(|py| {
 /// #     let sub = Py::new(py, Child::new()).unwrap();
-/// #     pyo3::py_run!(py, sub, "assert sub.format() == 'Caterpillar(base: Butterfly, cnt: 4)', sub.format()");
+/// #     pyforge::py_run!(py, sub, "assert sub.format() == 'Caterpillar(base: Butterfly, cnt: 4)', sub.format()");
 /// # });
 /// ```
 ///
@@ -295,7 +295,7 @@ impl<'py, T: PyClass> PyRef<'py, T> {
     /// # Safety
     ///
     /// The reference is owned; when finished the caller should either transfer ownership
-    /// of the pointer or decrease the reference count (e.g. with [`pyo3::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
+    /// of the pointer or decrease the reference count (e.g. with [`pyforge::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
     #[inline]
     pub fn into_ptr(self) -> *mut ffi::PyObject {
         self.inner.clone().into_ptr()
@@ -330,7 +330,7 @@ where
     ///
     /// # Examples
     /// ```
-    /// # use pyo3::prelude::*;
+    /// # use pyforge::prelude::*;
     /// #[pyclass(subclass)]
     /// struct Base1 {
     ///     name1: &'static str,
@@ -362,7 +362,7 @@ where
     /// }
     /// # Python::attach(|py| {
     /// #     let sub = Py::new(py, Sub::new()).unwrap();
-    /// #     pyo3::py_run!(py, sub, "assert sub.name() == 'base1 base2 sub'")
+    /// #     pyforge::py_run!(py, sub, "assert sub.name() == 'base1 base2 sub'")
     /// # });
     /// ```
     pub fn into_super(self) -> PyRef<'p, T::BaseType> {
@@ -410,7 +410,7 @@ where
     ///
     /// # Examples
     /// ```
-    /// # use pyo3::prelude::*;
+    /// # use pyforge::prelude::*;
     /// #[pyclass(subclass)]
     /// struct Base {
     ///     base_name: &'static str,
@@ -442,7 +442,7 @@ where
     /// }
     /// # Python::attach(|py| {
     /// #     let sub = Py::new(py, Sub::new()).unwrap();
-    /// #     pyo3::py_run!(py, sub, "assert sub.format_name_lengths() == '9 8'")
+    /// #     pyforge::py_run!(py, sub, "assert sub.format_name_lengths() == '9 8'")
     /// # });
     /// ```
     pub fn as_super(&self) -> &PyRef<'p, T::BaseType> {
@@ -570,7 +570,7 @@ impl<'py, T: PyClass<Frozen = False>> PyRefMut<'py, T> {
     /// # Safety
     ///
     /// The reference is owned; when finished the caller should either transfer ownership
-    /// of the pointer or decrease the reference count (e.g. with [`pyo3::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
+    /// of the pointer or decrease the reference count (e.g. with [`pyforge::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
     #[inline]
     pub fn into_ptr(self) -> *mut ffi::PyObject {
         self.inner.clone().into_ptr()

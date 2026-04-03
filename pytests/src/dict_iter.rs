@@ -1,10 +1,10 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pymodule]
 pub mod dict_iter {
-    use pyo3::exceptions::PyRuntimeError;
-    use pyo3::prelude::*;
-    use pyo3::types::PyDict;
+    use pyforge::exceptions::PyRuntimeError;
+    use pyforge::prelude::*;
+    use pyforge::types::PyDict;
 
     #[pyclass]
     pub struct DictSize {

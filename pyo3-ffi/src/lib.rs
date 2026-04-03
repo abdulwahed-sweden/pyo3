@@ -38,14 +38,13 @@
 //! ## `rustc` environment flags
 //!
 //! PyO3 uses `rustc`'s `--cfg` flags to enable or disable code used for different Python versions.
-//! If you want to do this for your own crate, you can do so with the [`pyo3-build-config`] crate.
+//! If you want to do this for your own crate, you can do so with the [`pyforge-build-config`] crate.
 //!
 //! - `Py_3_8`, `Py_3_9`, `Py_3_10`, `Py_3_11`, `Py_3_12`, `Py_3_13`, `Py_3_14`: Marks code that is
 //!    only enabled when compiling for a given minimum Python version.
 //! - `Py_LIMITED_API`: Marks code enabled when the `abi3` feature flag is enabled.
 //! - `Py_GIL_DISABLED`: Marks code that runs only in the free-threaded build of CPython.
-//! - `PyPy` - Marks code enabled when compiling for PyPy.
-//! - `GraalPy` - Marks code enabled when compiling for GraalPy.
+//! - PyForge: PyPy and GraalPy are not supported. CPython only.
 //!
 //! Additionally, you can query for the values `Py_DEBUG`, `Py_REF_DEBUG`,
 //! `Py_TRACE_REFS`, and `COUNT_ALLOCS` from `py_sys_config` to query for the
@@ -57,12 +56,12 @@
 //! println!("only runs if python was compiled with Py_DEBUG")
 //! ```
 //!
-//! To use these attributes, add [`pyo3-build-config`] as a build dependency in
+//! To use these attributes, add [`pyforge-build-config`] as a build dependency in
 //! your `Cargo.toml`:
 //!
 //! ```toml
 //! [build-dependencies]
-#![doc = concat!("pyo3-build-config =\"", env!("CARGO_PKG_VERSION"),  "\"")]
+#![doc = concat!("pyforge-build-config =\"", env!("CARGO_PKG_VERSION"),  "\"")]
 //! ```
 //!
 //! And then either create a new `build.rs` file in the project root or modify
@@ -70,16 +69,15 @@
 //!
 //! ```rust,ignore
 //! fn main() {
-//!     pyo3_build_config::use_pyo3_cfgs();
+//!     pyforge_build_config::use_pyo3_cfgs();
 //! }
 //! ```
 //!
 //! # Minimum supported Rust and Python versions
 //!
-//! `pyo3-ffi` supports the following Python distributions:
+//! `pyforge-ffi` supports the following Python distributions:
 //!   - CPython 3.8 or greater
-//!   - PyPy 7.3 (Python 3.11+)
-//!   - GraalPy 24.0 or greater (Python 3.10+)
+//!   - CPython 3.11+ only (PyPy and GraalPy are not supported)
 //!
 //! # Example: Building Python Native modules
 //!
@@ -103,24 +101,24 @@
 //! crate-type = ["cdylib"]
 //!
 //! [dependencies]
-#![doc = concat!("pyo3-ffi = \"", env!("CARGO_PKG_VERSION"),  "\"")]
+#![doc = concat!("pyforge-ffi = \"", env!("CARGO_PKG_VERSION"),  "\"")]
 //!
 //! [build-dependencies]
 //! # This is only necessary if you need to configure your build based on
 //! # the Python version or the compile-time configuration for the interpreter.
-#![doc = concat!("pyo3_build_config = \"", env!("CARGO_PKG_VERSION"),  "\"")]
+#![doc = concat!("pyforge_build_config = \"", env!("CARGO_PKG_VERSION"),  "\"")]
 //! ```
 //!
 //! If you need to use conditional compilation based on Python version or how
-//! Python was compiled, you need to add `pyo3-build-config` as a
+//! Python was compiled, you need to add `pyforge-build-config` as a
 //! `build-dependency` in your `Cargo.toml` as in the example above and either
 //! create a new `build.rs` file or modify an existing one so that
-//! `pyo3_build_config::use_pyo3_cfgs()` gets called at build time:
+//! `pyforge_build_config::use_pyo3_cfgs()` gets called at build time:
 //!
 //! **`build.rs`**
 //! ```rust,ignore
 //! fn main() {
-//!     pyo3_build_config::use_pyo3_cfgs()
+//!     pyforge_build_config::use_pyo3_cfgs()
 //! }
 //! ```
 //!
@@ -131,7 +129,7 @@
 //! use std::ffi::{c_char, c_long};
 //! use std::ptr;
 //!
-//! use pyo3_ffi::*;
+//! use pyforge_ffi::*;
 //!
 //! #[cfg(not(Py_3_15))]
 //! static mut MODULE_DEF: PyModuleDef = PyModuleDef {
@@ -333,8 +331,8 @@
 //! in the CPython C API to register the module. This is the "old" style for registering modules
 //! and has the limitation that it cannot support subinterpreters. You can also create a module
 //! using the new multi-phase initialization API that does support subinterpreters. See the
-//! `sequential` project located in the `examples` directory at the root of the `pyo3-ffi` crate
-//! for a worked example of how to this using `pyo3-ffi`.
+//! `sequential` project located in the `examples` directory at the root of the `pyforge-ffi` crate
+//! for a worked example of how to this using `pyforge-ffi`.
 //!
 //! # Using Python from Rust
 //!
@@ -347,7 +345,7 @@
 //! ```
 //!
 //! While most projects use the safe wrapper provided by pyo3,
-//! you can take a look at the [`orjson`] library as an example on how to use `pyo3-ffi` directly.
+//! you can take a look at the [`orjson`] library as an example on how to use `pyforge-ffi` directly.
 //! For those well versed in C and Rust the [tutorials] from the CPython documentation
 //! can be easily converted to rust as well.
 //!
@@ -355,7 +353,7 @@
 //! [`orjson`]: https://github.com/ijl/orjson
 //! [capi]: https://docs.python.org/3/c-api/index.html
 //! [`maturin`]: https://github.com/PyO3/maturin "Build and publish crates with pyo3, rust-cpython and cffi bindings as well as rust binaries as python packages"
-//! [`pyo3-build-config`]: https://docs.rs/pyo3-build-config
+//! [`pyforge-build-config`]: https://docs.rs/pyforge-build-config
 //! [feature flags]: https://doc.rust-lang.org/cargo/reference/features.html "Features - The Cargo Book"
 #![doc = concat!("[manual_builds]: https://pyo3.rs/v", env!("CARGO_PKG_VERSION"), "/building-and-distribution.html#manual-builds \"Manual builds - Building and Distribution - PyO3 user guide\"")]
 //! [setuptools-rust]: https://github.com/PyO3/setuptools-rust "Setuptools plugin for Rust extensions"
@@ -463,7 +461,7 @@ pub use self::moduleobject::*;
 pub use self::object::*;
 pub use self::objimpl::*;
 pub use self::osmodule::*;
-#[cfg(not(any(PyPy, Py_LIMITED_API, Py_3_10)))]
+#[cfg(not(any(Py_LIMITED_API, Py_3_10)))]
 pub use self::pyarena::*;
 #[cfg(Py_3_11)]
 pub use self::pybuffer::*;
@@ -544,7 +542,7 @@ mod osmodule;
 // skipped picklebufobject.h
 // skipped pyctype.h
 // skipped py_curses.h
-#[cfg(not(any(PyPy, Py_LIMITED_API, Py_3_10)))]
+#[cfg(not(any(Py_LIMITED_API, Py_3_10)))]
 mod pyarena;
 #[cfg(Py_3_11)]
 mod pybuffer;

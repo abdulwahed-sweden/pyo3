@@ -63,8 +63,8 @@ impl PyCFunction {
     /// # Examples
     ///
     /// ```
-    /// # use pyo3::prelude::*;
-    /// # use pyo3::{py_run, types::{PyCFunction, PyDict, PyTuple}};
+    /// # use pyforge::prelude::*;
+    /// # use pyforge::{py_run, types::{PyCFunction, PyDict, PyTuple}};
     ///
     /// Python::attach(|py| {
     ///     let add_one = |args: &Bound<'_, PyTuple>, _kwargs: Option<&Bound<'_, PyDict>>| -> PyResult<_> {
@@ -85,7 +85,7 @@ impl PyCFunction {
         F: Fn(&Bound<'_, PyTuple>, Option<&Bound<'_, PyDict>>) -> R + Send + 'static,
         for<'p> R: crate::impl_::callback::IntoPyCallbackOutput<'p, *mut ffi::PyObject>,
     {
-        let name = name.unwrap_or(c"pyo3-closure");
+        let name = name.unwrap_or(c"pyforge-closure");
         let doc = doc.unwrap_or(c"");
         let method_def =
             pymethods::PyMethodDef::cfunction_with_keywords(name, run_closure::<F, R>, doc);
@@ -117,7 +117,7 @@ impl PyCFunction {
     }
 }
 
-static CLOSURE_CAPSULE_NAME: &CStr = c"pyo3-closure";
+static CLOSURE_CAPSULE_NAME: &CStr = c"pyforge-closure";
 
 unsafe extern "C" fn run_closure<F, R>(
     capsule_ptr: *mut ffi::PyObject,

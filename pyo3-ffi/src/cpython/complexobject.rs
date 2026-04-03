@@ -23,8 +23,6 @@ pub struct PyComplexObject {
 }
 
 extern_libpython! {
-    #[cfg_attr(PyPy, link_name = "PyPyComplex_FromCComplex")]
     pub fn PyComplex_FromCComplex(v: Py_complex) -> *mut PyObject;
-    #[cfg_attr(PyPy, link_name = "PyPyComplex_AsCComplex")]
     pub fn PyComplex_AsCComplex(op: *mut PyObject) -> Py_complex;
 }

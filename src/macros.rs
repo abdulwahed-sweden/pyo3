@@ -9,7 +9,7 @@
 ///
 /// # Examples
 /// ```
-/// use pyo3::{prelude::*, py_run, types::PyList};
+/// use pyforge::{prelude::*, py_run, types::PyList};
 ///
 /// # fn main() -> PyResult<()> {
 /// Python::attach(|py| {
@@ -23,7 +23,7 @@
 /// You can use this macro to test pyfunctions or pyclasses quickly.
 ///
 /// ```
-/// use pyo3::{prelude::*, py_run};
+/// use pyforge::{prelude::*, py_run};
 ///
 /// #[pyclass]
 /// #[derive(Debug)]
@@ -61,8 +61,8 @@
 /// If you need to prepare the `locals` dict by yourself, you can pass it as `*locals`.
 ///
 /// ```
-/// use pyo3::prelude::*;
-/// use pyo3::types::IntoPyDict;
+/// use pyforge::prelude::*;
+/// use pyforge::types::IntoPyDict;
 ///
 /// #[pyclass]
 /// struct MyClass;
@@ -78,7 +78,7 @@
 /// # fn main() -> PyResult<()> {
 /// Python::attach(|py| {
 ///     let locals = [("C", py.get_type::<MyClass>())].into_py_dict(py)?;
-///     pyo3::py_run!(py, *locals, "c = C()");
+///     pyforge::py_run!(py, *locals, "c = C()");
 /// #   Ok(())
 /// })
 /// # }
@@ -177,7 +177,6 @@ macro_rules! wrap_pymodule {
 ///
 /// Use it before [`Python::initialize`](crate::marker::Python::initialize) and
 /// leave feature `auto-initialize` off
-#[cfg(not(any(PyPy, GraalPy)))]
 #[macro_export]
 macro_rules! append_to_inittab {
     ($module:ident) => {

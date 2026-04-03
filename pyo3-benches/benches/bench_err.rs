@@ -1,6 +1,6 @@
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::{exceptions::PyValueError, prelude::*};
+use pyforge::{exceptions::PyValueError, prelude::*};
 
 fn err_new_restore_and_fetch(b: &mut Bencher<'_>) {
     Python::attach(|py| {

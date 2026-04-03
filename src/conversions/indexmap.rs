@@ -31,7 +31,7 @@
 //! always print the same result, matching users' expectations about Python's dict.
 //! ```rust
 //! use indexmap::{indexmap, IndexMap};
-//! use pyo3::prelude::*;
+//! use pyforge::prelude::*;
 //!
 //! fn median(data: &Vec<i32>) -> f32 {
 //!     let sorted_data = data.clone().sort();

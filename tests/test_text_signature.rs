@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
-use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyTuple};
-use pyo3::{types::PyType, wrap_pymodule};
+use pyforge::prelude::*;
+use pyforge::types::{PyDict, PyTuple};
+use pyforge::{types::PyType, wrap_pymodule};
 
 mod test_utils;
 
@@ -160,7 +160,7 @@ fn test_auto_test_signature_function() {
                     .unwrap()
                     .getattr("__text_signature__")
                     .unwrap()
-                    .cast_into::<pyo3::types::PyString>()
+                    .cast_into::<pyforge::types::PyString>()
                     .unwrap(),
                 $expected
             );

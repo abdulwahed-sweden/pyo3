@@ -1,8 +1,8 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pymodule]
 pub mod objstore {
-    use pyo3::prelude::*;
+    use pyforge::prelude::*;
 
     #[pyclass]
     #[derive(Default)]

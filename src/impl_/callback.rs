@@ -16,7 +16,7 @@ pub trait PyCallbackOutput: Copy + py_callback_output::Sealed {
 mod py_callback_output {
     use std::os::raw::c_int;
 
-    use pyo3_ffi::Py_ssize_t;
+    use pyforge_ffi::Py_ssize_t;
 
     use crate::ffi::PyObject;
 
@@ -46,7 +46,7 @@ pub trait IntoPyCallbackOutput<'py, Target>: into_py_callback_output::Sealed<'py
 
 /// Seals `IntoPyCallbackOutput` so that types outside PyO3 cannot implement it.
 mod into_py_callback_output {
-    use pyo3_ffi::Py_hash_t;
+    use pyforge_ffi::Py_hash_t;
 
     use crate::{
         ffi,

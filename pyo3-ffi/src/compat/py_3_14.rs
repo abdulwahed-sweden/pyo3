@@ -6,12 +6,12 @@ compat_function!(
         ptr: *const std::ffi::c_void,
         len: crate::Py_ssize_t,
     ) -> crate::Py_hash_t {
-        #[cfg(not(any(Py_LIMITED_API, PyPy)))]
+        #[cfg(not(Py_LIMITED_API))]
         {
             crate::_Py_HashBytes(ptr, len)
         }
 
-        #[cfg(any(Py_LIMITED_API, PyPy))]
+        #[cfg(Py_LIMITED_API)]
         {
             let bytes = crate::PyBytes_FromStringAndSize(ptr as *const std::ffi::c_char, len);
             if bytes.is_null() {

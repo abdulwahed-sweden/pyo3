@@ -6,7 +6,6 @@ use std::ffi::{c_double, c_int};
 opaque_struct!(pub PyFloatObject);
 
 extern_libpython! {
-    #[cfg_attr(PyPy, link_name = "PyPyFloat_Type")]
     pub static mut PyFloat_Type: PyTypeObject;
 }
 
@@ -27,11 +26,8 @@ extern_libpython! {
     pub fn PyFloat_GetMax() -> c_double;
     pub fn PyFloat_GetMin() -> c_double;
     pub fn PyFloat_GetInfo() -> *mut PyObject;
-    #[cfg_attr(PyPy, link_name = "PyPyFloat_FromString")]
     pub fn PyFloat_FromString(arg1: *mut PyObject) -> *mut PyObject;
-    #[cfg_attr(PyPy, link_name = "PyPyFloat_FromDouble")]
     pub fn PyFloat_FromDouble(arg1: c_double) -> *mut PyObject;
-    #[cfg_attr(PyPy, link_name = "PyPyFloat_AsDouble")]
     pub fn PyFloat_AsDouble(arg1: *mut PyObject) -> c_double;
 }
 

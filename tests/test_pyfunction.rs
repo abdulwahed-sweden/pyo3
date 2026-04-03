@@ -4,17 +4,17 @@
 use std::collections::HashMap;
 
 #[cfg(not(Py_LIMITED_API))]
-use pyo3::buffer::PyBuffer;
+use pyforge::buffer::PyBuffer;
 #[cfg(any(not(Py_LIMITED_API), Py_3_12))]
-use pyo3::exceptions::PyWarning;
-use pyo3::exceptions::{PyFutureWarning, PyUserWarning};
-use pyo3::prelude::*;
+use pyforge::exceptions::PyWarning;
+use pyforge::exceptions::{PyFutureWarning, PyUserWarning};
+use pyforge::prelude::*;
 #[cfg(not(Py_LIMITED_API))]
-use pyo3::types::PyDateTime;
-#[cfg(not(any(Py_LIMITED_API, PyPy)))]
-use pyo3::types::PyFunction;
-use pyo3::types::{self, PyCFunction};
-use pyo3_macros::pyclass;
+use pyforge::types::PyDateTime;
+#[cfg(not(Py_LIMITED_API))]
+use pyforge::types::PyFunction;
+use pyforge::types::{self, PyCFunction};
+use pyforge_macros::pyclass;
 
 mod test_utils;
 
@@ -142,7 +142,7 @@ f(a, b)
             PyBufferError
         );
 
-        pyo3::py_run!(
+        pyforge::py_run!(
             py,
             f,
             r#"
@@ -156,7 +156,7 @@ assert a, array.array("i", [2, 4, 6, 8])
     });
 }
 
-#[cfg(not(any(Py_LIMITED_API, PyPy)))]
+#[cfg(not(Py_LIMITED_API))]
 #[pyfunction]
 fn function_with_pyfunction_arg<'py>(fun: &Bound<'py, PyFunction>) -> PyResult<Bound<'py, PyAny>> {
     fun.call((), None)
@@ -175,7 +175,7 @@ fn test_functions_with_function_args() {
         let py_cfunc_arg = wrap_pyfunction!(function_with_pycfunction_arg)(py).unwrap();
         let bool_to_string = wrap_pyfunction!(optional_bool)(py).unwrap();
 
-        pyo3::py_run!(
+        pyforge::py_run!(
             py,
             py_cfunc_arg
             bool_to_string,
@@ -184,11 +184,11 @@ fn test_functions_with_function_args() {
         "#
         );
 
-        #[cfg(not(any(Py_LIMITED_API, PyPy)))]
+        #[cfg(not(Py_LIMITED_API))]
         {
             let py_func_arg = wrap_pyfunction!(function_with_pyfunction_arg)(py).unwrap();
 
-            pyo3::py_run!(
+            pyforge::py_run!(
                 py,
                 py_func_arg,
                 r#"
@@ -222,7 +222,7 @@ fn test_function_with_custom_conversion() {
     Python::attach(|py| {
         let custom_conv_func = wrap_pyfunction!(function_with_custom_conversion)(py).unwrap();
 
-        pyo3::py_run!(
+        pyforge::py_run!(
             py,
             custom_conv_func,
             r#"
@@ -429,7 +429,7 @@ fn extract_traceback(py: Python<'_>, mut error: PyErr) -> String {
 
 #[test]
 fn test_pycfunction_new() {
-    use pyo3::ffi;
+    use pyforge::ffi;
 
     Python::attach(|py| {
         unsafe extern "C" fn c_fn(
@@ -459,7 +459,7 @@ fn test_pycfunction_new() {
 
 #[test]
 fn test_pycfunction_new_with_keywords() {
-    use pyo3::ffi;
+    use pyforge::ffi;
     use std::ffi::c_long;
     use std::ptr;
 
@@ -584,7 +584,7 @@ fn test_closure_counter() {
 #[test]
 fn use_pyfunction() {
     mod function_in_module {
-        use pyo3::prelude::*;
+        use pyforge::prelude::*;
 
         #[pyfunction]
         pub fn foo(x: i32) -> i32 {
@@ -700,7 +700,7 @@ fn test_pyfunction_raw_ident() {
     }
 
     Python::attach(|py| {
-        let m = pyo3::wrap_pymodule!(m)(py);
+        let m = pyforge::wrap_pymodule!(m)(py);
         py_assert!(py, m, "m.struct()");
         py_assert!(py, m, "m.enum()");
     })
@@ -746,7 +746,7 @@ fn test_pyfunction_warn() {
     );
 
     #[pyfunction]
-    #[pyo3(warn(message = "TPW: custom deprecated category", category = pyo3::exceptions::PyDeprecationWarning))]
+    #[pyo3(warn(message = "TPW: custom deprecated category", category = pyforge::exceptions::PyDeprecationWarning))]
     fn function_with_warning_with_custom_category() {}
 
     py_expect_warning_for_fn!(
@@ -754,7 +754,7 @@ fn test_pyfunction_warn() {
         f,
         [(
             "TPW: custom deprecated category",
-            pyo3::exceptions::PyDeprecationWarning
+            pyforge::exceptions::PyDeprecationWarning
         )]
     );
 

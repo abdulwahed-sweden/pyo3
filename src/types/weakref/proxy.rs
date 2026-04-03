@@ -57,8 +57,8 @@ impl PyWeakrefProxy {
         all(feature = "macros", not(all(Py_LIMITED_API, not(Py_3_9)))),
         doc = "```rust"
     )]
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::PyWeakrefProxy;
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::PyWeakrefProxy;
     ///
     /// #[pyclass(weakref)]
     /// struct Foo { /* fields omitted */ }
@@ -106,9 +106,9 @@ impl PyWeakrefProxy {
         all(feature = "macros", not(all(Py_LIMITED_API, not(Py_3_9)))),
         doc = "```rust"
     )]
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::PyWeakrefProxy;
-    /// use pyo3::ffi::c_str;
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::PyWeakrefProxy;
+    /// use pyforge::ffi::c_str;
     ///
     /// #[pyclass(weakref)]
     /// struct Foo { /* fields omitted */ }

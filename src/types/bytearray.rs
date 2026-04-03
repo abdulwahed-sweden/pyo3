@@ -42,7 +42,7 @@ impl PyByteArray {
     /// # Examples
     ///
     /// ```
-    /// use pyo3::{prelude::*, types::PyByteArray};
+    /// use pyforge::{prelude::*, types::PyByteArray};
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -130,10 +130,10 @@ pub trait PyByteArrayMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::exceptions::PyRuntimeError;
-    /// use pyo3::sync::critical_section::with_critical_section;
-    /// use pyo3::types::PyByteArray;
+    /// use pyforge::prelude::*;
+    /// use pyforge::exceptions::PyRuntimeError;
+    /// use pyforge::sync::critical_section::with_critical_section;
+    /// use pyforge::types::PyByteArray;
     ///
     /// #[pyfunction]
     /// fn a_valid_function(bytes: &Bound<'_, PyByteArray>) -> PyResult<()> {
@@ -158,7 +158,7 @@ pub trait PyByteArrayMethods<'py>: crate::sealed::Sealed {
     /// # fn main() -> PyResult<()> {
     /// #     Python::attach(|py| -> PyResult<()> {
     /// #         let fun = wrap_pyfunction!(a_valid_function, py)?;
-    /// #         let locals = pyo3::types::PyDict::new(py);
+    /// #         let locals = pyforge::types::PyDict::new(py);
     /// #         locals.set_item("a_valid_function", fun)?;
     /// #
     /// #         py.run(cr#"b = bytearray(b"hello world")
@@ -182,8 +182,8 @@ pub trait PyByteArrayMethods<'py>: crate::sealed::Sealed {
     /// The following `bug` function is unsound ⚠️
     ///
     /// ```rust,no_run
-    /// # use pyo3::prelude::*;
-    /// # use pyo3::types::PyByteArray;
+    /// # use pyforge::prelude::*;
+    /// # use pyforge::types::PyByteArray;
     ///
     /// # #[allow(dead_code)]
     /// #[pyfunction]
@@ -223,8 +223,8 @@ pub trait PyByteArrayMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```
-    /// # use pyo3::prelude::*;
-    /// # use pyo3::types::PyByteArray;
+    /// # use pyforge::prelude::*;
+    /// # use pyforge::types::PyByteArray;
     /// # Python::attach(|py| {
     /// let bytearray = PyByteArray::new(py, b"Hello World.");
     /// let mut copied_message = bytearray.to_vec();
@@ -233,7 +233,7 @@ pub trait PyByteArrayMethods<'py>: crate::sealed::Sealed {
     /// copied_message[11] = b'!';
     /// assert_eq!(b"Hello World!", copied_message.as_slice());
     ///
-    /// pyo3::py_run!(py, bytearray, "assert bytearray == b'Hello World.'");
+    /// pyforge::py_run!(py, bytearray, "assert bytearray == b'Hello World.'");
     /// # });
     /// ```
     fn to_vec(&self) -> Vec<u8>;

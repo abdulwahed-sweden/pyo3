@@ -15,7 +15,7 @@
 macro_rules! extern_libpython_cpython_private_fn {
     ($(#[$attrs:meta])* $vis:vis $name:ident($($args:tt)*) $(-> $ret:ty)?) => {
         #[cfg_attr(
-            all(windows, target_arch = "x86", not(any(PyPy, GraalPy))),
+            all(windows, target_arch = "x86"),
             link_name = concat!("_", stringify!($name))
         )]
         $(#[$attrs])*
@@ -361,8 +361,7 @@ macro_rules! extern_libpython {
             "python313t", "python313t_d",
             "python314t", "python314t_d",
             "python315t", "python315t_d",
-            // PyPy (DLL is libpypy3.X-c.dll, not pythonXY.dll)
-            "libpypy3.11-c",
+            // PyForge: PyPy DLL entries removed (CPython only)
         );
     };
     // Internal: generate cfg_attr for each DLL name. One of these will be selected

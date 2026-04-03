@@ -3,8 +3,8 @@ use std::hint::black_box;
 
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::types::IntoPyDict;
-use pyo3::{prelude::*, types::PyMapping};
+use pyforge::types::IntoPyDict;
+use pyforge::{prelude::*, types::PyMapping};
 
 fn iter_dict(b: &mut Bencher<'_>) {
     Python::attach(|py| {

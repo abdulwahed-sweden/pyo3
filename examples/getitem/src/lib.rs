@@ -1,7 +1,7 @@
 // This is a very fake example of how to check __getitem__ parameter and handle appropriately
-use pyo3::exceptions::PyTypeError;
-use pyo3::prelude::*;
-use pyo3::types::PySlice;
+use pyforge::exceptions::PyTypeError;
+use pyforge::prelude::*;
+use pyforge::types::PySlice;
 
 #[derive(FromPyObject)]
 enum IntOrSlice<'py> {

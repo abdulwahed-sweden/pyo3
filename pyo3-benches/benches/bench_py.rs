@@ -8,7 +8,7 @@ use std::sync::{
 use std::thread::spawn;
 use std::time::{Duration, Instant};
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 fn drop_many_objects(b: &mut Bencher<'_>) {
     Python::attach(|py| {

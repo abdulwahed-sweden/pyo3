@@ -2,7 +2,7 @@ use std::hint::black_box;
 
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::{
+use pyforge::{
     prelude::*,
     types::{PyByteArray, PyBytes, PyList, PyString},
 };

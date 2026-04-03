@@ -1,8 +1,8 @@
 #![cfg(not(Py_LIMITED_API))]
 
-use pyo3::prelude::*;
-use pyo3::types::{IntoPyDict, PyDate, PyDateTime, PyTime, PyTzInfo};
-use pyo3_ffi::PyDateTime_IMPORT;
+use pyforge::prelude::*;
+use pyforge::types::{IntoPyDict, PyDate, PyDateTime, PyTime, PyTzInfo};
+use pyforge_ffi::PyDateTime_IMPORT;
 use std::ffi::CString;
 
 fn _get_subclasses<'py>(
@@ -51,7 +51,7 @@ fn _get_subclasses<'py>(
 macro_rules! assert_check_exact {
     ($check_func:ident, $check_func_exact:ident, $obj: expr) => {
         unsafe {
-            use pyo3::ffi::*;
+            use pyforge::ffi::*;
             assert_ne!($check_func(($obj).as_ptr()), 0);
             assert_ne!($check_func_exact(($obj).as_ptr()), 0);
         }
@@ -61,7 +61,7 @@ macro_rules! assert_check_exact {
 macro_rules! assert_check_only {
     ($check_func:ident, $check_func_exact:ident, $obj: expr) => {
         unsafe {
-            use pyo3::ffi::*;
+            use pyforge::ffi::*;
             assert_ne!($check_func(($obj).as_ptr()), 0);
             assert_eq!($check_func_exact(($obj).as_ptr()), 0);
         }
@@ -130,7 +130,7 @@ fn test_delta_check() {
 #[test]
 fn test_datetime_utc() {
     use assert_approx_eq::assert_approx_eq;
-    use pyo3::types::PyDateTime;
+    use pyforge::types::PyDateTime;
 
     Python::attach(|py| {
         let utc = PyTzInfo::utc(py).unwrap();
@@ -165,7 +165,7 @@ static INVALID_TIMES: &[(u8, u8, u8, u32)] =
 
 #[test]
 fn test_pydate_out_of_bounds() {
-    use pyo3::types::PyDate;
+    use pyforge::types::PyDate;
 
     Python::attach(|py| {
         for val in INVALID_DATES {
@@ -178,7 +178,7 @@ fn test_pydate_out_of_bounds() {
 
 #[test]
 fn test_pytime_out_of_bounds() {
-    use pyo3::types::PyTime;
+    use pyforge::types::PyTime;
 
     Python::attach(|py| {
         for val in INVALID_TIMES {
@@ -191,7 +191,7 @@ fn test_pytime_out_of_bounds() {
 
 #[test]
 fn test_pydatetime_out_of_bounds() {
-    use pyo3::types::PyDateTime;
+    use pyforge::types::PyDateTime;
     use std::iter;
 
     Python::attach(|py| {

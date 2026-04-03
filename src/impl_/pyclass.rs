@@ -1093,7 +1093,6 @@ pub(crate) unsafe extern "C" fn tp_dealloc<T: PyClass>(obj: *mut ffi::PyObject) 
 
 /// Implementation of tp_dealloc for pyclasses with gc
 pub(crate) unsafe extern "C" fn tp_dealloc_with_gc<T: PyClass>(obj: *mut ffi::PyObject) {
-    #[cfg(not(PyPy))]
     unsafe {
         ffi::PyObject_GC_UnTrack(obj.cast());
     }

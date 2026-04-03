@@ -198,7 +198,7 @@ impl FromPyObject<'_, '_> for bool {
                 ))
             };
 
-            #[cfg(not(any(Py_LIMITED_API, PyPy)))]
+            #[cfg(not(Py_LIMITED_API))]
             unsafe {
                 let ptr = obj.as_ptr();
 
@@ -215,7 +215,7 @@ impl FromPyObject<'_, '_> for bool {
                 return Err(missing_conversion(obj));
             }
 
-            #[cfg(any(Py_LIMITED_API, PyPy))]
+            #[cfg(Py_LIMITED_API)]
             {
                 let meth = obj
                     .lookup_special(crate::intern!(obj.py(), "__bool__"))?

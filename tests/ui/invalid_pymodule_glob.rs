@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pyfunction]
 fn foo() -> usize {

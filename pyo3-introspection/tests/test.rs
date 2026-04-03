@@ -1,5 +1,5 @@
 use anyhow::{ensure, Result};
-use pyo3_introspection::{introspect_cdylib, module_stub_files};
+use pyforge_introspection::{introspect_cdylib, module_stub_files};
 use std::collections::HashMap;
 use std::io::{Read, Seek, SeekFrom, Write};
 use std::path::{Path, PathBuf};

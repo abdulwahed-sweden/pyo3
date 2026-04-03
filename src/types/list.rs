@@ -42,8 +42,8 @@ impl PyList {
     /// # Examples
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::PyList;
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::PyList;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| {
@@ -123,7 +123,7 @@ pub trait PyListMethods<'py>: crate::sealed::Sealed {
     /// Gets the list item at the specified index.
     /// # Example
     /// ```
-    /// use pyo3::{prelude::*, types::PyList};
+    /// use pyforge::{prelude::*, types::PyList};
     /// Python::attach(|py| {
     ///     let list = PyList::new(py, [2, 3, 5, 7]).unwrap();
     ///     let obj = list.get_item(0);
@@ -259,7 +259,7 @@ impl<'py> PyListMethods<'py> for Bound<'py, PyList> {
     /// Gets the list item at the specified index.
     /// # Example
     /// ```
-    /// use pyo3::{prelude::*, types::PyList};
+    /// use pyforge::{prelude::*, types::PyList};
     /// Python::attach(|py| {
     ///     let list = PyList::new(py, [2, 3, 5, 7]).unwrap();
     ///     let obj = list.get_item(0);

@@ -1,6 +1,6 @@
-#[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 use crate::py_result_ext::PyResultExt;
-#[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 use crate::types::any::PyAnyMethods;
 use crate::{ffi, Bound, PyAny, Python};
 use std::ffi::c_double;
@@ -44,7 +44,7 @@ impl PyComplex {
     }
 }
 
-#[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 mod not_limited_impls {
     use crate::Borrowed;
 
@@ -216,10 +216,10 @@ pub trait PyComplexMethods<'py>: crate::sealed::Sealed {
     /// Returns the imaginary part of the complex number.
     fn imag(&self) -> c_double;
     /// Returns `|self|`.
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn abs(&self) -> c_double;
     /// Returns `self` raised to the power of `other`.
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn pow(&self, other: &Bound<'py, PyComplex>) -> Bound<'py, PyComplex>;
 }
 
@@ -232,7 +232,7 @@ impl<'py> PyComplexMethods<'py> for Bound<'py, PyComplex> {
         unsafe { ffi::PyComplex_ImagAsDouble(self.as_ptr()) }
     }
 
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn abs(&self) -> c_double {
         PyAnyMethods::abs(self.as_any())
             .cast_into()
@@ -241,7 +241,7 @@ impl<'py> PyComplexMethods<'py> for Bound<'py, PyComplex> {
             .expect("Failed to extract to c double.")
     }
 
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn pow(&self, other: &Bound<'py, PyComplex>) -> Bound<'py, PyComplex> {
         Python::attach(|py| {
             PyAnyMethods::pow(self.as_any(), other, py.None())

@@ -3,19 +3,17 @@ use crate::PyObject_TypeCheck;
 use std::ffi::{c_char, c_int, c_void};
 use std::{mem, ptr};
 
-#[cfg(all(not(Py_LIMITED_API), not(GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 pub struct PyCFunctionObject {
     pub ob_base: PyObject,
     pub m_ml: *mut PyMethodDef,
     pub m_self: *mut PyObject,
     pub m_module: *mut PyObject,
     pub m_weakreflist: *mut PyObject,
-    #[cfg(not(PyPy))]
     pub vectorcall: Option<crate::vectorcallfunc>,
 }
 
 extern_libpython! {
-    #[cfg_attr(PyPy, link_name = "PyPyCFunction_Type")]
     pub static mut PyCFunction_Type: PyTypeObject;
 }
 
@@ -71,7 +69,6 @@ pub type PyCMethod = unsafe extern "C" fn(
 ) -> *mut PyObject;
 
 extern_libpython! {
-    #[cfg_attr(PyPy, link_name = "PyPyCFunction_GetFunction")]
     pub fn PyCFunction_GetFunction(f: *mut PyObject) -> Option<PyCFunction>;
     pub fn PyCFunction_GetSelf(f: *mut PyObject) -> *mut PyObject;
     pub fn PyCFunction_GetFlags(f: *mut PyObject) -> c_int;
@@ -213,7 +210,6 @@ pub unsafe fn PyCFunction_NewEx(
 }
 
 extern_libpython! {
-    #[cfg_attr(PyPy, link_name = "PyPyCMethod_New")]
     pub fn PyCMethod_New(
         ml: *mut PyMethodDef,
         slf: *mut PyObject,

@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
-use pyo3::exceptions::PyValueError;
-use pyo3::prelude::*;
-use pyo3::types::{IntoPyDict, PyDict, PyList, PyString, PyTuple};
+use pyforge::exceptions::PyValueError;
+use pyforge::prelude::*;
+use pyforge::types::{IntoPyDict, PyDict, PyList, PyString, PyTuple};
 
 #[macro_use]
 mod test_utils;
@@ -40,7 +40,7 @@ pub struct PyA {
 
 #[pymethods]
 impl PyA {
-    fn __getitem__(&self, key: String) -> pyo3::PyResult<String> {
+    fn __getitem__(&self, key: String) -> pyforge::PyResult<String> {
         if key == "t" {
             Ok("bar".into())
         } else {
@@ -350,7 +350,7 @@ impl RenameAllCls {
     fn __getitem__(&self, key: &str) -> PyResult<f32> {
         match key {
             "otherField" => Ok(42.0),
-            _ => Err(pyo3::exceptions::PyKeyError::new_err("foo")),
+            _ => Err(pyforge::exceptions::PyKeyError::new_err("foo")),
         }
     }
 }

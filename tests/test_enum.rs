@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
-use pyo3::prelude::*;
-use pyo3::py_run;
-use pyo3::types::PyString;
+use pyforge::prelude::*;
+use pyforge::py_run;
+use pyforge::types::PyString;
 
 mod test_utils;
 
@@ -293,7 +293,7 @@ enum SimpleEnumWithHash {
 #[test]
 fn test_simple_enum_with_hash() {
     Python::attach(|py| {
-        use pyo3::types::IntoPyDict;
+        use pyforge::types::IntoPyDict;
         let class = SimpleEnumWithHash::A;
         let hash = {
             use std::hash::{Hash, Hasher};
@@ -323,7 +323,7 @@ enum ComplexEnumWithHash {
 #[test]
 fn test_complex_enum_with_hash() {
     Python::attach(|py| {
-        use pyo3::types::IntoPyDict;
+        use pyforge::types::IntoPyDict;
         let class = ComplexEnumWithHash::B {
             msg: String::from("Hello"),
         };

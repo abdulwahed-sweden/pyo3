@@ -1,13 +1,13 @@
-#[cfg(not(any(PyPy, Py_3_10)))]
+#[cfg(not(Py_3_10))]
 use crate::object::PyObject;
-#[cfg(not(any(PyPy, Py_3_10)))]
+#[cfg(not(Py_3_10))]
 use crate::pyarena::*;
-#[cfg(not(any(PyPy, Py_3_10)))]
+#[cfg(not(Py_3_10))]
 use crate::pythonrun::*;
-#[cfg(not(any(PyPy, Py_3_10)))]
+#[cfg(not(Py_3_10))]
 use crate::PyCodeObject;
 use crate::INT_MAX;
-#[cfg(not(any(PyPy, Py_3_10)))]
+#[cfg(not(Py_3_10))]
 use std::ffi::c_char;
 use std::ffi::c_int;
 
@@ -36,7 +36,7 @@ pub struct PyCompilerFlags {
 //
 // We choose not to expose it in the public API past 3.10, as it is
 // not used in the public API past that point.
-#[cfg(not(any(PyPy, GraalPy, Py_3_10)))]
+#[cfg(not(Py_3_10))]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PyFutureFeatures {
@@ -57,7 +57,7 @@ pub const FUTURE_BARRY_AS_BDFL: &str = "barry_as_FLUFL";
 pub const FUTURE_GENERATOR_STOP: &str = "generator_stop";
 pub const FUTURE_ANNOTATIONS: &str = "annotations";
 
-#[cfg(not(any(PyPy, GraalPy, Py_3_10)))]
+#[cfg(not(Py_3_10))]
 extern_libpython! {
     pub fn PyNode_Compile(arg1: *mut _node, arg2: *const c_char) -> *mut PyCodeObject;
 

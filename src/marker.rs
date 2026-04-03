@@ -40,7 +40,7 @@
 //! ```rust, compile_fail
 //! # #[cfg(feature = "nightly")]
 //! # compile_error!("this actually works on nightly")
-//! use pyo3::prelude::*;
+//! use pyforge::prelude::*;
 //! use std::rc::Rc;
 //!
 //! fn main() {
@@ -68,8 +68,8 @@
 //! doing anything with threads:
 //!
 //! ```rust, no_run
-//! use pyo3::prelude::*;
-//! use pyo3::types::PyString;
+//! use pyforge::prelude::*;
+//! use pyforge::types::PyString;
 //! use send_wrapper::SendWrapper;
 //!
 //! Python::attach(|py| {
@@ -145,7 +145,7 @@ use std::sync::LazyLock;
 /// For example, an `Rc` smart pointer should be usable without the GIL, but we currently prevent that:
 ///
 /// ```compile_fail
-/// # use pyo3::prelude::*;
+/// # use pyforge::prelude::*;
 /// use std::rc::Rc;
 ///
 /// Python::attach(|py| {
@@ -161,8 +161,8 @@ use std::sync::LazyLock;
 /// one can circumvent this protection using the [`send_wrapper`](https://docs.rs/send_wrapper/) crate:
 ///
 /// ```no_run
-/// # use pyo3::prelude::*;
-/// # use pyo3::types::PyString;
+/// # use pyforge::prelude::*;
+/// # use pyforge::types::PyString;
 /// use send_wrapper::SendWrapper;
 ///
 /// Python::attach(|py| {
@@ -209,8 +209,8 @@ mod nightly {
         /// Types which are `Ungil` cannot be used in contexts where the GIL was released, e.g.
         ///
         /// ```compile_fail
-        /// # use pyo3::prelude::*;
-        /// # use pyo3::types::PyString;
+        /// # use pyforge::prelude::*;
+        /// # use pyforge::types::PyString;
         /// Python::attach(|py| {
         ///     let string = PyString::new(py, "foo");
         ///
@@ -223,7 +223,7 @@ mod nightly {
         /// This applies to the [`Python`] token itself as well, e.g.
         ///
         /// ```compile_fail
-        /// # use pyo3::prelude::*;
+        /// # use pyforge::prelude::*;
         /// Python::attach(|py| {
         ///     py.detach(|| {
         ///         drop(py);
@@ -235,8 +235,8 @@ mod nightly {
         /// to prevent incorrectly circumventing it using e.g. the [`send_wrapper`](https://docs.rs/send_wrapper/) crate:
         ///
         /// ```compile_fail
-        /// # use pyo3::prelude::*;
-        /// # use pyo3::types::PyString;
+        /// # use pyforge::prelude::*;
+        /// # use pyforge::types::PyString;
         /// use send_wrapper::SendWrapper;
         ///
         /// Python::attach(|py| {
@@ -256,7 +256,7 @@ mod nightly {
         /// at least if they are not also bound to the GIL:
         ///
         /// ```rust
-        /// # use pyo3::prelude::*;
+        /// # use pyforge::prelude::*;
         /// use std::rc::Rc;
         ///
         /// Python::attach(|py| {
@@ -367,11 +367,7 @@ impl Python<'_> {
     ///
     /// If the [`auto-initialize`] feature is enabled and the Python runtime is not already
     /// initialized, this function will initialize it. See
-    #[cfg_attr(
-        not(any(PyPy, GraalPy)),
-        doc = "[`Python::initialize`](crate::marker::Python::initialize)"
-    )]
-    #[cfg_attr(PyPy, doc = "`Python::initialize")]
+    /// [`Python::initialize`](crate::marker::Python::initialize)
     /// for details.
     ///
     /// If the current thread does not yet have a Python "thread state" associated with it,
@@ -392,8 +388,8 @@ impl Python<'_> {
     /// # Examples
     ///
     /// ```
-    /// use pyo3::prelude::*;
-    /// use pyo3::ffi::c_str;
+    /// use pyforge::prelude::*;
+    /// use pyforge::ffi::c_str;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -461,14 +457,13 @@ impl Python<'_> {
     ///
     /// # Examples
     /// ```rust
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::initialize();
     /// Python::attach(|py| py.run(c"print('Hello World')", None, None))
     /// # }
     /// ```
-    #[cfg(not(any(PyPy, GraalPy)))]
     pub fn initialize() {
         crate::interpreter_lifecycle::initialize();
     }
@@ -512,7 +507,7 @@ impl<'py> Python<'py> {
     /// # Example: Releasing the GIL while running a computation in Rust-only code
     ///
     /// ```
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// #[pyfunction]
     /// fn sum_numbers(py: Python<'_>, numbers: Vec<u32>) -> PyResult<u32> {
@@ -527,7 +522,7 @@ impl<'py> Python<'py> {
     /// #
     /// # fn main() -> PyResult<()> {
     /// #     Python::attach(|py| -> PyResult<()> {
-    /// #         let fun = pyo3::wrap_pyfunction!(sum_numbers, py)?;
+    /// #         let fun = pyforge::wrap_pyfunction!(sum_numbers, py)?;
     /// #         let res = fun.call1((vec![1_u32, 2, 3],))?;
     /// #         assert_eq!(res.extract::<u32>()?, 6_u32);
     /// #         Ok(())
@@ -541,8 +536,8 @@ impl<'py> Python<'py> {
     /// # Example: Passing borrowed Python references into the closure is not allowed
     ///
     /// ```compile_fail
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::PyString;
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::PyString;
     ///
     /// fn parallel_print(py: Python<'_>) {
     ///     let s = PyString::new(py, "This object cannot be accessed without holding the GIL >_<");
@@ -580,8 +575,8 @@ impl<'py> Python<'py> {
     /// # Examples
     ///
     /// ```
-    /// # use pyo3::prelude::*;
-    /// # use pyo3::ffi::c_str;
+    /// # use pyforge::prelude::*;
+    /// # use pyforge::ffi::c_str;
     /// # Python::attach(|py| {
     /// let result = py.eval(c"[i * 10 for i in range(5)]", None, None).unwrap();
     /// let res: Vec<i64> = result.extract().unwrap();
@@ -608,7 +603,7 @@ impl<'py> Python<'py> {
     ///
     /// # Examples
     /// ```
-    /// use pyo3::{
+    /// use pyforge::{
     ///     prelude::*,
     ///     types::{PyBytes, PyDict},
     ///     ffi::c_str,
@@ -692,7 +687,7 @@ impl<'py> Python<'py> {
     ///
     /// # Examples
     /// ```rust
-    /// # use pyo3::Python;
+    /// # use pyforge::Python;
     /// assert!(Python::version_str().starts_with("3."));
     /// ```
     pub fn version_str() -> &'static str {
@@ -710,7 +705,7 @@ impl<'py> Python<'py> {
     ///
     /// # Examples
     /// ```rust
-    /// # use pyo3::Python;
+    /// # use pyforge::Python;
     /// Python::attach(|py| {
     ///     // PyO3 supports Python 3.8 and up.
     ///     assert!(py.version_info() >= (3, 8));
@@ -740,7 +735,7 @@ impl<'py> Python<'py> {
     ///
     /// ```rust,no_run
     /// # #![allow(dead_code)] // this example is quite impractical to test
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// # fn main() {
     /// #[pyfunction]
@@ -914,7 +909,6 @@ mod tests {
 
         // Before starting the interpreter the state of calling `PyGILState_Check`
         // seems to be undefined, so let's ensure that Python is up.
-        #[cfg(not(any(PyPy, GraalPy)))]
         Python::initialize();
 
         let state = unsafe { crate::ffi::PyGILState_Check() };

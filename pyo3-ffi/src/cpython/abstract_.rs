@@ -1,12 +1,7 @@
 use crate::{PyObject, Py_ssize_t};
-#[cfg(any(not(PyPy), not(Py_3_11)))]
 use std::ffi::c_char;
 use std::ffi::c_int;
 
-#[cfg(not(Py_3_11))]
-use crate::Py_buffer;
-
-#[cfg(not(PyPy))]
 use crate::{
     vectorcallfunc, PyCallable_Check, PyThreadState, PyThreadState_GET, PyTuple_Check,
     PyType_HasFeature, Py_TPFLAGS_HAVE_VECTORCALL,
@@ -14,15 +9,12 @@ use crate::{
 use libc::size_t;
 
 extern_libpython! {
-    #[cfg(not(any(PyPy, GraalPy)))]
     pub fn _PyStack_AsDict(values: *const *mut PyObject, kwnames: *mut PyObject) -> *mut PyObject;
 }
 
-#[cfg(not(any(PyPy, GraalPy)))]
 const _PY_FASTCALL_SMALL_STACK: size_t = 5;
 
 extern_libpython! {
-    #[cfg(not(PyPy))]
     pub fn _Py_CheckFunctionResult(
         tstate: *mut PyThreadState,
         callable: *mut PyObject,
@@ -30,7 +22,6 @@ extern_libpython! {
         where_: *const c_char,
     ) -> *mut PyObject;
 
-    #[cfg(not(PyPy))]
     pub fn _PyObject_MakeTpCall(
         tstate: *mut PyThreadState,
         callable: *mut PyObject,
@@ -49,7 +40,6 @@ pub unsafe fn PyVectorcall_NARGS(n: size_t) -> Py_ssize_t {
     n.try_into().expect("cannot fail due to mask")
 }
 
-#[cfg(not(PyPy))]
 #[inline(always)]
 pub unsafe fn PyVectorcall_Function(callable: *mut PyObject) -> Option<vectorcallfunc> {
     assert!(!callable.is_null());
@@ -64,7 +54,6 @@ pub unsafe fn PyVectorcall_Function(callable: *mut PyObject) -> Option<vectorcal
     *ptr
 }
 
-#[cfg(not(PyPy))]
 #[inline(always)]
 pub unsafe fn _PyObject_VectorcallTstate(
     tstate: *mut PyThreadState,
@@ -88,24 +77,7 @@ pub unsafe fn _PyObject_VectorcallTstate(
     }
 }
 
-#[cfg(not(any(PyPy, GraalPy, Py_3_11)))] // exported as a function from 3.11, see abstract.rs
-#[inline(always)]
-pub unsafe fn PyObject_Vectorcall(
-    callable: *mut PyObject,
-    args: *const *mut PyObject,
-    nargsf: size_t,
-    kwnames: *mut PyObject,
-) -> *mut PyObject {
-    _PyObject_VectorcallTstate(PyThreadState_GET(), callable, args, nargsf, kwnames)
-}
-
 extern_libpython! {
-    #[cfg_attr(
-        all(not(any(PyPy, GraalPy)), not(Py_3_9)),
-        link_name = "_PyObject_VectorcallDict"
-    )]
-    #[cfg_attr(all(PyPy, not(Py_3_9)), link_name = "_PyPyObject_VectorcallDict")]
-    #[cfg_attr(all(PyPy, Py_3_9), link_name = "PyPyObject_VectorcallDict")]
     pub fn PyObject_VectorcallDict(
         callable: *mut PyObject,
         args: *const *mut PyObject,
@@ -113,8 +85,6 @@ extern_libpython! {
         kwdict: *mut PyObject,
     ) -> *mut PyObject;
 
-    #[cfg_attr(not(any(Py_3_9, PyPy)), link_name = "_PyVectorcall_Call")]
-    #[cfg_attr(PyPy, link_name = "PyPyVectorcall_Call")]
     pub fn PyVectorcall_Call(
         callable: *mut PyObject,
         tuple: *mut PyObject,
@@ -122,7 +92,6 @@ extern_libpython! {
     ) -> *mut PyObject;
 }
 
-#[cfg(not(any(PyPy, GraalPy)))]
 #[inline(always)]
 pub unsafe fn _PyObject_FastCallTstate(
     tstate: *mut PyThreadState,
@@ -133,7 +102,6 @@ pub unsafe fn _PyObject_FastCallTstate(
     _PyObject_VectorcallTstate(tstate, func, args, nargs as size_t, std::ptr::null_mut())
 }
 
-#[cfg(not(any(PyPy, GraalPy)))]
 #[inline(always)]
 pub unsafe fn _PyObject_FastCall(
     func: *mut PyObject,
@@ -143,7 +111,6 @@ pub unsafe fn _PyObject_FastCall(
     _PyObject_FastCallTstate(PyThreadState_GET(), func, args, nargs)
 }
 
-#[cfg(not(PyPy))]
 #[inline(always)]
 pub unsafe fn _PyObject_CallNoArg(func: *mut PyObject) -> *mut PyObject {
     _PyObject_VectorcallTstate(
@@ -155,13 +122,6 @@ pub unsafe fn _PyObject_CallNoArg(func: *mut PyObject) -> *mut PyObject {
     )
 }
 
-extern_libpython! {
-    #[cfg(PyPy)]
-    #[link_name = "_PyPyObject_CallNoArg"]
-    pub fn _PyObject_CallNoArg(func: *mut PyObject) -> *mut PyObject;
-}
-
-#[cfg(not(PyPy))]
 #[inline(always)]
 pub unsafe fn PyObject_CallOneArg(func: *mut PyObject, arg: *mut PyObject) -> *mut PyObject {
     assert!(!arg.is_null());
@@ -172,7 +132,6 @@ pub unsafe fn PyObject_CallOneArg(func: *mut PyObject, arg: *mut PyObject) -> *m
     _PyObject_VectorcallTstate(tstate, func, args, nargsf, std::ptr::null_mut())
 }
 
-#[cfg(all(Py_3_9, not(PyPy)))]
 #[inline(always)]
 pub unsafe fn PyObject_CallMethodNoArgs(
     self_: *mut PyObject,
@@ -186,7 +145,6 @@ pub unsafe fn PyObject_CallMethodNoArgs(
     )
 }
 
-#[cfg(all(Py_3_9, not(PyPy)))]
 #[inline(always)]
 pub unsafe fn PyObject_CallMethodOneArg(
     self_: *mut PyObject,
@@ -210,67 +168,8 @@ pub unsafe fn PyObject_CallMethodOneArg(
 // skipped _PyObject_HasLen
 
 extern_libpython! {
-    #[cfg_attr(PyPy, link_name = "PyPyObject_LengthHint")]
     pub fn PyObject_LengthHint(o: *mut PyObject, arg1: Py_ssize_t) -> Py_ssize_t;
 
-    #[cfg(not(Py_3_11))] // moved to src/buffer.rs from 3.11
-    #[cfg(all(Py_3_9, not(PyPy)))]
-    pub fn PyObject_CheckBuffer(obj: *mut PyObject) -> c_int;
-}
-
-#[cfg(not(any(Py_3_9, PyPy)))]
-#[inline]
-pub unsafe fn PyObject_CheckBuffer(o: *mut PyObject) -> c_int {
-    let tp_as_buffer = (*crate::Py_TYPE(o)).tp_as_buffer;
-    (!tp_as_buffer.is_null() && (*tp_as_buffer).bf_getbuffer.is_some()) as c_int
-}
-
-#[cfg(not(Py_3_11))] // moved to src/buffer.rs from 3.11
-extern_libpython! {
-    #[cfg_attr(PyPy, link_name = "PyPyObject_GetBuffer")]
-    pub fn PyObject_GetBuffer(obj: *mut PyObject, view: *mut Py_buffer, flags: c_int) -> c_int;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_GetPointer")]
-    pub fn PyBuffer_GetPointer(
-        view: *mut Py_buffer,
-        indices: *mut Py_ssize_t,
-    ) -> *mut std::ffi::c_void;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_SizeFromFormat")]
-    pub fn PyBuffer_SizeFromFormat(format: *const c_char) -> Py_ssize_t;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_ToContiguous")]
-    pub fn PyBuffer_ToContiguous(
-        buf: *mut std::ffi::c_void,
-        view: *mut Py_buffer,
-        len: Py_ssize_t,
-        order: c_char,
-    ) -> c_int;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_FromContiguous")]
-    pub fn PyBuffer_FromContiguous(
-        view: *mut Py_buffer,
-        buf: *mut std::ffi::c_void,
-        len: Py_ssize_t,
-        order: c_char,
-    ) -> c_int;
-    pub fn PyObject_CopyData(dest: *mut PyObject, src: *mut PyObject) -> c_int;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_IsContiguous")]
-    pub fn PyBuffer_IsContiguous(view: *const Py_buffer, fort: c_char) -> c_int;
-    pub fn PyBuffer_FillContiguousStrides(
-        ndims: c_int,
-        shape: *mut Py_ssize_t,
-        strides: *mut Py_ssize_t,
-        itemsize: c_int,
-        fort: c_char,
-    );
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_FillInfo")]
-    pub fn PyBuffer_FillInfo(
-        view: *mut Py_buffer,
-        o: *mut PyObject,
-        buf: *mut std::ffi::c_void,
-        len: Py_ssize_t,
-        readonly: c_int,
-        flags: c_int,
-    ) -> c_int;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_Release")]
-    pub fn PyBuffer_Release(view: *mut Py_buffer);
 }
 
 // skipped PySequence_ITEM
@@ -280,7 +179,6 @@ pub const PY_ITERSEARCH_INDEX: c_int = 2;
 pub const PY_ITERSEARCH_CONTAINS: c_int = 3;
 
 extern_libpython! {
-    #[cfg(not(any(PyPy, GraalPy)))]
     pub fn _PySequence_IterSearch(
         seq: *mut PyObject,
         obj: *mut PyObject,

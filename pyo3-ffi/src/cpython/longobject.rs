@@ -53,7 +53,6 @@ extern_libpython! {
     // skipped PyUnstable_Long_IsCompact
     // skipped PyUnstable_Long_CompactValue
 
-    #[cfg_attr(PyPy, link_name = "_PyPyLong_FromByteArray")]
     pub fn _PyLong_FromByteArray(
         bytes: *const c_uchar,
         n: size_t,
@@ -61,7 +60,6 @@ extern_libpython! {
         is_signed: c_int,
     ) -> *mut PyObject;
 
-    #[cfg_attr(PyPy, link_name = "_PyPyLong_AsByteArrayO")]
     pub fn _PyLong_AsByteArray(
         v: *mut PyLongObject,
         bytes: *mut c_uchar,

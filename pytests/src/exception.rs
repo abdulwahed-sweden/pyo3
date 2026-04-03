@@ -1,13 +1,13 @@
-use pyo3::create_exception;
-use pyo3::exceptions::PyValueError;
-use pyo3::prelude::*;
+use pyforge::create_exception;
+use pyforge::exceptions::PyValueError;
+use pyforge::prelude::*;
 
 create_exception!(pytests.exception, MyValueError, PyValueError);
 
 #[pymodule(gil_used = false)]
 pub mod exception {
-    use pyo3::exceptions::PyValueError;
-    use pyo3::prelude::*;
+    use pyforge::exceptions::PyValueError;
+    use pyforge::prelude::*;
 
     #[pymodule_export]
     use super::MyValueError;

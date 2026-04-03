@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
 //! Test slf: PyRef/PyMutRef<Self>(especially, slf.into::<Py>) works
-use pyo3::prelude::*;
-use pyo3::types::{PyBytes, PyString};
+use pyforge::prelude::*;
+use pyforge::types::{PyBytes, PyString};
 use std::collections::HashMap;
 
 mod test_utils;

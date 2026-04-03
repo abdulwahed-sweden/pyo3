@@ -120,7 +120,7 @@ impl<T> EnteredCriticalSection<'_, T> {
 /// Locks the per-object mutex for the object `op` that is held while the closure `f` is
 /// executing. The critical section may be temporarily released and re-acquired if the closure calls
 /// back into the interpreter. See the notes in the
-/// [`pyo3::sync::critical_section`][crate::sync::critical_section] module documentation for more
+/// [`pyforge::sync::critical_section`][crate::sync::critical_section] module documentation for more
 /// details.
 ///
 /// This is structurally equivalent to the use of the paired Py_BEGIN_CRITICAL_SECTION and
@@ -147,7 +147,7 @@ where
 /// Locks the per-object mutex for the objects `a` and `b` that are held while the closure `f` is
 /// executing. The critical section may be temporarily released and re-acquired if the closure calls
 /// back into the interpreter. See the notes in the
-/// [`pyo3::sync::critical_section`][crate::sync::critical_section] module documentation for more
+/// [`pyforge::sync::critical_section`][crate::sync::critical_section] module documentation for more
 /// details.
 ///
 /// This is structurally equivalent to the use of the paired
@@ -173,7 +173,7 @@ where
 ///
 /// Locks the mutex `mutex` until the closure `f` finishes. The mutex may be temporarily unlocked
 /// and re-acquired if the closure calls back into the interpreter. See the notes in the
-/// [`pyo3::sync::critical_section`][crate::sync::critical_section] module documentation for more
+/// [`pyforge::sync::critical_section`][crate::sync::critical_section] module documentation for more
 /// details.
 ///
 /// This variant is particularly useful when paired with a global `PyMutex` to create a "local GIL"
@@ -187,7 +187,7 @@ where
 ///
 /// The caller must ensure the closure cannot implicitly release the critical section. See the
 /// safety notes in the documentation for
-/// [`pyo3::sync::critical_section::EnteredCriticalSection`](crate::sync::critical_section::EnteredCriticalSection)
+/// [`pyforge::sync::critical_section::EnteredCriticalSection`](crate::sync::critical_section::EnteredCriticalSection)
 /// for more details.
 #[cfg(all(Py_3_14, not(Py_LIMITED_API)))]
 #[cfg_attr(not(Py_GIL_DISABLED), allow(unused_variables))]
@@ -212,7 +212,7 @@ where
 /// Simultaneously locks the mutexes `m1` and `m2` and holds them until the closure `f` is
 /// finished. The mutexes may be temporarily unlock and re-acquired if the closure calls back into
 /// the interpreter. See the notes in the
-/// [`pyo3::sync::critical_section`][crate::sync::critical_section] module documentation for more
+/// [`pyforge::sync::critical_section`][crate::sync::critical_section] module documentation for more
 /// details.
 ///
 /// This is structurally equivalent to the use of the paired
@@ -225,7 +225,7 @@ where
 ///
 /// The caller must ensure the closure cannot implicitly release the critical section. See the
 /// safety notes in the documentation for
-/// [`pyo3::sync::critical_section::EnteredCriticalSection`](crate::sync::critical_section::EnteredCriticalSection)
+/// [`pyforge::sync::critical_section::EnteredCriticalSection`](crate::sync::critical_section::EnteredCriticalSection)
 /// for more details.
 #[cfg(all(Py_3_14, not(Py_LIMITED_API)))]
 #[cfg_attr(not(Py_GIL_DISABLED), allow(unused_variables))]

@@ -89,8 +89,8 @@ impl PyErr {
     /// # Examples
     ///
     /// ```
-    /// use pyo3::prelude::*;
-    /// use pyo3::exceptions::PyTypeError;
+    /// use pyforge::prelude::*;
+    /// use pyforge::exceptions::PyTypeError;
     ///
     /// #[pyfunction]
     /// fn always_throws() -> PyResult<()> {
@@ -98,7 +98,7 @@ impl PyErr {
     /// }
     /// #
     /// # Python::attach(|py| {
-    /// #     let fun = pyo3::wrap_pyfunction!(always_throws, py).unwrap();
+    /// #     let fun = pyforge::wrap_pyfunction!(always_throws, py).unwrap();
     /// #     let err = fun.call0().expect_err("called a function that should always return an error but the return value was Ok");
     /// #     assert!(err.is_instance_of::<PyTypeError>(py))
     /// # });
@@ -107,8 +107,8 @@ impl PyErr {
     /// In most cases, you can use a concrete exception's constructor instead:
     ///
     /// ```
-    /// use pyo3::prelude::*;
-    /// use pyo3::exceptions::PyTypeError;
+    /// use pyforge::prelude::*;
+    /// use pyforge::exceptions::PyTypeError;
     ///
     /// #[pyfunction]
     /// fn always_throws() -> PyResult<()> {
@@ -116,7 +116,7 @@ impl PyErr {
     /// }
     /// #
     /// # Python::attach(|py| {
-    /// #     let fun = pyo3::wrap_pyfunction!(always_throws, py).unwrap();
+    /// #     let fun = pyforge::wrap_pyfunction!(always_throws, py).unwrap();
     /// #     let err = fun.call0().expect_err("called a function that should always return an error but the return value was Ok");
     /// #     assert!(err.is_instance_of::<PyTypeError>(py))
     /// # });
@@ -162,10 +162,10 @@ impl PyErr {
     ///
     /// # Examples
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::PyTypeInfo;
-    /// use pyo3::exceptions::PyTypeError;
-    /// use pyo3::types::PyString;
+    /// use pyforge::prelude::*;
+    /// use pyforge::PyTypeInfo;
+    /// use pyforge::exceptions::PyTypeError;
+    /// use pyforge::types::PyString;
     ///
     /// Python::attach(|py| {
     ///     // Case #1: Exception object
@@ -204,7 +204,7 @@ impl PyErr {
     ///
     /// # Examples
     /// ```rust
-    /// use pyo3::{prelude::*, exceptions::PyTypeError, types::PyType};
+    /// use pyforge::{prelude::*, exceptions::PyTypeError, types::PyType};
     ///
     /// Python::attach(|py| {
     ///     let err: PyErr = PyTypeError::new_err(("some type error",));
@@ -220,7 +220,7 @@ impl PyErr {
     /// # Examples
     ///
     /// ```rust
-    /// use pyo3::{exceptions::PyTypeError, PyErr, Python};
+    /// use pyforge::{exceptions::PyTypeError, PyErr, Python};
     ///
     /// Python::attach(|py| {
     ///     let err: PyErr = PyTypeError::new_err(("some type error",));
@@ -251,7 +251,7 @@ impl PyErr {
     ///
     /// # Examples
     /// ```rust
-    /// use pyo3::{exceptions::PyTypeError, Python};
+    /// use pyforge::{exceptions::PyTypeError, Python};
     ///
     /// Python::attach(|py| {
     ///     let err = PyTypeError::new_err(("some type error",));
@@ -462,8 +462,8 @@ impl PyErr {
     ///
     /// Example:
     /// ```rust
-    /// # use pyo3::prelude::*;
-    /// # use pyo3::exceptions::PyRuntimeError;
+    /// # use pyforge::prelude::*;
+    /// # use pyforge::exceptions::PyRuntimeError;
     /// # fn failing_function() -> PyResult<()> { Err(PyRuntimeError::new_err("foo")) }
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| {
@@ -487,16 +487,16 @@ impl PyErr {
     /// Equivalent to `warnings.warn()` in Python.
     ///
     /// The `category` should be one of the `Warning` classes available in
-    /// [`pyo3::exceptions`](crate::exceptions), or a subclass.  The Python
+    /// [`pyforge::exceptions`](crate::exceptions), or a subclass.  The Python
     /// object can be retrieved using [`Python::get_type()`].
     ///
     /// Example:
     /// ```rust
-    /// # use pyo3::prelude::*;
-    /// # use pyo3::ffi::c_str;
+    /// # use pyforge::prelude::*;
+    /// # use pyforge::ffi::c_str;
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| {
-    ///     let user_warning = py.get_type::<pyo3::exceptions::PyUserWarning>();
+    ///     let user_warning = py.get_type::<pyforge::exceptions::PyUserWarning>();
     ///     PyErr::warn(py, &user_warning, c"I am warning you", 0)?;
     ///     Ok(())
     /// })
@@ -524,7 +524,7 @@ impl PyErr {
     /// Equivalent to `warnings.warn_explicit()` in Python.
     ///
     /// The `category` should be one of the `Warning` classes available in
-    /// [`pyo3::exceptions`](crate::exceptions), or a subclass.
+    /// [`pyforge::exceptions`](crate::exceptions), or a subclass.
     pub fn warn_explicit<'py>(
         py: Python<'py>,
         category: &Bound<'py, PyAny>,
@@ -558,7 +558,7 @@ impl PyErr {
     ///
     /// # Examples
     /// ```rust
-    /// use pyo3::{exceptions::PyTypeError, PyErr, Python, prelude::PyAnyMethods};
+    /// use pyforge::{exceptions::PyTypeError, PyErr, Python, prelude::PyAnyMethods};
     /// Python::attach(|py| {
     ///     let err: PyErr = PyTypeError::new_err(("some type error",));
     ///     let err_clone = err.clone_ref(py);
@@ -581,13 +581,6 @@ impl PyErr {
         use crate::ffi_ptr_ext::FfiPtrExt;
         let obj =
             unsafe { ffi::PyException_GetCause(self.value(py).as_ptr()).assume_owned_or_opt(py) };
-        // PyException_GetCause is documented as potentially returning PyNone, but only GraalPy seems to actually do that
-        #[cfg(GraalPy)]
-        if let Some(cause) = &obj {
-            if cause.is_none() {
-                return None;
-            }
-        }
         obj.map(Self::from_value)
     }
 

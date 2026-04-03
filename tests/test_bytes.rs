@@ -1,7 +1,7 @@
 #![cfg(feature = "macros")]
 
-use pyo3::prelude::*;
-use pyo3::types::PyBytes;
+use pyforge::prelude::*;
+use pyforge::types::PyBytes;
 
 mod test_utils;
 
@@ -41,8 +41,8 @@ fn test_bytearray_vec_conversion() {
 
 #[test]
 fn test_py_as_bytes() {
-    let pyobj: pyo3::Py<pyo3::types::PyBytes> =
-        Python::attach(|py| pyo3::types::PyBytes::new(py, b"abc").unbind());
+    let pyobj: pyforge::Py<pyforge::types::PyBytes> =
+        Python::attach(|py| pyforge::types::PyBytes::new(py, b"abc").unbind());
 
     let data = Python::attach(|py| pyobj.as_bytes(py));
 

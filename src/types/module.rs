@@ -41,7 +41,7 @@ impl PyModule {
     /// # Examples
     ///
     /// ``` rust
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -72,7 +72,7 @@ impl PyModule {
     ///
     /// ```no_run
     /// # fn main() {
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// Python::attach(|py| {
     ///     let module = PyModule::import(py, "antigravity").expect("No flying for you.");
@@ -123,8 +123,8 @@ impl PyModule {
     /// # Example: bundle in a file at compile time with [`include_str!`][std::include_str]:
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::ffi::c_str;
+    /// use pyforge::prelude::*;
+    /// use pyforge::ffi::c_str;
     ///
     /// # fn main() -> PyResult<()> {
     /// // This path is resolved relative to this file.
@@ -141,8 +141,8 @@ impl PyModule {
     /// # Example: Load a file at runtime with [`std::fs::read_to_string`].
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::ffi::c_str;
+    /// use pyforge::prelude::*;
+    /// use pyforge::ffi::c_str;
     /// use std::ffi::CString;
     ///
     /// # fn main() -> PyResult<()> {
@@ -218,7 +218,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// #[pymodule]
     /// fn my_module(module: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -254,7 +254,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// #[pyclass]
     /// struct Foo { /* fields omitted */ }
@@ -307,7 +307,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// #[pymodule]
     /// fn my_module(py: Python<'_>, module: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -343,7 +343,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// to wrap a function annotated with [`#[pyfunction]`][1].
     ///
     /// ```rust,no_run
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// #[pyfunction]
     /// fn say_hello() {
@@ -386,7 +386,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// #[pymodule]
     /// fn my_module(py: Python<'_>, module: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -432,40 +432,18 @@ impl<'py> PyModuleMethods<'py> for Bound<'py, PyModule> {
     }
 
     fn name(&self) -> PyResult<Bound<'py, PyString>> {
-        #[cfg(not(PyPy))]
-        {
-            unsafe {
-                ffi::PyModule_GetNameObject(self.as_ptr())
-                    .assume_owned_or_err(self.py())
-                    .cast_into_unchecked()
-            }
-        }
-
-        #[cfg(PyPy)]
-        {
-            self.dict()
-                .get_item("__name__")
-                .map_err(|_| exceptions::PyAttributeError::new_err("__name__"))?
-                .cast_into()
-                .map_err(PyErr::from)
+        unsafe {
+            ffi::PyModule_GetNameObject(self.as_ptr())
+                .assume_owned_or_err(self.py())
+                .cast_into_unchecked()
         }
     }
 
     fn filename(&self) -> PyResult<Bound<'py, PyString>> {
-        #[cfg(not(PyPy))]
         unsafe {
             ffi::PyModule_GetFilenameObject(self.as_ptr())
                 .assume_owned_or_err(self.py())
                 .cast_into_unchecked()
-        }
-
-        #[cfg(PyPy)]
-        {
-            self.dict()
-                .get_item("__file__")
-                .map_err(|_| exceptions::PyAttributeError::new_err("__file__"))?
-                .cast_into()
-                .map_err(PyErr::from)
         }
     }
 

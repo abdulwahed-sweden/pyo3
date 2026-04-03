@@ -8,28 +8,24 @@ use std::{
 };
 
 #[cfg(all(
-    not(any(PyPy, GraalPy)),
     Py_3_9,
     not(all(windows, Py_LIMITED_API, not(Py_3_10))),
 ))]
 use std::sync::atomic::Ordering;
 
 #[cfg(all(
-    not(any(PyPy, GraalPy)),
     Py_3_9,
     not(all(windows, Py_LIMITED_API, not(Py_3_10))),
     not(target_has_atomic = "64"),
 ))]
 use portable_atomic::AtomicI64;
 #[cfg(all(
-    not(any(PyPy, GraalPy)),
     Py_3_9,
     not(all(windows, Py_LIMITED_API, not(Py_3_10))),
     target_has_atomic = "64",
 ))]
 use std::sync::atomic::AtomicI64;
 
-#[cfg(not(any(PyPy, GraalPy)))]
 use crate::exceptions::PyImportError;
 use crate::prelude::PyTypeMethods;
 use crate::{
@@ -50,9 +46,8 @@ pub struct ModuleDef {
     #[cfg(Py_3_15)]
     doc: &'static CStr,
     slots: &'static PyModuleSlots,
-    /// Interpreter ID where module was initialized (not applicable on PyPy).
+    /// Interpreter ID where module was initialized.
     #[cfg(all(
-        not(any(PyPy, GraalPy)),
         Py_3_9,
         not(all(windows, Py_LIMITED_API, not(Py_3_10)))
     ))]
@@ -104,7 +99,6 @@ impl ModuleDef {
             slots,
             // -1 is never expected to be a valid interpreter ID
             #[cfg(all(
-                not(any(PyPy, GraalPy)),
                 Py_3_9,
                 not(all(windows, Py_LIMITED_API, not(Py_3_10)))
             ))]
@@ -122,11 +116,8 @@ impl ModuleDef {
         // Check the interpreter ID has not changed, since we currently have no way to guarantee
         // that static data is not reused across interpreters.
         //
-        // PyPy does not have subinterpreters, so no need to check interpreter ID.
-        //
         // TODO: it should be possible to use the Py_mod_multiple_interpreters slot on sufficiently
         // new Python versions to remove the need for this custom logic
-        #[cfg(not(any(PyPy, GraalPy)))]
         {
             // PyInterpreterState_Get is only available on 3.9 and later, but is missing
             // from python3.dll for Windows stable API on 3.9

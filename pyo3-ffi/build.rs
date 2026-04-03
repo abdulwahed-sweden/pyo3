@@ -1,4 +1,4 @@
-use pyo3_build_config::{
+use pyforge_build_config::{
     bail, ensure, print_feature_cfgs,
     pyo3_build_script_impl::{
         cargo_env_var, env_var, errors::Result, is_linking_libpython_for_target,
@@ -263,7 +263,7 @@ fn print_config_and_exit(config: &InterpreterConfig) {
 }
 
 fn main() {
-    pyo3_build_config::print_expected_cfgs();
+    pyforge_build_config::print_expected_cfgs();
     if let Err(e) = configure_pyo3() {
         eprintln!("error: {}", e.report());
         std::process::exit(1)

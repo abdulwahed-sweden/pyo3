@@ -47,16 +47,16 @@ macro_rules! impl_exception_boilerplate {
 ///
 /// # Examples
 /// ```
-/// use pyo3::import_exception;
-/// use pyo3::types::IntoPyDict;
-/// use pyo3::Python;
+/// use pyforge::import_exception;
+/// use pyforge::types::IntoPyDict;
+/// use pyforge::Python;
 ///
 /// import_exception!(socket, gaierror);
 ///
-/// # fn main() -> pyo3::PyResult<()> {
+/// # fn main() -> pyforge::PyResult<()> {
 /// Python::attach(|py| {
 ///     let ctx = [("gaierror", py.get_type::<gaierror>())].into_py_dict(py)?;
-///     pyo3::py_run!(py, *ctx, "import socket; assert gaierror is socket.gaierror");
+///     pyforge::py_run!(py, *ctx, "import socket; assert gaierror is socket.gaierror");
 /// #   Ok(())
 /// })
 /// # }
@@ -67,10 +67,10 @@ macro_rules! import_exception {
     ($module: expr, $name: ident) => {
         /// A Rust type representing an exception defined in Python code.
         ///
-        /// This type was created by the [`pyo3::import_exception!`] macro - see its documentation
+        /// This type was created by the [`pyforge::import_exception!`] macro - see its documentation
         /// for more information.
         ///
-        /// [`pyo3::import_exception!`]: https://docs.rs/pyo3/latest/pyo3/macro.import_exception.html "import_exception in pyo3"
+        /// [`pyforge::import_exception!`]: https://docs.rs/pyo3/latest/pyo3/macro.import_exception.html "import_exception in pyo3"
         #[repr(transparent)]
         #[allow(non_camel_case_types, reason = "matches imported exception name, e.g. `socket.herror`")]
         pub struct $name($crate::PyAny);
@@ -119,9 +119,9 @@ macro_rules! import_exception_bound {
 /// # Examples
 ///
 /// ```
-/// use pyo3::prelude::*;
-/// use pyo3::create_exception;
-/// use pyo3::exceptions::PyException;
+/// use pyforge::prelude::*;
+/// use pyforge::create_exception;
+/// use pyforge::exceptions::PyException;
 ///
 /// create_exception!(my_module, MyError, PyException, "Some description.");
 ///
@@ -140,7 +140,7 @@ macro_rules! import_exception_bound {
 /// # fn main() -> PyResult<()> {
 /// #     Python::attach(|py| -> PyResult<()> {
 /// #         let fun = wrap_pyfunction!(raise_myerror, py)?;
-/// #         let locals = pyo3::types::PyDict::new(py);
+/// #         let locals = pyforge::types::PyDict::new(py);
 /// #         locals.set_item("MyError", py.get_type::<MyError>())?;
 /// #         locals.set_item("raise_myerror", fun)?;
 /// #
@@ -312,8 +312,8 @@ Represents Python's [`", $name, "`](https://docs.python.org/3/library/exceptions
 This exception can be sent to Python code by converting it into a
 [`PyErr`](crate::PyErr), where Python code can then catch it.
 ```
-use pyo3::prelude::*;
-use pyo3::exceptions::Py", $name, ";
+use pyforge::prelude::*;
+use pyforge::exceptions::Py", $name, ";
 
 #[pyfunction]
 fn always_throws() -> PyResult<()> {
@@ -322,7 +322,7 @@ fn always_throws() -> PyResult<()> {
 }
 #
 # Python::attach(|py| {
-#     let fun = pyo3::wrap_pyfunction!(always_throws, py).unwrap();
+#     let fun = pyforge::wrap_pyfunction!(always_throws, py).unwrap();
 #     let err = fun.call0().expect_err(\"called a function that should always return an error but the return value was Ok\");
 #     assert!(err.is_instance_of::<Py", $name, ">(py))
 # });
@@ -341,9 +341,9 @@ except ", $name, " as e:
 # Example: Catching ", $name, " in Rust
 
 ```
-use pyo3::prelude::*;
-use pyo3::exceptions::Py", $name, ";
-use pyo3::ffi::c_str;
+use pyforge::prelude::*;
+use pyforge::exceptions::Py", $name, ";
+use pyforge::ffi::c_str;
 
 Python::attach(|py| {
     let result: PyResult<()> = py.run(c_str!(\"raise ", $name, "\"), None, None);
@@ -438,7 +438,6 @@ impl_native_exception!(
     "FloatingPointError",
     native_doc!("FloatingPointError")
 );
-#[cfg(not(any(PyPy, GraalPy)))]
 impl_native_exception!(
     PyOSError,
     PyExc_OSError,
@@ -446,8 +445,6 @@ impl_native_exception!(
     native_doc!("OSError"),
     ffi::PyOSErrorObject
 );
-#[cfg(any(PyPy, GraalPy))]
-impl_native_exception!(PyOSError, PyExc_OSError, "OSError", native_doc!("OSError"));
 impl_native_exception!(
     PyImportError,
     PyExc_ImportError,
@@ -516,20 +513,12 @@ impl_native_exception!(
     "NotImplementedError",
     native_doc!("NotImplementedError")
 );
-#[cfg(not(any(PyPy, GraalPy)))]
 impl_native_exception!(
     PySyntaxError,
     PyExc_SyntaxError,
     "SyntaxError",
     native_doc!("SyntaxError"),
     ffi::PySyntaxErrorObject
-);
-#[cfg(any(PyPy, GraalPy))]
-impl_native_exception!(
-    PySyntaxError,
-    PyExc_SyntaxError,
-    "SyntaxError",
-    native_doc!("SyntaxError")
 );
 impl_native_exception!(
     PyReferenceError,
@@ -543,20 +532,12 @@ impl_native_exception!(
     "SystemError",
     native_doc!("SystemError")
 );
-#[cfg(not(any(PyPy, GraalPy)))]
 impl_native_exception!(
     PySystemExit,
     PyExc_SystemExit,
     "SystemExit",
     native_doc!("SystemExit"),
     ffi::PySystemExitObject
-);
-#[cfg(any(PyPy, GraalPy))]
-impl_native_exception!(
-    PySystemExit,
-    PyExc_SystemExit,
-    "SystemExit",
-    native_doc!("SystemExit")
 );
 impl_native_exception!(
     PyTypeError,
@@ -570,20 +551,12 @@ impl_native_exception!(
     "UnboundLocalError",
     native_doc!("UnboundLocalError")
 );
-#[cfg(not(any(PyPy, GraalPy)))]
 impl_native_exception!(
     PyUnicodeError,
     PyExc_UnicodeError,
     "UnicodeError",
     native_doc!("UnicodeError"),
     ffi::PyUnicodeErrorObject
-);
-#[cfg(any(PyPy, GraalPy))]
-impl_native_exception!(
-    PyUnicodeError,
-    PyExc_UnicodeError,
-    "UnicodeError",
-    native_doc!("UnicodeError")
 );
 // these four errors need arguments, so they're too annoying to write tests for using macros...
 impl_native_exception!(
@@ -755,8 +728,8 @@ impl PyUnicodeDecodeError {
     /// # Examples
     ///
     /// ```
-    /// use pyo3::prelude::*;
-    /// use pyo3::exceptions::PyUnicodeDecodeError;
+    /// use pyforge::prelude::*;
+    /// use pyforge::exceptions::PyUnicodeDecodeError;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| {
@@ -789,8 +762,8 @@ impl PyUnicodeDecodeError {
     /// # Example
     ///
     /// ```
-    /// use pyo3::prelude::*;
-    /// use pyo3::exceptions::PyUnicodeDecodeError;
+    /// use pyforge::prelude::*;
+    /// use pyforge::exceptions::PyUnicodeDecodeError;
     ///
     /// Python::attach(|py| {
     ///     let invalid_utf8 = b"fo\xd8o";

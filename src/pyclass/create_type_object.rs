@@ -216,7 +216,7 @@ impl PyTypeBuilder {
     }
 
     fn finalize_methods_and_properties(&mut self) -> Vec<GetSetDefType> {
-        let method_defs: Vec<pyo3_ffi::PyMethodDef> = std::mem::take(&mut self.method_defs);
+        let method_defs: Vec<pyforge_ffi::PyMethodDef> = std::mem::take(&mut self.method_defs);
         // Safety: Py_tp_methods expects a raw vec of PyMethodDef
         unsafe { self.push_raw_vec_slot(ffi::Py_tp_methods, method_defs) };
 
@@ -226,7 +226,7 @@ impl PyTypeBuilder {
 
         let mut getset_destructors = Vec::with_capacity(self.getset_builders.len());
 
-        #[allow(unused_mut, reason = "not modified on PyPy")]
+        #[allow(unused_mut)]
         let mut property_defs: Vec<_> = self
             .getset_builders
             .iter()
@@ -237,8 +237,6 @@ impl PyTypeBuilder {
             })
             .collect();
 
-        // PyPy automatically adds __dict__ getter / setter.
-        #[cfg(not(PyPy))]
         // Supported on unlimited API for all versions, and on 3.9+ for limited API
         #[cfg(any(Py_3_9, not(Py_LIMITED_API)))]
         if let Some(dict_offset) = self.dict_offset {

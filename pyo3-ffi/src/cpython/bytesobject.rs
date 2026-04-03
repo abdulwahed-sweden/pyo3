@@ -6,7 +6,7 @@ use std::ffi::c_int;
 #[cfg(Py_3_15)]
 use std::ffi::c_void;
 
-#[cfg(not(any(PyPy, GraalPy, Py_LIMITED_API)))]
+#[cfg(not(Py_LIMITED_API))]
 #[repr(C)]
 pub struct PyBytesObject {
     pub ob_base: PyVarObject,
@@ -18,20 +18,19 @@ pub struct PyBytesObject {
     pub ob_sval: [c_char; 1],
 }
 
-#[cfg(any(PyPy, GraalPy, Py_LIMITED_API))]
+#[cfg(Py_LIMITED_API)]
 opaque_struct!(pub PyBytesObject);
 
 extern_libpython! {
-    #[cfg_attr(PyPy, link_name = "_PyPyBytes_Resize")]
     pub fn _PyBytes_Resize(bytes: *mut *mut PyObject, newsize: Py_ssize_t) -> c_int;
 }
 
 #[cfg(not(Py_LIMITED_API))]
 #[inline]
 pub unsafe fn PyBytes_AS_STRING(op: *mut PyObject) -> *const c_char {
-    #[cfg(not(any(PyPy, GraalPy)))]
+    
     return &(*op.cast::<PyBytesObject>()).ob_sval as *const c_char;
-    #[cfg(any(PyPy, GraalPy))]
+    #[cfg(any())] // DEAD: always false
     return crate::PyBytes_AsString(op);
 }
 

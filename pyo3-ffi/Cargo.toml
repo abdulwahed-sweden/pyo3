@@ -20,19 +20,19 @@ libc = "0.2.62"
 default = []
 
 # Use the Python limited API. See https://www.python.org/dev/peps/pep-0384/ for more.
-abi3 = ["pyo3-build-config/abi3"]
+abi3 = ["pyforge-build-config/abi3"]
 
 # With abi3, set minimum Python version. PyForge requires 3.11+.
-abi3-py311 = ["abi3-py312", "pyo3-build-config/abi3-py311"]
-abi3-py312 = ["abi3-py313", "pyo3-build-config/abi3-py312"]
-abi3-py313 = ["abi3-py314", "pyo3-build-config/abi3-py313"]
-abi3-py314 = ["abi3", "pyo3-build-config/abi3-py314"]
+abi3-py311 = ["abi3-py312", "pyforge-build-config/abi3-py311"]
+abi3-py312 = ["abi3-py313", "pyforge-build-config/abi3-py312"]
+abi3-py313 = ["abi3-py314", "pyforge-build-config/abi3-py313"]
+abi3-py314 = ["abi3", "pyforge-build-config/abi3-py314"]
 
 [dev-dependencies]
 paste = "1"
 
 [build-dependencies]
-pyo3-build-config = { path = "../pyo3-build-config", version = "=0.30.0", package = "pyforge-build-config", features = ["resolve-config"] }
+pyforge-build-config = { path = "../pyo3-build-config", version = "=0.30.0", features = ["resolve-config"] }
 
 [lints]
 workspace = true

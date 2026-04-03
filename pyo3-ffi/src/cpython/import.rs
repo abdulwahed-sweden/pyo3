@@ -1,11 +1,7 @@
-#[cfg(any(not(PyPy), Py_3_14))]
 use crate::PyObject;
-#[cfg(any(not(PyPy), Py_3_14))]
 use std::ffi::c_char;
-#[cfg(not(PyPy))]
 use std::ffi::{c_int, c_uchar};
 
-#[cfg(not(PyPy))]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct _inittab {
@@ -14,14 +10,11 @@ pub struct _inittab {
 }
 
 extern_libpython! {
-    #[cfg(not(PyPy))]
     pub static mut PyImport_Inittab: *mut _inittab;
 
-    #[cfg(not(PyPy))]
     pub fn PyImport_ExtendInittab(newtab: *mut _inittab) -> c_int;
 }
 
-#[cfg(not(PyPy))]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct _frozen {
@@ -35,7 +28,6 @@ pub struct _frozen {
 }
 
 extern_libpython! {
-    #[cfg(not(PyPy))]
     pub static mut PyImport_FrozenModules: *const _frozen;
 
     #[cfg(Py_3_14)]

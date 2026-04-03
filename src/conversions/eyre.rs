@@ -33,7 +33,7 @@
 //! # Example: Propagating a `PyErr` into [`eyre::Report`]
 //!
 //! ```rust
-//! use pyo3::prelude::*;
+//! use pyforge::prelude::*;
 //! use std::path::PathBuf;
 //!
 //! // A wrapper around a Rust function.
@@ -61,8 +61,8 @@
 //! it can already convert anything that implements [`Error`](std::error::Error):
 //!
 //! ```rust
-//! use pyo3::prelude::*;
-//! use pyo3::types::PyBytes;
+//! use pyforge::prelude::*;
+//! use pyforge::types::PyBytes;
 //!
 //! // An example function that must handle multiple error types.
 //! //

@@ -1,6 +1,6 @@
 #[cfg(feature = "serde")]
 mod test_serde {
-    use pyo3::prelude::*;
+    use pyforge::prelude::*;
 
     use serde::{Deserialize, Serialize};
 

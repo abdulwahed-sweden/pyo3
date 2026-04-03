@@ -1,6 +1,6 @@
 use plugin_api::plugin_api as pylib_module;
-use pyo3::prelude::*;
-use pyo3::types::PyList;
+use pyforge::prelude::*;
+use pyforge::types::PyList;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     //"export" our API module to the python runtime

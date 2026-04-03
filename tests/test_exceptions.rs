@@ -1,7 +1,7 @@
 #![cfg(feature = "macros")]
 
-use pyo3::prelude::*;
-use pyo3::{exceptions, py_run};
+use pyforge::prelude::*;
+use pyforge::{exceptions, py_run};
 use std::error::Error;
 use std::fmt;
 #[cfg(not(target_os = "windows"))]
@@ -99,7 +99,7 @@ fn test_exception_nosegfault() {
 
 #[test]
 fn test_write_unraisable() {
-    use pyo3::{exceptions::PyRuntimeError, types::PyNotImplemented};
+    use pyforge::{exceptions::PyRuntimeError, types::PyNotImplemented};
     use test_utils::UnraisableCapture;
 
     Python::attach(|py| {

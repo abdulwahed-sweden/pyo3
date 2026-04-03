@@ -22,7 +22,7 @@
 //!
 //! ```rust,no_run
 //! use rust_decimal::Decimal;
-//! use pyo3::prelude::*;
+//! use pyforge::prelude::*;
 //!
 //! #[pyfunction]
 //! fn add_one(d: Decimal) -> Decimal {

@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
-use pyo3::prelude::*;
-use pyo3::py_run;
-use pyo3::types::PyTuple;
+use pyforge::prelude::*;
+use pyforge::py_run;
+use pyforge::types::PyTuple;
 
 use std::fmt;
 
@@ -116,7 +116,7 @@ fn pytuple_pyclass_iter() {
 #[test]
 #[cfg(any(Py_3_9, not(Py_LIMITED_API)))]
 fn test_pickle() {
-    use pyo3::types::PyDict;
+    use pyforge::types::PyDict;
 
     #[pyclass(dict, module = "test_module")]
     struct PickleSupport {}
@@ -188,8 +188,8 @@ impl fmt::Display for MyError {
 
 /// Important for the automatic conversion to `PyErr`.
 impl From<MyError> for PyErr {
-    fn from(err: MyError) -> pyo3::PyErr {
-        pyo3::exceptions::PyOSError::new_err(err.to_string())
+    fn from(err: MyError) -> pyforge::PyErr {
+        pyforge::exceptions::PyOSError::new_err(err.to_string())
     }
 }
 

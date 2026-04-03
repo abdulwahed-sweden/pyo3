@@ -1,6 +1,6 @@
 #![cfg(feature = "macros")]
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 mod test_utils;
 

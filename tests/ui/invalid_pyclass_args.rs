@@ -1,7 +1,7 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 use std::fmt::{Display, Formatter};
 
-#[pyclass(extend=pyo3::types::PyDict)]
+#[pyclass(extend=pyforge::types::PyDict)]
 struct TypoIntheKey {}
 
 #[pyclass(extends = "PyDict")]
@@ -44,7 +44,7 @@ impl EqOptAndManualRichCmp {
         &self,
         _py: Python,
         _other: Bound<'_, PyAny>,
-        _op: pyo3::pyclass::CompareOp,
+        _op: pyforge::pyclass::CompareOp,
     ) -> PyResult<Py<PyAny>> {
         todo!()
     }

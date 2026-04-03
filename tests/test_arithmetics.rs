@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
-use pyo3::class::basic::CompareOp;
-use pyo3::py_run;
-use pyo3::{prelude::*, BoundObject};
+use pyforge::class::basic::CompareOp;
+use pyforge::py_run;
+use pyforge::{prelude::*, BoundObject};
 
 mod test_utils;
 

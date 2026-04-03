@@ -3,8 +3,8 @@
 //! For convenience use #[pyo3(name = "__some_dunder__")] to create the methods,
 //! so that the function names can describe the edge case to be rejected.
 
-use pyo3::prelude::*;
-use pyo3::pyclass::CompareOp;
+use pyforge::prelude::*;
+use pyforge::pyclass::CompareOp;
 
 #[pyclass]
 struct MyClass {}

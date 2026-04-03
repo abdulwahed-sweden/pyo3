@@ -1,5 +1,5 @@
-use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyString, PyTuple};
+use pyforge::prelude::*;
+use pyforge::types::{PyDict, PyString, PyTuple};
 
 #[pyfunction]
 fn generic_function<T>(_value: T) {}

@@ -1,9 +1,7 @@
-#[cfg(not(any(PyPy, GraalPy)))]
 use crate::{ffi, internal::state::AttachGuard, Python};
 
 static START: std::sync::Once = std::sync::Once::new();
 
-#[cfg(not(any(PyPy, GraalPy)))]
 pub(crate) fn initialize() {
     // Protect against race conditions when Python is not yet initialized and multiple threads
     // concurrently call 'initialize()'. Note that we do not protect against
@@ -42,7 +40,7 @@ pub(crate) fn initialize() {
 ///
 /// ```rust
 /// unsafe {
-///     pyo3::with_embedded_python_interpreter(|py| {
+///     pyforge::with_embedded_python_interpreter(|py| {
 ///         if let Err(e) = py.run(c"print('Hello World')", None, None) {
 ///             // We must make sure to not return a `PyErr`!
 ///             e.print(py);
@@ -50,7 +48,6 @@ pub(crate) fn initialize() {
 ///     });
 /// }
 /// ```
-#[cfg(not(any(PyPy, GraalPy)))]
 pub unsafe fn with_embedded_python_interpreter<F, R>(f: F) -> R
 where
     F: for<'p> FnOnce(Python<'p>) -> R,
@@ -109,17 +106,16 @@ pub(crate) fn ensure_initialized() {
     //    extension-module feature is not activated - extension modules don't care about
     //    auto-initialize so this avoids breaking existing builds.
     //  - Otherwise, just check the interpreter is initialized.
-    #[cfg(all(feature = "auto-initialize", not(any(PyPy, GraalPy))))]
+    #[cfg(feature = "auto-initialize")]
     {
         initialize();
     }
-    #[cfg(not(all(feature = "auto-initialize", not(any(PyPy, GraalPy)))))]
+    #[cfg(not(feature = "auto-initialize"))]
     {
         // This is a "hack" to make running `cargo test` for PyO3 convenient (i.e. no need
         // to specify `--features auto-initialize` manually). Tests within the crate itself
         // all depend on the auto-initialize feature for conciseness but Cargo does not
         // provide a mechanism to specify required features for tests.
-        #[cfg(not(any(PyPy, GraalPy)))]
         if option_env!("CARGO_PRIMARY_PACKAGE").is_some() {
             initialize();
         }

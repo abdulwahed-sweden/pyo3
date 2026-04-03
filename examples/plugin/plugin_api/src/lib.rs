@@ -1,4 +1,4 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 ///this is our Gadget that python plugin code can create, and rust app can then access natively.
 #[pyclass]

@@ -12,7 +12,6 @@ pub unsafe fn PySeqIter_Check(op: *mut PyObject) -> c_int {
 }
 
 extern_libpython! {
-    #[cfg_attr(PyPy, link_name = "PyPySeqIter_New")]
     pub fn PySeqIter_New(arg1: *mut PyObject) -> *mut PyObject;
 }
 
@@ -22,6 +21,5 @@ pub unsafe fn PyCallIter_Check(op: *mut PyObject) -> c_int {
 }
 
 extern_libpython! {
-    #[cfg_attr(PyPy, link_name = "PyPyCallIter_New")]
     pub fn PyCallIter_New(arg1: *mut PyObject, arg2: *mut PyObject) -> *mut PyObject;
 }

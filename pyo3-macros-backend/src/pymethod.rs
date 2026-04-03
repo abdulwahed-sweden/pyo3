@@ -515,7 +515,7 @@ pub(crate) fn impl_py_class_attribute(
     let (py_arg, args) = split_off_python_arg(&spec.signature.arguments);
     ensure_spanned!(
         args.is_empty(),
-        args[0].ty().span() => "#[classattr] can only have one argument (of type pyo3::Python)"
+        args[0].ty().span() => "#[classattr] can only have one argument (of type pyforge::Python)"
     );
 
     ensure_spanned!(
@@ -573,7 +573,7 @@ fn impl_call_setter(
     } else if args.len() > 1 {
         bail_spanned!(
             args[1].ty().span() =>
-            "setter function can have at most two arguments ([pyo3::Python,] and value)"
+            "setter function can have at most two arguments ([pyforge::Python,] and value)"
         );
     }
 
@@ -755,7 +755,7 @@ fn impl_call_getter(
     let slf = self_type.receiver(cls, ExtractErrorMode::Raise, holders, ctx);
     ensure_spanned!(
         args.is_empty(),
-        args[0].ty().span() => "getter function can only have one argument (of type pyo3::Python)"
+        args[0].ty().span() => "getter function can only have one argument (of type pyforge::Python)"
     );
 
     let name = &spec.name;
@@ -931,7 +931,7 @@ fn impl_call_deleter(
 
     if !args.is_empty() {
         bail_spanned!(spec.name.span() =>
-            "deleter function can have at most one argument ([pyo3::Python,])"
+            "deleter function can have at most one argument ([pyforge::Python,])"
         );
     }
 
@@ -945,7 +945,7 @@ fn impl_call_deleter(
     Ok(fncall)
 }
 
-/// Split an argument of pyo3::Python from the front of the arg list, if present
+/// Split an argument of pyforge::Python from the front of the arg list, if present
 fn split_off_python_arg<'a, 'b>(args: &'a [FnArg<'b>]) -> (Option<&'a PyArg<'b>>, &'a [FnArg<'b>]) {
     match args {
         [FnArg::Py(py), args @ ..] => (Some(py), args),

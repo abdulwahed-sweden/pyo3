@@ -1,4 +1,4 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[doc = "This \0 contains a nul byte!"]
 #[pyclass]

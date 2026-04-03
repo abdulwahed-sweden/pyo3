@@ -1,8 +1,8 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pymodule]
 pub mod path {
-    use pyo3::prelude::*;
+    use pyforge::prelude::*;
     use std::path::{Path, PathBuf};
 
     #[pyfunction]

@@ -1,7 +1,7 @@
 use std::env;
 
-use pyo3_build_config::pyo3_build_script_impl::{cargo_env_var, errors::Result};
-use pyo3_build_config::{
+use pyforge_build_config::pyo3_build_script_impl::{cargo_env_var, errors::Result};
+use pyforge_build_config::{
     add_python_framework_link_args, bail, print_feature_cfgs, InterpreterConfig,
 };
 
@@ -33,7 +33,7 @@ fn ensure_auto_initialize_ok(interpreter_config: &InterpreterConfig) -> Result<(
 /// Emits the cargo configuration based on this config as well as a few checks of the Rust compiler
 /// version to enable features which aren't supported on MSRV.
 fn configure_pyo3() -> Result<()> {
-    let interpreter_config = pyo3_build_config::get();
+    let interpreter_config = pyforge_build_config::get();
 
     ensure_auto_initialize_ok(interpreter_config)?;
 
@@ -50,7 +50,7 @@ fn configure_pyo3() -> Result<()> {
 }
 
 fn main() {
-    pyo3_build_config::print_expected_cfgs();
+    pyforge_build_config::print_expected_cfgs();
     if let Err(e) = configure_pyo3() {
         eprintln!("error: {}", e.report());
         std::process::exit(1)

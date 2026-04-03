@@ -1,4 +1,4 @@
-use pyo3::FromPyObject;
+use pyforge::FromPyObject;
 
 #[derive(FromPyObject)]
 struct Foo();

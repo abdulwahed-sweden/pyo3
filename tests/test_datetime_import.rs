@@ -1,6 +1,6 @@
 #![cfg(not(Py_LIMITED_API))]
 
-use pyo3::{prelude::*, types::PyDate};
+use pyforge::{prelude::*, types::PyDate};
 use tempfile::Builder;
 
 #[test]

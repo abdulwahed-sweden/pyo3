@@ -2,9 +2,9 @@ use std::hint::black_box;
 
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::conversion::IntoPyObject;
-use pyo3::prelude::*;
-use pyo3::types::PyBytes;
+use pyforge::conversion::IntoPyObject;
+use pyforge::prelude::*;
+use pyforge::types::PyBytes;
 
 fn bench_bytes_new(b: &mut Bencher<'_>, data: &[u8]) {
     Python::attach(|py| {

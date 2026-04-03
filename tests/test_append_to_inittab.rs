@@ -1,6 +1,6 @@
 #![cfg(all(feature = "macros", not(PyPy)))]
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pyfunction]
 fn foo() -> usize {
@@ -19,10 +19,10 @@ mod module_mod_with_functions {
     use super::foo;
 }
 
-#[cfg(not(any(PyPy, GraalPy)))]
+
 #[test]
 fn test_module_append_to_inittab() {
-    use pyo3::append_to_inittab;
+    use pyforge::append_to_inittab;
 
     append_to_inittab!(module_fn_with_functions);
 

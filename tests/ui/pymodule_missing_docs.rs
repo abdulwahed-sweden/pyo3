@@ -1,7 +1,7 @@
 #![deny(missing_docs)]
 //! Some crate docs
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 /// Some module documentation
 #[pymodule]

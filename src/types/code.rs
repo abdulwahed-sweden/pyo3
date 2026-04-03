@@ -2,11 +2,11 @@ use super::PyAnyMethods as _;
 use super::PyDict;
 use crate::ffi_ptr_ext::FfiPtrExt;
 use crate::py_result_ext::PyResultExt;
-#[cfg(any(Py_LIMITED_API, PyPy))]
+#[cfg(Py_LIMITED_API)]
 use crate::sync::PyOnceLock;
-#[cfg(any(Py_LIMITED_API, PyPy))]
+#[cfg(Py_LIMITED_API)]
 use crate::types::{PyType, PyTypeMethods};
-#[cfg(any(Py_LIMITED_API, PyPy))]
+#[cfg(Py_LIMITED_API)]
 use crate::Py;
 use crate::{ffi, Bound, PyAny, PyErr, PyResult, Python};
 use std::ffi::CStr;
@@ -18,7 +18,7 @@ use std::ffi::CStr;
 #[repr(transparent)]
 pub struct PyCode(PyAny);
 
-#[cfg(not(any(Py_LIMITED_API, PyPy)))]
+#[cfg(not(Py_LIMITED_API))]
 pyobject_native_type_core!(
     PyCode,
     pyobject_native_static_type_object!(ffi::PyCode_Type),
@@ -27,7 +27,7 @@ pyobject_native_type_core!(
     #checkfunction=ffi::PyCode_Check
 );
 
-#[cfg(any(Py_LIMITED_API, PyPy))]
+#[cfg(Py_LIMITED_API)]
 pyobject_native_type_core!(
     PyCode,
     |py| {
@@ -69,7 +69,7 @@ impl PyCode {
         }
     }
 
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     pub(crate) fn empty<'py>(
         py: Python<'py>,
         file_name: &CStr,

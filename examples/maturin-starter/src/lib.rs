@@ -1,6 +1,6 @@
-use pyo3::prelude::*;
-use pyo3::types::PyDict;
-use pyo3::wrap_pymodule;
+use pyforge::prelude::*;
+use pyforge::types::PyDict;
+use pyforge::wrap_pymodule;
 
 mod submodule;
 

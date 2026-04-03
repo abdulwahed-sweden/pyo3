@@ -1,16 +1,10 @@
-#[cfg(not(GraalPy))]
 use crate::object::*;
-#[cfg(not(any(PyPy, GraalPy)))]
 use crate::pyport::Py_ssize_t;
 
-#[cfg(not(PyPy))]
 opaque_struct!(pub PyDictKeysObject);
 
-#[cfg(Py_3_11)]
-#[cfg(not(PyPy))]
 opaque_struct!(pub PyDictValues);
 
-#[cfg(not(any(GraalPy, PyPy)))]
 #[repr(C)]
 #[derive(Debug)]
 pub struct PyDictObject {
@@ -25,18 +19,7 @@ pub struct PyDictObject {
     #[cfg(Py_3_14)]
     _ma_watcher_tag: u64,
     pub ma_keys: *mut PyDictKeysObject,
-    #[cfg(not(Py_3_11))]
-    pub ma_values: *mut *mut PyObject,
-    #[cfg(Py_3_11)]
     pub ma_values: *mut PyDictValues,
-}
-
-#[cfg(PyPy)]
-#[repr(C)]
-#[derive(Debug)]
-pub struct PyDictObject {
-    pub ob_base: PyObject,
-    _tmpkeys: *mut PyObject,
 }
 
 // skipped private _PyDict_GetItem_KnownHash

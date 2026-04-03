@@ -1,5 +1,5 @@
-use pyo3::prelude::*;
-use pyo3::types::PyType;
+use pyforge::prelude::*;
+use pyforge::types::PyType;
 
 #[pyclass(generic)]
 struct ClassRedefinesClassGetItem {}
@@ -16,7 +16,7 @@ impl ClassRedefinesClassGetItem {
         cls: &Bound<'_, PyType>,
         key: &Bound<'_, PyAny>,
     ) -> PyResult<Py<PyAny>> {
-        pyo3::types::PyGenericAlias::new(cls.py(), cls.as_any(), key)
+        pyforge::types::PyGenericAlias::new(cls.py(), cls.as_any(), key)
     }
 }
 

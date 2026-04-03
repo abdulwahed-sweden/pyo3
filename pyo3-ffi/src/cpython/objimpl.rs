@@ -1,8 +1,8 @@
-#[cfg(not(all(Py_3_11, any(PyPy, GraalPy))))]
+
 use libc::size_t;
 use std::ffi::c_int;
 
-#[cfg(not(any(PyPy, GraalPy)))]
+
 use std::ffi::c_void;
 
 use crate::object::*;
@@ -10,7 +10,7 @@ use crate::object::*;
 // skipped _PyObject_SIZE
 // skipped _PyObject_VAR_SIZE
 
-#[cfg(not(any(PyPy, GraalPy)))]
+
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PyObjectArenaAllocator {
@@ -19,7 +19,7 @@ pub struct PyObjectArenaAllocator {
     pub free: Option<extern "C" fn(ctx: *mut c_void, ptr: *mut c_void, size: size_t)>,
 }
 
-#[cfg(not(any(PyPy, GraalPy)))]
+
 impl Default for PyObjectArenaAllocator {
     #[inline]
     fn default() -> Self {
@@ -28,9 +28,9 @@ impl Default for PyObjectArenaAllocator {
 }
 
 extern_libpython! {
-    #[cfg(not(any(PyPy, GraalPy)))]
+    
     pub fn PyObject_GetArenaAllocator(allocator: *mut PyObjectArenaAllocator);
-    #[cfg(not(any(PyPy, GraalPy)))]
+    
     pub fn PyObject_SetArenaAllocator(allocator: *mut PyObjectArenaAllocator);
 
     pub fn PyObject_IS_GC(o: *mut PyObject) -> c_int;

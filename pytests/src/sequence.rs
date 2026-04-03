@@ -1,9 +1,9 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pymodule]
 pub mod sequence {
-    use pyo3::prelude::*;
-    use pyo3::types::PyString;
+    use pyforge::prelude::*;
+    use pyforge::types::PyString;
 
     #[pyfunction]
     fn vec_to_vec_i32(vec: Vec<i32>) -> Vec<i32> {

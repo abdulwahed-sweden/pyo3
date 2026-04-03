@@ -1,4 +1,4 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pyfunction]
 async fn check(){}

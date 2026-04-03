@@ -1,5 +1,5 @@
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
-use pyo3::{py_format, Python};
+use pyforge::{py_format, Python};
 use std::hint::black_box;
 
 fn format_simple(b: &mut Bencher<'_>) {

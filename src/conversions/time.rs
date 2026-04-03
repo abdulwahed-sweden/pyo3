@@ -18,7 +18,7 @@
 //!
 //! ```rust
 //! use time::{Duration, OffsetDateTime, PrimitiveDateTime, Date, Time, Month};
-//! use pyo3::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
+//! use pyforge::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
 //!
 //! fn main() -> PyResult<()> {
 //!     Python::initialize();

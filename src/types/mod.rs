@@ -11,11 +11,10 @@ pub use self::datetime::{PyDate, PyDateTime, PyDelta, PyTime, PyTzInfo, PyTzInfo
 #[cfg(not(Py_LIMITED_API))]
 pub use self::datetime::{PyDateAccess, PyDeltaAccess, PyTimeAccess};
 pub use self::dict::{IntoPyDict, PyDict, PyDictMethods};
-#[cfg(not(any(PyPy, GraalPy)))]
 pub use self::dict::{PyDictItems, PyDictKeys, PyDictValues};
 pub use self::ellipsis::PyEllipsis;
 pub use self::float::{PyFloat, PyFloatMethods};
-#[cfg(all(not(Py_LIMITED_API), not(PyPy), not(GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 pub use self::frame::{PyFrame, PyFrameMethods};
 pub use self::frozenset::{PyFrozenSet, PyFrozenSetBuilder, PyFrozenSetMethods};
 pub use self::function::PyCFunction;
@@ -24,7 +23,7 @@ pub use self::function::PyFunction;
 #[cfg(Py_3_9)]
 pub use self::genericalias::PyGenericAlias;
 pub use self::iterator::PyIterator;
-#[cfg(all(not(PyPy), Py_3_10))]
+#[cfg(Py_3_10)]
 pub use self::iterator::PySendResult;
 pub use self::list::{PyList, PyListMethods};
 pub use self::mapping::{PyMapping, PyMappingMethods};
@@ -58,9 +57,9 @@ pub use self::weakref::{PyWeakref, PyWeakrefMethods, PyWeakrefProxy, PyWeakrefRe
 /// # Examples
 ///
 /// ```rust
-/// use pyo3::prelude::*;
-/// use pyo3::types::PyDict;
-/// use pyo3::ffi::c_str;
+/// use pyforge::prelude::*;
+/// use pyforge::types::PyDict;
+/// use pyforge::ffi::c_str;
 ///
 /// # pub fn main() -> PyResult<()> {
 /// Python::attach(|py| {
@@ -270,7 +269,7 @@ pub(crate) mod datetime;
 pub(crate) mod dict;
 mod ellipsis;
 pub(crate) mod float;
-#[cfg(all(not(Py_LIMITED_API), not(PyPy), not(GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 mod frame;
 pub(crate) mod frozenset;
 mod function;

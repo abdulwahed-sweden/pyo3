@@ -1,4 +1,4 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pymodule]
 #[path = "empty.rs"] // to silence error related to missing file

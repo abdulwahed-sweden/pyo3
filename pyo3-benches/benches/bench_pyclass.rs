@@ -1,7 +1,7 @@
 use codspeed_criterion_compat::{criterion_group, criterion_main, BatchSize, Bencher, Criterion};
-use pyo3::conversion::IntoPyObjectExt;
-use pyo3::types::PyInt;
-use pyo3::{impl_::pyclass::LazyTypeObject, prelude::*};
+use pyforge::conversion::IntoPyObjectExt;
+use pyforge::types::PyInt;
+use pyforge::{impl_::pyclass::LazyTypeObject, prelude::*};
 
 /// This is a feature-rich class instance used to benchmark various parts of the pyclass lifecycle.
 #[pyclass]

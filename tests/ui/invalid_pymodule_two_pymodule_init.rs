@@ -1,8 +1,8 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pymodule]
 mod module {
-    use pyo3::prelude::*;
+    use pyforge::prelude::*;
 
     #[pymodule_init]
     fn init(_m: &Bound<'_, PyModule>) -> PyResult<()> {

@@ -1,13 +1,13 @@
 #![cfg(any(not(Py_LIMITED_API), Py_3_11))]
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 /// Objects related to PyBuffer and PyStr
 #[pymodule]
 pub mod buf_and_str {
-    use pyo3::buffer::PyBuffer;
-    use pyo3::prelude::*;
-    use pyo3::types::{PyBytes, PyMemoryView, PyString};
+    use pyforge::buffer::PyBuffer;
+    use pyforge::prelude::*;
+    use pyforge::types::{PyBytes, PyMemoryView, PyString};
     use std::borrow::Cow;
 
     /// This is for confirming that PyBuffer does not cause memory leak

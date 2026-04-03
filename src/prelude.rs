@@ -5,7 +5,7 @@
 //!
 //! ```
 //! # #![allow(unused_imports)]
-//! use pyo3::prelude::*;
+//! use pyforge::prelude::*;
 //! ```
 
 pub use crate::conversion::{FromPyObject, FromPyObjectOwned, IntoPyObject};
@@ -17,7 +17,7 @@ pub use crate::pyclass_init::PyClassInitializer;
 pub use crate::types::{PyAny, PyModule};
 
 #[cfg(feature = "macros")]
-pub use pyo3_macros::{
+pub use pyforge_macros::{
     pyclass, pyfunction, pymethods, pymodule, FromPyObject, IntoPyObject, IntoPyObjectRef,
 };
 

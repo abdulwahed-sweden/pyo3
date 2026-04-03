@@ -2,7 +2,7 @@
 #![cfg(any(not(Py_LIMITED_API), Py_3_11))]
 #![warn(unsafe_op_in_unsafe_fn)]
 
-use pyo3::{buffer::PyBuffer, exceptions::PyBufferError, ffi, prelude::*};
+use pyforge::{buffer::PyBuffer, exceptions::PyBufferError, ffi, prelude::*};
 use std::{
     os::raw::{c_int, c_void},
     ptr,

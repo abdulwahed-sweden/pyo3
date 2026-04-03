@@ -22,8 +22,8 @@
 //! Rust code to create a function that parses a UUID string and returns it as a `Uuid`:
 //!
 //! ```rust,no_run
-//! use pyo3::prelude::*;
-//! use pyo3::exceptions::PyValueError;
+//! use pyforge::prelude::*;
+//! use pyforge::exceptions::PyValueError;
 //! use uuid::Uuid;
 //!
 //! /// Parse a UUID from a string.

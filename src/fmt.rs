@@ -29,7 +29,7 @@ use {
 /// compared to [`PyString::from_fmt`].
 ///
 /// ```rust
-/// # use pyo3::{py_format, Python, types::PyString, Bound};
+/// # use pyforge::{py_format, Python, types::PyString, Bound};
 /// Python::attach(|py| {
 ///     let py_string: Bound<'_, PyString> = py_format!(py, "{} {}", "hello", "world").unwrap();
 ///     assert_eq!(py_string.to_string(), "hello world");

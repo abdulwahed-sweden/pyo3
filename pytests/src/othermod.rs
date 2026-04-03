@@ -2,11 +2,11 @@
 //!
 //! The code below just tries to use the most important code generation paths
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pymodule]
 pub mod othermod {
-    use pyo3::prelude::*;
+    use pyforge::prelude::*;
 
     #[pyclass]
     pub struct ModClass {

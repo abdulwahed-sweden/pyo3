@@ -36,9 +36,9 @@ fn try_new_from_iter<'py>(
         let mut counter: Py_ssize_t = 0;
 
         for obj in (&mut elements).take(len as usize) {
-            #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+            #[cfg(not(Py_LIMITED_API))]
             ffi::PyTuple_SET_ITEM(ptr, counter, obj?.into_ptr());
-            #[cfg(any(Py_LIMITED_API, PyPy, GraalPy))]
+            #[cfg(Py_LIMITED_API)]
             ffi::PyTuple_SetItem(ptr, counter, obj?.into_ptr());
             counter += 1;
         }
@@ -75,8 +75,8 @@ impl PyTuple {
     /// # Examples
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::PyTuple;
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::PyTuple;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| {
@@ -144,7 +144,7 @@ pub trait PyTupleMethods<'py>: crate::sealed::Sealed {
     /// Gets the tuple item at the specified index.
     /// # Example
     /// ```
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -171,7 +171,7 @@ pub trait PyTupleMethods<'py>: crate::sealed::Sealed {
     ///   can typically assume the tuple item is non-null unless they are knowingly filling an
     ///   uninitialized tuple. (If a tuple were to contain a null pointer element, accessing it from Python
     ///   typically causes a segfault.)
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     unsafe fn get_item_unchecked(&self, index: usize) -> Bound<'py, PyAny>;
 
     /// Like [`get_item_unchecked`][PyTupleMethods::get_item_unchecked], but returns a borrowed object,
@@ -180,11 +180,11 @@ pub trait PyTupleMethods<'py>: crate::sealed::Sealed {
     /// # Safety
     ///
     /// See [`get_item_unchecked`][PyTupleMethods::get_item_unchecked].
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     unsafe fn get_borrowed_item_unchecked<'a>(&'a self, index: usize) -> Borrowed<'a, 'py, PyAny>;
 
     /// Returns `self` as a slice of objects.
-    #[cfg(not(any(Py_LIMITED_API, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn as_slice(&self) -> &[Bound<'py, PyAny>];
 
     /// Determines if self contains `value`.
@@ -217,9 +217,9 @@ pub trait PyTupleMethods<'py>: crate::sealed::Sealed {
 impl<'py> PyTupleMethods<'py> for Bound<'py, PyTuple> {
     fn len(&self) -> usize {
         unsafe {
-            #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+            #[cfg(not(Py_LIMITED_API))]
             let size = ffi::PyTuple_GET_SIZE(self.as_ptr());
-            #[cfg(any(Py_LIMITED_API, PyPy, GraalPy))]
+            #[cfg(Py_LIMITED_API)]
             let size = ffi::PyTuple_Size(self.as_ptr());
             // non-negative Py_ssize_t should always fit into Rust uint
             size as usize
@@ -254,17 +254,17 @@ impl<'py> PyTupleMethods<'py> for Bound<'py, PyTuple> {
         self.as_borrowed().get_borrowed_item(index)
     }
 
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     unsafe fn get_item_unchecked(&self, index: usize) -> Bound<'py, PyAny> {
         unsafe { self.get_borrowed_item_unchecked(index).to_owned() }
     }
 
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     unsafe fn get_borrowed_item_unchecked<'a>(&'a self, index: usize) -> Borrowed<'a, 'py, PyAny> {
         unsafe { self.as_borrowed().get_borrowed_item_unchecked(index) }
     }
 
-    #[cfg(not(any(Py_LIMITED_API, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn as_slice(&self) -> &[Bound<'py, PyAny>] {
         // SAFETY: self is known to be a tuple object, and tuples are immutable
         let items = unsafe { &(*self.as_ptr().cast::<ffi::PyTupleObject>()).ob_item };
@@ -314,7 +314,7 @@ impl<'a, 'py> Borrowed<'a, 'py, PyTuple> {
     /// # Safety
     ///
     /// See `get_item_unchecked` in `PyTupleMethods`.
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     unsafe fn get_borrowed_item_unchecked(self, index: usize) -> Borrowed<'a, 'py, PyAny> {
         // SAFETY: caller has upheld the safety contract
         unsafe {
@@ -528,9 +528,9 @@ impl<'a, 'py> BorrowedTupleIterator<'a, 'py> {
         tuple: Borrowed<'a, 'py, PyTuple>,
         index: usize,
     ) -> Borrowed<'a, 'py, PyAny> {
-        #[cfg(any(Py_LIMITED_API, PyPy, GraalPy))]
+        #[cfg(Py_LIMITED_API)]
         let item = tuple.get_borrowed_item(index).expect("tuple.get failed");
-        #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+        #[cfg(not(Py_LIMITED_API))]
         let item = unsafe { tuple.get_borrowed_item_unchecked(index) };
         item
     }
@@ -648,7 +648,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
     where
         $($T: IntoPyObject<'py>,)+
     {
-        #[cfg(all(Py_3_9, not(any(PyPy, GraalPy, Py_LIMITED_API))))]
+        #[cfg(all(Py_3_9, not(Py_LIMITED_API)))]
         fn call(
             self,
             function: Borrowed<'_, 'py, PyAny>,
@@ -671,7 +671,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
             }
         }
 
-        #[cfg(all(not(any(PyPy, GraalPy)), any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12)))]
+        #[cfg(any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12))]
         fn call_positional(
             self,
             function: Borrowed<'_, 'py, PyAny>,
@@ -705,7 +705,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
             }
         }
 
-        #[cfg(all(not(any(PyPy, GraalPy)), any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12)))]
+        #[cfg(any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12))]
         fn call_method_positional(
             self,
             object: Borrowed<'_, 'py, PyAny>,
@@ -742,7 +742,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
 
         }
 
-        #[cfg(not(all(Py_3_9, not(any(PyPy, GraalPy, Py_LIMITED_API)))))]
+        #[cfg(not(all(Py_3_9, not(Py_LIMITED_API))))]
         fn call(
             self,
             function: Borrowed<'_, 'py, PyAny>,
@@ -752,7 +752,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
             self.into_pyobject_or_pyerr(function.py())?.call(function, kwargs, token)
         }
 
-        #[cfg(not(all(not(any(PyPy, GraalPy)), any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12))))]
+        #[cfg(not(any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12)))]
         fn call_positional(
             self,
             function: Borrowed<'_, 'py, PyAny>,
@@ -761,7 +761,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
             self.into_pyobject_or_pyerr(function.py())?.call_positional(function, token)
         }
 
-        #[cfg(not(all(not(any(PyPy, GraalPy)), any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12))))]
+        #[cfg(not(any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12)))]
         fn call_method_positional(
             self,
             object: Borrowed<'_, 'py, PyAny>,
@@ -777,7 +777,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
     where
         $(&'a $T: IntoPyObject<'py>,)+
     {
-        #[cfg(all(Py_3_9, not(any(PyPy, GraalPy, Py_LIMITED_API))))]
+        #[cfg(all(Py_3_9, not(Py_LIMITED_API)))]
         fn call(
             self,
             function: Borrowed<'_, 'py, PyAny>,
@@ -800,7 +800,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
             }
         }
 
-        #[cfg(all(not(any(PyPy, GraalPy)), any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12)))]
+        #[cfg(any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12))]
         fn call_positional(
             self,
             function: Borrowed<'_, 'py, PyAny>,
@@ -834,7 +834,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
             }
         }
 
-        #[cfg(all(not(any(PyPy, GraalPy)), any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12)))]
+        #[cfg(any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12))]
         fn call_method_positional(
             self,
             object: Borrowed<'_, 'py, PyAny>,
@@ -870,7 +870,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
             }
         }
 
-        #[cfg(not(all(Py_3_9, not(any(PyPy, GraalPy, Py_LIMITED_API)))))]
+        #[cfg(not(all(Py_3_9, not(Py_LIMITED_API))))]
         fn call(
             self,
             function: Borrowed<'_, 'py, PyAny>,
@@ -880,7 +880,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
             self.into_pyobject_or_pyerr(function.py())?.call(function, kwargs, token)
         }
 
-        #[cfg(not(all(not(any(PyPy, GraalPy)), any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12))))]
+        #[cfg(not(any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12)))]
         fn call_positional(
             self,
             function: Borrowed<'_, 'py, PyAny>,
@@ -889,7 +889,7 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
             self.into_pyobject_or_pyerr(function.py())?.call_positional(function, token)
         }
 
-        #[cfg(not(all(not(any(PyPy, GraalPy)), any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12))))]
+        #[cfg(not(any(all(Py_3_9, not(Py_LIMITED_API)), Py_3_12)))]
         fn call_method_positional(
             self,
             object: Borrowed<'_, 'py, PyAny>,
@@ -913,10 +913,10 @@ macro_rules! tuple_conversion ({$length:expr,$(($refN:ident, $n:tt, $T:ident)),+
         {
             let t = obj.cast::<PyTuple>()?;
             if t.len() == $length {
-                #[cfg(any(Py_LIMITED_API, PyPy, GraalPy))]
+                #[cfg(Py_LIMITED_API)]
                 return Ok(($(t.get_borrowed_item($n)?.extract::<$T>().map_err(Into::into)?,)+));
 
-                #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+                #[cfg(not(Py_LIMITED_API))]
                 unsafe {return Ok(($(t.get_borrowed_item_unchecked($n).extract::<$T>().map_err(Into::into)?,)+));}
             } else {
                 Err(wrong_tuple_length(t, $length))
@@ -933,9 +933,9 @@ fn array_into_tuple<'py, const N: usize>(
         let ptr = ffi::PyTuple_New(N.try_into().expect("0 < N <= 12"));
         let tup = ptr.assume_owned(py).cast_into_unchecked();
         for (index, obj) in array.into_iter().enumerate() {
-            #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+            #[cfg(not(Py_LIMITED_API))]
             ffi::PyTuple_SET_ITEM(ptr, index as ffi::Py_ssize_t, obj.into_ptr());
-            #[cfg(any(Py_LIMITED_API, PyPy, GraalPy))]
+            #[cfg(Py_LIMITED_API)]
             ffi::PyTuple_SetItem(ptr, index as ffi::Py_ssize_t, obj.into_ptr());
         }
         tup
@@ -1223,7 +1223,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(Py_LIMITED_API, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn test_as_slice() {
         Python::attach(|py| {
             let ob = (1, 2, 3).into_pyobject(py).unwrap();
@@ -1329,7 +1329,7 @@ mod tests {
         });
     }
 
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     #[test]
     fn test_tuple_get_item_unchecked_sanity() {
         Python::attach(|py| {
@@ -1581,7 +1581,7 @@ mod tests {
                     .unwrap(),
                 2
             );
-            #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+            #[cfg(not(Py_LIMITED_API))]
             {
                 assert_eq!(
                     unsafe { tuple.get_item_unchecked(2) }

@@ -21,9 +21,9 @@ use crate::{
 /// between threads:
 ///
 /// ```
-/// use pyo3::sync::PyOnceLock;
-/// use pyo3::prelude::*;
-/// use pyo3::types::PyList;
+/// use pyforge::sync::PyOnceLock;
+/// use pyforge::prelude::*;
+/// use pyforge::types::PyList;
 ///
 /// static LIST_CELL: PyOnceLock<Py<PyList>> = PyOnceLock::new();
 ///
@@ -132,10 +132,10 @@ where
     ///
     /// `PyOnceLock` can be used to avoid importing a class multiple times:
     /// ```
-    /// # use pyo3::prelude::*;
-    /// # use pyo3::sync::PyOnceLock;
-    /// # use pyo3::types::{PyDict, PyType};
-    /// # use pyo3::intern;
+    /// # use pyforge::prelude::*;
+    /// # use pyforge::sync::PyOnceLock;
+    /// # use pyforge::types::{PyDict, PyType};
+    /// # use pyforge::intern;
     /// #
     /// #[pyfunction]
     /// fn create_ordered_dict<'py>(py: Python<'py>, dict: Bound<'py, PyDict>) -> PyResult<Bound<'py, PyAny>> {

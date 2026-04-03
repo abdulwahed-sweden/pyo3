@@ -1,7 +1,7 @@
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::types::PySet;
-use pyo3::{prelude::*, IntoPyObjectExt};
+use pyforge::types::PySet;
+use pyforge::{prelude::*, IntoPyObjectExt};
 use std::{
     collections::{BTreeSet, HashSet},
     hint::black_box,

@@ -1,9 +1,7 @@
 use crate::object::*;
-#[cfg(not(GraalPy))]
 use crate::{PyCFunctionObject, PyMethodDefPointer, METH_METHOD, METH_STATIC};
 use std::ffi::c_int;
 
-#[cfg(not(GraalPy))]
 pub struct PyCMethodObject {
     pub func: PyCFunctionObject,
     pub mm_class: *mut PyTypeObject,
@@ -23,7 +21,6 @@ pub unsafe fn PyCMethod_Check(op: *mut PyObject) -> c_int {
     PyObject_TypeCheck(op, &raw mut PyCMethod_Type)
 }
 
-#[cfg(not(GraalPy))]
 #[inline]
 pub unsafe fn PyCFunction_GET_FUNCTION(func: *mut PyObject) -> PyMethodDefPointer {
     debug_assert_eq!(PyCMethod_Check(func), 1);
@@ -32,7 +29,6 @@ pub unsafe fn PyCFunction_GET_FUNCTION(func: *mut PyObject) -> PyMethodDefPointe
     (*(*func).m_ml).ml_meth
 }
 
-#[cfg(not(GraalPy))]
 #[inline]
 pub unsafe fn PyCFunction_GET_SELF(func: *mut PyObject) -> *mut PyObject {
     debug_assert_eq!(PyCMethod_Check(func), 1);
@@ -45,7 +41,6 @@ pub unsafe fn PyCFunction_GET_SELF(func: *mut PyObject) -> *mut PyObject {
     }
 }
 
-#[cfg(not(GraalPy))]
 #[inline]
 pub unsafe fn PyCFunction_GET_FLAGS(func: *mut PyObject) -> c_int {
     debug_assert_eq!(PyCMethod_Check(func), 1);
@@ -54,7 +49,6 @@ pub unsafe fn PyCFunction_GET_FLAGS(func: *mut PyObject) -> c_int {
     (*(*func).m_ml).ml_flags
 }
 
-#[cfg(not(GraalPy))]
 #[inline]
 pub unsafe fn PyCFunction_GET_CLASS(func: *mut PyObject) -> *mut PyTypeObject {
     debug_assert_eq!(PyCMethod_Check(func), 1);

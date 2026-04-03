@@ -3,8 +3,8 @@ use std::hint::black_box;
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 use rust_decimal::Decimal;
 
-use pyo3::prelude::*;
-use pyo3::types::PyDict;
+use pyforge::prelude::*;
+use pyforge::types::PyDict;
 
 fn decimal_via_extract(b: &mut Bencher<'_>) {
     Python::attach(|py| {

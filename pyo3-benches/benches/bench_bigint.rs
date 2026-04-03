@@ -3,8 +3,8 @@ use std::hint::black_box;
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 use num_bigint::BigInt;
 
-use pyo3::prelude::*;
-use pyo3::types::PyDict;
+use pyforge::prelude::*;
+use pyforge::types::PyDict;
 
 fn extract_bigint_extract_fail(bench: &mut Bencher<'_>) {
     Python::attach(|py| {

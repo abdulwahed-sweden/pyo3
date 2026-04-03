@@ -5,7 +5,7 @@ use std::{ffi::CString, task::Poll, thread, time::Duration};
 use futures::{channel::oneshot, future::poll_fn, FutureExt};
 #[cfg(not(target_has_atomic = "64"))]
 use portable_atomic::{AtomicBool, Ordering};
-use pyo3::{
+use pyforge::{
     coroutine::CancelHandle,
     prelude::*,
     py_run,
@@ -22,7 +22,7 @@ fn handle_windows(test: &str) -> String {
     if sys.platform == "win32":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     "#;
-    pyo3::impl_::unindent::unindent(set_event_loop_policy) + &pyo3::impl_::unindent::unindent(test)
+    pyforge::impl_::unindent::unindent(set_event_loop_policy) + &pyforge::impl_::unindent::unindent(test)
 }
 
 #[test]
@@ -46,7 +46,7 @@ fn test_async_function_returns_unit_none() {
     Python::attach(|py| {
         let returns_unit = wrap_pyfunction!(returns_unit, py).unwrap();
         let test = "import asyncio; assert asyncio.run(returns_unit()) is None";
-        pyo3::py_run!(py, returns_unit, &handle_windows(test));
+        pyforge::py_run!(py, returns_unit, &handle_windows(test));
     });
 }
 
@@ -161,7 +161,7 @@ fn cancelled_coroutine() {
         globals.set_item("sleep", sleep).unwrap();
         let err = py
             .run(
-                &CString::new(pyo3::impl_::unindent::unindent(&handle_windows(test))).unwrap(),
+                &CString::new(pyforge::impl_::unindent::unindent(&handle_windows(test))).unwrap(),
                 Some(&globals),
                 None,
             )
@@ -201,7 +201,7 @@ fn coroutine_cancel_handle() {
             .set_item("cancellable_sleep", cancellable_sleep)
             .unwrap();
         py.run(
-            &CString::new(pyo3::impl_::unindent::unindent(&handle_windows(test))).unwrap(),
+            &CString::new(pyforge::impl_::unindent::unindent(&handle_windows(test))).unwrap(),
             Some(&globals),
             None,
         )
@@ -231,7 +231,7 @@ fn coroutine_is_cancelled() {
         let globals = PyDict::new(py);
         globals.set_item("sleep_loop", sleep_loop).unwrap();
         py.run(
-            &CString::new(pyo3::impl_::unindent::unindent(&handle_windows(test))).unwrap(),
+            &CString::new(pyforge::impl_::unindent::unindent(&handle_windows(test))).unwrap(),
             Some(&globals),
             None,
         )

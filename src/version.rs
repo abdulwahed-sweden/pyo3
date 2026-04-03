@@ -5,7 +5,7 @@
 /// # Examples
 ///
 /// ```rust
-/// # use pyo3::Python;
+/// # use pyforge::Python;
 /// Python::attach(|py| {
 ///     // PyO3 supports Python 3.8 and up.
 ///     assert!(py.version_info() >= (3, 8));

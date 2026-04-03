@@ -30,7 +30,7 @@
 //! Rust code to create functions which return `Bytes` or take `Bytes` as arguments:
 //!
 //! ```rust,no_run
-//! use pyo3::prelude::*;
+//! use pyforge::prelude::*;
 //! use bytes::Bytes;
 //!
 //! #[pyfunction]

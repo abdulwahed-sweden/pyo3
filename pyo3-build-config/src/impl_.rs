@@ -3047,28 +3047,14 @@ mod tests {
                 "cargo:rustc-cfg=Py_3_11".to_owned(),
             ]
         );
-
-        let interpreter_config = InterpreterConfig {
-            implementation: PythonImplementation::PyPy,
-            ..interpreter_config
-        };
-        assert_eq!(
-            interpreter_config.build_script_outputs(),
-            [
-                "cargo:rustc-cfg=Py_3_8".to_owned(),
-                "cargo:rustc-cfg=Py_3_9".to_owned(),
-                "cargo:rustc-cfg=Py_3_10".to_owned(),
-                "cargo:rustc-cfg=Py_3_11".to_owned(),
-                "cargo:rustc-cfg=PyPy".to_owned(),
-            ]
-        );
+        // PyForge: PyPy test case removed (CPython only)
     }
 
     #[test]
     fn test_build_script_outputs_abi3() {
         let interpreter_config = InterpreterConfig {
             implementation: PythonImplementation::CPython,
-            version: PythonVersion { major: 3, minor: 9 },
+            version: PythonVersion { major: 3, minor: 11 },
             shared: true,
             abi3: true,
             lib_name: Some("python3".into()),
@@ -3086,23 +3072,12 @@ mod tests {
             [
                 "cargo:rustc-cfg=Py_3_8".to_owned(),
                 "cargo:rustc-cfg=Py_3_9".to_owned(),
+                "cargo:rustc-cfg=Py_3_10".to_owned(),
+                "cargo:rustc-cfg=Py_3_11".to_owned(),
                 "cargo:rustc-cfg=Py_LIMITED_API".to_owned(),
             ]
         );
-
-        let interpreter_config = InterpreterConfig {
-            implementation: PythonImplementation::PyPy,
-            ..interpreter_config
-        };
-        assert_eq!(
-            interpreter_config.build_script_outputs(),
-            [
-                "cargo:rustc-cfg=Py_3_8".to_owned(),
-                "cargo:rustc-cfg=Py_3_9".to_owned(),
-                "cargo:rustc-cfg=PyPy".to_owned(),
-                "cargo:rustc-cfg=Py_LIMITED_API".to_owned(),
-            ]
-        );
+        // PyForge: PyPy abi3 test case removed (CPython only)
     }
 
     #[test]
@@ -3147,7 +3122,7 @@ mod tests {
         build_flags.0.insert(BuildFlag::Py_DEBUG);
         let interpreter_config = InterpreterConfig {
             implementation: PythonImplementation::CPython,
-            version: PythonVersion { major: 3, minor: 8 },
+            version: PythonVersion { major: 3, minor: 11 },
             shared: true,
             abi3: false,
             lib_name: Some("python3".into()),
@@ -3164,6 +3139,9 @@ mod tests {
             interpreter_config.build_script_outputs(),
             [
                 "cargo:rustc-cfg=Py_3_8".to_owned(),
+                "cargo:rustc-cfg=Py_3_9".to_owned(),
+                "cargo:rustc-cfg=Py_3_10".to_owned(),
+                "cargo:rustc-cfg=Py_3_11".to_owned(),
                 "cargo:rustc-cfg=py_sys_config=\"Py_DEBUG\"".to_owned(),
             ]
         );

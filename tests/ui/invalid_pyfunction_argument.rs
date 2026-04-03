@@ -1,4 +1,4 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 use std::sync::atomic::AtomicPtr;
 
 #[pyfunction]

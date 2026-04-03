@@ -3,7 +3,7 @@ use crate::sealed::Sealed;
 use crate::types::{PyCode, PyDict};
 use crate::PyAny;
 use crate::{ffi, Bound, PyResult, Python};
-use pyo3_ffi::PyObject;
+use pyforge_ffi::PyObject;
 use std::ffi::CStr;
 
 /// Represents a Python frame.

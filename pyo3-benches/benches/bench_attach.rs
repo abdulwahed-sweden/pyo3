@@ -1,6 +1,6 @@
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 fn bench_clean_attach(b: &mut Bencher<'_>) {
     // Acquiring first GIL will also create a "clean" GILPool, so this measures the Python overhead.

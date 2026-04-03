@@ -1,6 +1,6 @@
-#[pyo3::pymodule]
+#[pyforge::pymodule]
 mod mymodule {
-	#[pyo3::pymodule(submodule)]
+	#[pyforge::pymodule(submodule)]
 	mod submod {}
 }
 

@@ -11,7 +11,7 @@ use crate::{PyAny, PyResult};
 #[repr(transparent)]
 pub struct PySuper(PyAny);
 
-#[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 pyobject_native_type_core!(
     PySuper,
     pyobject_native_static_type_object!(crate::ffi::PySuper_Type),
@@ -19,7 +19,7 @@ pyobject_native_type_core!(
     "super"
 );
 
-#[cfg(any(Py_LIMITED_API, PyPy, GraalPy))]
+#[cfg(Py_LIMITED_API)]
 pyobject_native_type_core!(
     PySuper,
     |py| {
@@ -39,7 +39,7 @@ impl PySuper {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// #[pyclass(subclass)]
     /// struct BaseClass {

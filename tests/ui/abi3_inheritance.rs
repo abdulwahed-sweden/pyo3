@@ -1,5 +1,5 @@
-use pyo3::exceptions::PyException;
-use pyo3::prelude::*;
+use pyforge::exceptions::PyException;
+use pyforge::prelude::*;
 
 #[pyclass(extends=PyException)]
 #[derive(Clone)]

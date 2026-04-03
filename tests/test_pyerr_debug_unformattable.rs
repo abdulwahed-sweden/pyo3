@@ -1,4 +1,4 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 // This test mucks around with sys.modules, so run it separately to prevent it
 // from potentially corrupting the state of the python interpreter used in other

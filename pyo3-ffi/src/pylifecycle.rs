@@ -9,13 +9,11 @@ extern_libpython! {
     pub fn Py_Finalize();
     pub fn Py_FinalizeEx() -> c_int;
 
-    #[cfg_attr(PyPy, link_name = "PyPy_IsInitialized")]
     pub fn Py_IsInitialized() -> c_int;
 
     pub fn Py_NewInterpreter() -> *mut PyThreadState;
     pub fn Py_EndInterpreter(arg1: *mut PyThreadState);
 
-    #[cfg_attr(PyPy, link_name = "PyPy_AtExit")]
     pub fn Py_AtExit(func: Option<extern "C" fn()>) -> c_int;
 
     pub fn Py_Exit(arg1: c_int) -> !;
@@ -28,7 +26,6 @@ extern_libpython! {
         deprecated(note = "Deprecated since Python 3.11. Use `PyConfig.program_name` instead.")
     )]
     pub fn Py_SetProgramName(arg1: *const wchar_t);
-    #[cfg_attr(PyPy, link_name = "PyPy_GetProgramName")]
     #[cfg_attr(
         Py_3_13,
         deprecated(note = "Deprecated since Python 3.13. Use `sys.executable` instead.")
@@ -76,7 +73,6 @@ extern_libpython! {
 
     // skipped _Py_CheckPython3
 
-    #[cfg_attr(PyPy, link_name = "PyPy_GetVersion")]
     pub fn Py_GetVersion() -> *const c_char;
     pub fn Py_GetPlatform() -> *const c_char;
     pub fn Py_GetCopyright() -> *const c_char;

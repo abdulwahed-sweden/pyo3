@@ -1,4 +1,4 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pyclass]
 struct WarningMethodContainer {}
@@ -13,7 +13,7 @@ impl WarningMethodContainer {
 impl WarningMethodContainer {
     #[classattr]
     #[pyo3(warn(message = "warn for class attr"))]
-    fn a_class_attr(_py: pyo3::Python<'_>) -> i64 {
+    fn a_class_attr(_py: pyforge::Python<'_>) -> i64 {
         5
     }
 }

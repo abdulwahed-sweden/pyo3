@@ -137,8 +137,8 @@ impl<'a> PyStringData<'a> {
 /// cost of the additional overhead of a Python method call.
 ///
 /// ```rust
-/// # use pyo3::prelude::*;
-/// use pyo3::types::PyString;
+/// # use pyforge::prelude::*;
+/// use pyforge::types::PyString;
 ///
 /// # Python::attach(|py| {
 /// let py_string = PyString::new(py, "foo");
@@ -305,7 +305,7 @@ pub trait PyStringMethods<'py>: crate::sealed::Sealed {
     ///
     /// By using this API, you accept responsibility for testing that PyStringData behaves as
     /// expected on the targets where you plan to distribute your software.
-    #[cfg(not(any(Py_LIMITED_API, GraalPy, PyPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     unsafe fn data(&self) -> PyResult<PyStringData<'_>>;
 }
 
@@ -331,7 +331,7 @@ impl<'py> PyStringMethods<'py> for Bound<'py, PyString> {
         }
     }
 
-    #[cfg(not(any(Py_LIMITED_API, GraalPy, PyPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     unsafe fn data(&self) -> PyResult<PyStringData<'_>> {
         unsafe { self.as_borrowed().data() }
     }
@@ -387,7 +387,7 @@ impl<'a> Borrowed<'a, '_, PyString> {
         Cow::Owned(String::from_utf8_lossy(bytes.as_bytes()).into_owned())
     }
 
-    #[cfg(not(any(Py_LIMITED_API, GraalPy, PyPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     unsafe fn data(self) -> PyResult<PyStringData<'a>> {
         unsafe {
             let ptr = self.as_ptr();
@@ -705,7 +705,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn test_string_data_ucs1() {
         Python::attach(|py| {
             let s = PyString::new(py, "hello, world");
@@ -718,7 +718,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn test_string_data_ucs1_invalid() {
         Python::attach(|py| {
             // 0xfe is not allowed in UTF-8.
@@ -744,7 +744,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn test_string_data_ucs2() {
         Python::attach(|py| {
             let s = py.eval(c"'foo\\ud800'", None, None).unwrap();
@@ -760,7 +760,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(all(not(any(Py_LIMITED_API, PyPy, GraalPy)), target_endian = "little"))]
+    #[cfg(all(not(Py_LIMITED_API), target_endian = "little"))]
     fn test_string_data_ucs2_invalid() {
         Python::attach(|py| {
             // U+FF22 (valid) & U+d800 (never valid)
@@ -786,7 +786,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn test_string_data_ucs4() {
         Python::attach(|py| {
             let s = "哈哈🐈";
@@ -799,7 +799,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(all(not(any(Py_LIMITED_API, PyPy, GraalPy)), target_endian = "little"))]
+    #[cfg(all(not(Py_LIMITED_API), target_endian = "little"))]
     fn test_string_data_ucs4_invalid() {
         Python::attach(|py| {
             // U+20000 (valid) & U+d800 (never valid)
@@ -825,7 +825,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn test_pystring_from_bytes() {
         Python::attach(|py| {
             let result = PyString::from_bytes(py, "\u{2122}".as_bytes());

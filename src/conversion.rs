@@ -37,7 +37,7 @@ use std::marker::PhantomData;
     message = "`{Self}` cannot be converted to a Python object",
     note = "`IntoPyObject` is automatically implemented by the `#[pyclass]` macro",
     note = "if you do not wish to have a corresponding Python type, implement it manually",
-    note = "if you do not own `{Self}` you can perform a manual conversion to one of the types in `pyo3::types::*`"
+    note = "if you do not own `{Self}` you can perform a manual conversion to one of the types in `pyforge::types::*`"
 )]
 pub trait IntoPyObject<'py>: Sized {
     /// The Python output type
@@ -265,8 +265,8 @@ impl<'py, T> IntoPyObjectExt<'py> for T where T: IntoPyObject<'py> {}
 /// # Examples
 ///
 /// ```rust
-/// use pyo3::prelude::*;
-/// use pyo3::types::PyString;
+/// use pyforge::prelude::*;
+/// use pyforge::types::PyString;
 ///
 /// # fn main() -> PyResult<()> {
 /// Python::attach(|py| {
@@ -297,7 +297,7 @@ impl<'py, T> IntoPyObjectExt<'py> for T where T: IntoPyObject<'py> {}
 /// macro.
 /// ```rust,no_run
 /// # #![allow(dead_code)]
-/// use pyo3::prelude::*;
+/// use pyforge::prelude::*;
 ///
 /// #[derive(FromPyObject)]
 /// struct MyObject {
@@ -320,7 +320,7 @@ impl<'py, T> IntoPyObjectExt<'py> for T where T: IntoPyObject<'py> {}
 /// the lifetimes of [`FromPyObject`] can be elided:
 /// ```rust,no_run
 /// # #![allow(dead_code)]
-/// use pyo3::prelude::*;
+/// use pyforge::prelude::*;
 ///
 /// struct MyObject {
 ///     msg: String,
@@ -349,8 +349,8 @@ impl<'py, T> IntoPyObjectExt<'py> for T where T: IntoPyObject<'py> {}
 ///
 /// ```rust,no_run
 /// # #![allow(dead_code)]
-/// use pyo3::prelude::*;
-/// use pyo3::types::PyString;
+/// use pyforge::prelude::*;
+/// use pyforge::types::PyString;
 ///
 /// struct MyObject<'py>(Bound<'py, PyString>);
 ///
@@ -470,7 +470,7 @@ pub(crate) use from_py_object_sequence::FromPyObjectSequence;
 /// below.
 ///
 /// ```,no_run
-/// # use pyo3::prelude::*;
+/// # use pyforge::prelude::*;
 /// # #[allow(dead_code)]
 /// pub struct MyWrapper<T>(T);
 ///
@@ -573,7 +573,7 @@ impl<'py> IntoPyObject<'py> for () {
 }
 
 /// ```rust,compile_fail
-/// use pyo3::prelude::*;
+/// use pyforge::prelude::*;
 ///
 /// #[pyclass]
 /// struct TestClass {

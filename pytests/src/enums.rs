@@ -1,4 +1,4 @@
-use pyo3::{pyclass, pyfunction, pymodule};
+use pyforge::{pyclass, pyfunction, pymodule};
 
 #[pymodule]
 pub mod enums {

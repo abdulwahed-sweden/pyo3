@@ -1,9 +1,9 @@
 #![cfg(feature = "macros")]
 
-use pyo3::exceptions::PyValueError;
-use pyo3::prelude::*;
-use pyo3::sync::PyOnceLock;
-use pyo3::types::IntoPyDict;
+use pyforge::exceptions::PyValueError;
+use pyforge::prelude::*;
+use pyforge::sync::PyOnceLock;
+use pyforge::types::IntoPyDict;
 
 #[pyclass]
 struct EmptyClassWithNew {}
@@ -156,7 +156,7 @@ impl SuperClass {
 fn subclass_new() {
     Python::attach(|py| {
         let super_cls = py.get_type::<SuperClass>();
-        let source = pyo3_ffi::c_str!(
+        let source = pyforge_ffi::c_str!(
             r#"
 class Class(SuperClass):
     def __new__(cls):
@@ -215,12 +215,12 @@ struct NewExisting {
 #[pymethods]
 impl NewExisting {
     #[new]
-    fn new(py: pyo3::Python<'_>, val: usize) -> pyo3::Py<NewExisting> {
-        static PRE_BUILT: PyOnceLock<[pyo3::Py<NewExisting>; 2]> = PyOnceLock::new();
+    fn new(py: pyforge::Python<'_>, val: usize) -> pyforge::Py<NewExisting> {
+        static PRE_BUILT: PyOnceLock<[pyforge::Py<NewExisting>; 2]> = PyOnceLock::new();
         let existing = PRE_BUILT.get_or_init(py, || {
             [
-                pyo3::Py::new(py, NewExisting { num: 0 }).unwrap(),
-                pyo3::Py::new(py, NewExisting { num: 1 }).unwrap(),
+                pyforge::Py::new(py, NewExisting { num: 0 }).unwrap(),
+                pyforge::Py::new(py, NewExisting { num: 1 }).unwrap(),
             ]
         });
 
@@ -228,7 +228,7 @@ impl NewExisting {
             return existing[val].clone_ref(py);
         }
 
-        pyo3::Py::new(py, NewExisting { num: val }).unwrap()
+        pyforge::Py::new(py, NewExisting { num: val }).unwrap()
     }
 }
 
@@ -299,17 +299,17 @@ fn test_new_returns_bound() {
     })
 }
 
-#[pyo3::pyclass]
+#[pyforge::pyclass]
 struct NewClassMethod {
     #[pyo3(get)]
-    cls: pyo3::Py<PyAny>,
+    cls: pyforge::Py<PyAny>,
 }
 
-#[pyo3::pymethods]
+#[pyforge::pymethods]
 impl NewClassMethod {
     #[new]
     #[classmethod]
-    fn new(cls: &pyo3::Bound<'_, pyo3::types::PyType>) -> Self {
+    fn new(cls: &pyforge::Bound<'_, pyforge::types::PyType>) -> Self {
         Self {
             cls: cls.clone().into_any().unbind(),
         }
@@ -318,8 +318,8 @@ impl NewClassMethod {
 
 #[test]
 fn test_new_class_method() {
-    pyo3::Python::attach(|py| {
+    pyforge::Python::attach(|py| {
         let cls = py.get_type::<NewClassMethod>();
-        pyo3::py_run!(py, cls, "assert cls().cls is cls");
+        pyforge::py_run!(py, cls, "assert cls().cls is cls");
     });
 }

@@ -1,10 +1,10 @@
 #![cfg(feature = "macros")]
 
-use pyo3::prelude::*;
-use pyo3::py_run;
-use pyo3::types::PyType;
+use pyforge::prelude::*;
+use pyforge::py_run;
+use pyforge::types::PyType;
 #[cfg(not(target_arch = "wasm32"))]
-use pyo3::PyClass;
+use pyforge::PyClass;
 
 mod test_utils;
 
@@ -236,7 +236,7 @@ struct ClassWithHash {
 #[test]
 fn class_with_hash() {
     Python::attach(|py| {
-        use pyo3::types::IntoPyDict;
+        use pyforge::types::IntoPyDict;
         let class = ClassWithHash { value: 42 };
         let hash = {
             use std::hash::{Hash, Hasher};

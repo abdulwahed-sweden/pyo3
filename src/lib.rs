@@ -141,7 +141,7 @@
 //! println!("only runs if python was compiled with Py_DEBUG")
 //! ```
 //! To use these attributes, add [`pyo3-build-config`] as a build dependency in
-//! your `Cargo.toml` and call `pyo3_build_config::use_pyo3_cfgs()` in a
+//! your `Cargo.toml` and call `pyforge_build_config::use_pyo3_cfgs()` in a
 //! `build.rs` file.
 //!
 //! # Minimum supported Rust and Python versions
@@ -185,7 +185,7 @@
 //!
 //! **`src/lib.rs`**
 //! ```rust,no_run
-//! use pyo3::prelude::*;
+//! use pyforge::prelude::*;
 //!
 //! /// Formats the sum of two numbers as string.
 //! #[pyfunction]
@@ -247,9 +247,9 @@
 //!
 //! Example program displaying the value of `sys.version` and the current user name:
 //! ```rust
-//! use pyo3::prelude::*;
-//! use pyo3::types::IntoPyDict;
-//! use pyo3::ffi::c_str;
+//! use pyforge::prelude::*;
+//! use pyforge::types::IntoPyDict;
+//! use pyforge::ffi::c_str;
 //!
 //! fn main() -> PyResult<()> {
 //!     Python::attach(|py| {
@@ -343,7 +343,6 @@ pub use crate::err::{CastError, CastIntoError, PyErr, PyErrArguments, PyResult, 
 #[allow(deprecated)]
 pub use crate::err::{DowncastError, DowncastIntoError};
 pub use crate::instance::{Borrowed, Bound, BoundObject, Py};
-#[cfg(not(any(PyPy, GraalPy)))]
 pub use crate::interpreter_lifecycle::with_embedded_python_interpreter;
 pub use crate::marker::Python;
 pub use crate::pycell::{PyRef, PyRefMut};
@@ -359,8 +358,8 @@ pub(crate) mod sealed;
 
 /// Old module which contained some implementation details of the `#[pyproto]` module.
 ///
-/// Prefer using the same content from `pyo3::pyclass`, e.g. `use pyo3::pyclass::CompareOp` instead
-/// of `use pyo3::class::basic::CompareOp`.
+/// Prefer using the same content from `pyforge::pyclass`, e.g. `use pyforge::pyclass::CompareOp` instead
+/// of `use pyforge::class::basic::CompareOp`.
 ///
 /// For compatibility reasons this has not yet been removed, however will be done so
 /// once <https://github.com/rust-lang/rust/issues/30827> is resolved.
@@ -369,8 +368,8 @@ pub mod class {
 
     /// Old module which contained some implementation details of the `#[pyproto]` module.
     ///
-    /// Prefer using the same content from `pyo3::pyclass`, e.g. `use pyo3::pyclass::CompareOp` instead
-    /// of `use pyo3::class::basic::CompareOp`.
+    /// Prefer using the same content from `pyforge::pyclass`, e.g. `use pyforge::pyclass::CompareOp` instead
+    /// of `use pyforge::class::basic::CompareOp`.
     ///
     /// For compatibility reasons this has not yet been removed, however will be done so
     /// once <https://github.com/rust-lang/rust/issues/30827> is resolved.
@@ -380,8 +379,8 @@ pub mod class {
 
     /// Old module which contained some implementation details of the `#[pyproto]` module.
     ///
-    /// Prefer using the same content from `pyo3::pyclass`, e.g. `use pyo3::pyclass::PyTraverseError` instead
-    /// of `use pyo3::class::gc::PyTraverseError`.
+    /// Prefer using the same content from `pyforge::pyclass`, e.g. `use pyforge::pyclass::PyTraverseError` instead
+    /// of `use pyforge::class::gc::PyTraverseError`.
     ///
     /// For compatibility reasons this has not yet been removed, however will be done so
     /// once <https://github.com/rust-lang/rust/issues/30827> is resolved.
@@ -443,7 +442,7 @@ mod version;
 pub use crate::conversions::*;
 
 #[cfg(feature = "macros")]
-pub use pyo3_macros::{
+pub use pyforge_macros::{
     pyfunction, pymethods, pymodule, FromPyObject, IntoPyObject, IntoPyObjectRef,
 };
 
@@ -456,7 +455,7 @@ pub use pyo3_macros::{
 ///
 #[doc = concat!("[1]: https://pyo3.rs/v", env!("CARGO_PKG_VERSION"), "/class.html")]
 #[cfg(feature = "macros")]
-pub use pyo3_macros::pyclass;
+pub use pyforge_macros::pyclass;
 
 #[cfg(feature = "macros")]
 #[macro_use]
@@ -466,7 +465,7 @@ mod macros;
 pub mod inspect;
 
 // Putting the declaration of prelude at the end seems to help encourage rustc and rustdoc to prefer using
-// other paths to the same items. (e.g. `pyo3::types::PyAnyMethods` instead of `pyo3::prelude::PyAnyMethods`).
+// other paths to the same items. (e.g. `pyforge::types::PyAnyMethods` instead of `pyforge::prelude::PyAnyMethods`).
 pub mod prelude;
 
 /// Test readme and user guide

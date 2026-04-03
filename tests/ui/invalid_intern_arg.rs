@@ -1,6 +1,6 @@
-use pyo3::Python;
+use pyforge::Python;
 
 fn main() {
     let _foo = if true { "foo" } else { "bar" };
-    Python::attach(|py| py.import(pyo3::intern!(py, _foo)).unwrap());
+    Python::attach(|py| py.import(pyforge::intern!(py, _foo)).unwrap());
 }

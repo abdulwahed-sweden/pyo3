@@ -4,12 +4,12 @@ use crate::Python;
 #[cfg(not(Py_LIMITED_API))]
 use crate::types::any::PyAnyMethods;
 
-#[cfg(all(not(Py_LIMITED_API), any(not(any(PyPy, GraalPy)), feature = "macros")))]
+#[cfg(not(Py_LIMITED_API))]
 use crate::types::PyString;
 
 #[cfg(not(Py_LIMITED_API))]
 use crate::{types::PyDict, Bound, PyAny};
-#[cfg(not(any(Py_3_12, Py_LIMITED_API, GraalPy)))]
+#[cfg(not(any(Py_3_12, Py_LIMITED_API)))]
 use libc::wchar_t;
 
 #[cfg(not(Py_LIMITED_API))]
@@ -116,7 +116,7 @@ fn test_timezone_from_offset_and_name() {
 }
 
 #[test]
-#[cfg(not(any(Py_LIMITED_API, GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 fn ascii_object_bitfield() {
     let ob_base: PyObject = unsafe { std::mem::zeroed() };
 
@@ -124,7 +124,6 @@ fn ascii_object_bitfield() {
     let mut o = PyASCIIObject {
         ob_base,
         length: 0,
-        #[cfg(any(Py_3_11, not(PyPy)))]
         hash: 0,
         state: 0u32,
         #[cfg(not(Py_3_12))]
@@ -171,7 +170,7 @@ fn ascii_object_bitfield() {
 }
 
 #[test]
-#[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 fn ascii() {
     Python::attach(|py| {
         // This test relies on implementation details of PyString.
@@ -216,7 +215,7 @@ fn ascii() {
 }
 
 #[test]
-#[cfg(not(any(Py_LIMITED_API, PyPy, GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 fn ucs4() {
     Python::attach(|py| {
         let s = "哈哈🐈";

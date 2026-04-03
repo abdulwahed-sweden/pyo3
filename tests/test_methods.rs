@@ -1,14 +1,14 @@
 #![cfg(feature = "macros")]
 
 #[cfg(any(not(Py_LIMITED_API), Py_3_12))]
-use pyo3::exceptions::PyWarning;
-use pyo3::exceptions::{PyFutureWarning, PyUserWarning};
-use pyo3::prelude::*;
-use pyo3::py_run;
-use pyo3::types::PySequence;
-use pyo3::types::{IntoPyDict, PyDict, PyList, PySet, PyString, PyTuple, PyType};
-use pyo3::BoundObject;
-use pyo3_macros::pyclass;
+use pyforge::exceptions::PyWarning;
+use pyforge::exceptions::{PyFutureWarning, PyUserWarning};
+use pyforge::prelude::*;
+use pyforge::py_run;
+use pyforge::types::PySequence;
+use pyforge::types::{IntoPyDict, PyDict, PyList, PySet, PyString, PyTuple, PyType};
+use pyforge::BoundObject;
+use pyforge_macros::pyclass;
 
 use crate::test_utils::CatchWarnings;
 

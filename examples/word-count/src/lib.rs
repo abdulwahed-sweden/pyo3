@@ -1,4 +1,4 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 use rayon::prelude::*;
 
 /// Searches for the word, parallelized by rayon

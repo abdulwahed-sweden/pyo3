@@ -2,12 +2,9 @@
 use crate::Py_ssize_t;
 #[cfg(Py_3_13)]
 use crate::{PyObject, Py_hash_t};
-#[cfg(any(Py_3_13, not(PyPy)))]
 use std::ffi::c_void;
-#[cfg(not(PyPy))]
 use std::ffi::{c_char, c_int};
 
-#[cfg(not(PyPy))]
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PyHash_FuncDef {
@@ -18,7 +15,6 @@ pub struct PyHash_FuncDef {
     pub seed_bits: c_int,
 }
 
-#[cfg(not(PyPy))]
 impl Default for PyHash_FuncDef {
     #[inline]
     fn default() -> Self {
@@ -27,7 +23,6 @@ impl Default for PyHash_FuncDef {
 }
 
 extern_libpython! {
-    #[cfg(not(PyPy))]
     pub fn PyHash_GetFuncDef() -> *mut PyHash_FuncDef;
     #[cfg(Py_3_13)]
     pub fn Py_HashPointer(ptr: *const c_void) -> Py_hash_t;

@@ -22,11 +22,11 @@ mod inner {
     )]
     use super::*;
 
-    use pyo3::prelude::*;
+    use pyforge::prelude::*;
 
     #[cfg(any(not(all(Py_GIL_DISABLED, Py_3_14)), feature = "macros"))]
-    use pyo3::sync::MutexExt;
-    use pyo3::types::{IntoPyDict, PyList};
+    use pyforge::sync::MutexExt;
+    use pyforge::types::{IntoPyDict, PyList};
 
     #[cfg(any(not(all(Py_GIL_DISABLED, Py_3_14)), feature = "macros"))]
     use std::sync::{Mutex, PoisonError};
@@ -36,10 +36,10 @@ mod inner {
     #[macro_export]
     macro_rules! py_assert {
         ($py:expr, $($val:ident)+, $assertion:literal) => {
-            pyo3::py_run!($py, $($val)+, concat!("assert ", $assertion))
+            pyforge::py_run!($py, $($val)+, concat!("assert ", $assertion))
         };
         ($py:expr, *$dict:expr, $assertion:literal) => {
-            pyo3::py_run!($py, *$dict, concat!("assert ", $assertion))
+            pyforge::py_run!($py, *$dict, concat!("assert ", $assertion))
         };
     }
 
@@ -54,8 +54,8 @@ mod inner {
     macro_rules! py_expect_exception {
         // Case1: idents & no err_msg
         ($py:expr, $($val:ident)+, $code:expr, $err:ident) => {{
-            use pyo3::types::IntoPyDict;
-            use pyo3::BoundObject;
+            use pyforge::types::IntoPyDict;
+            use pyforge::BoundObject;
             let d = [$((stringify!($val), (&$val).into_pyobject($py).unwrap().into_any().into_bound()),)+].into_py_dict($py).unwrap();
             py_expect_exception!($py, *d, $code, $err)
         }};
@@ -63,7 +63,7 @@ mod inner {
         ($py:expr, *$dict:expr, $code:expr, $err:ident) => {{
             let res = $py.run(&std::ffi::CString::new($code).unwrap(), None, Some(&$dict.as_borrowed()));
             let err = res.expect_err(&format!("Did not raise {}", stringify!($err)));
-            if !err.matches($py, $py.get_type::<pyo3::exceptions::$err>()).unwrap() {
+            if !err.matches($py, $py.get_type::<pyforge::exceptions::$err>()).unwrap() {
                 panic!("Expected {} but got {:?}", stringify!($err), err)
             }
             err
@@ -74,7 +74,7 @@ mod inner {
             // Suppose that the error message looks like 'TypeError: ~'
             assert_eq!(format!("Py{}", err), concat!(stringify!($err), ": ", $err_msg));
             if err.value($py).hasattr("add_note").unwrap() {
-                let notes = err.value($py).getattr("__notes__").map(|n| n.cast_into::<pyo3::types::PyList>().unwrap()).unwrap_or_else(|_| pyo3::types::PyList::empty($py));
+                let notes = err.value($py).getattr("__notes__").map(|n| n.cast_into::<pyforge::types::PyList>().unwrap()).unwrap_or_else(|_| pyforge::types::PyList::empty($py));
                 let mut _notes_iter = notes.iter();
                 $(
                     assert_eq!(_notes_iter.next().as_ref().map(|v| v.extract::<std::borrow::Cow<'_, str>>().unwrap()).as_deref(), Some($notes));
@@ -93,14 +93,14 @@ mod inner {
     #[macro_export]
     macro_rules! py_expect_warning {
         ($py:expr, $($val:ident)+, $code:expr, [$(($warning_msg:literal, $warning_category:path)),+] $(,)?) => {{
-            use pyo3::types::IntoPyDict;
+            use pyforge::types::IntoPyDict;
             let d = [$((stringify!($val), ($val.as_ref() as &Bound<'_, PyAny>).into_pyobject($py).expect("Failed to create test dict element")),)+].into_py_dict($py).expect("Failed to create test dict");
             py_expect_warning!($py, *d, $code, [$(($warning_msg, $warning_category)),+])
         }};
         ($py:expr, *$dict:expr, $code:expr, [$(($warning_msg:literal, $warning_category:path)),+] $(,)?) => {{
             $crate::test_utils::CatchWarnings::enter($py, |warning_record| {
                 $py.run(&std::ffi::CString::new($code).unwrap(), None, Some(&$dict.as_borrowed())).expect("Failed to run warning testing code");
-                let expected_warnings = [$(($warning_msg, <$warning_category as pyo3::PyTypeInfo>::type_object($py))),+];
+                let expected_warnings = [$(($warning_msg, <$warning_category as pyforge::PyTypeInfo>::type_object($py))),+];
 
                 assert_eq!(warning_record.len(), expected_warnings.len(), "Expecting {} warnings but got {}", expected_warnings.len(), warning_record.len());
 
@@ -120,7 +120,7 @@ mod inner {
     #[macro_export]
     macro_rules! py_expect_warning_for_fn {
         ($fn:ident, $($val:ident)+, [$(($warning_msg:literal, $warning_category:path)),+] $(,)?) => {
-            pyo3::Python::attach(|py| {
+            pyforge::Python::attach(|py| {
                 let f = wrap_pyfunction!($fn)(py).unwrap();
                 py_expect_warning!(
                     py,
@@ -179,14 +179,14 @@ mod inner {
     }
 
     #[cfg(feature = "macros")]
-    #[pyclass(crate = "pyo3", frozen)]
+    #[pyclass(crate = "pyforge", frozen)]
     struct UnraisableCaptureHook {
         pub capture: Mutex<Option<(PyErr, Py<PyAny>)>>,
         old_hook: Py<PyAny>,
     }
 
     #[cfg(feature = "macros")]
-    #[pymethods(crate = "pyo3")]
+    #[pymethods(crate = "pyforge")]
     impl UnraisableCaptureHook {
         pub fn hook(&self, unraisable: Bound<'_, PyAny>) {
             let err = PyErr::from_value(unraisable.getattr("exc_value").unwrap());

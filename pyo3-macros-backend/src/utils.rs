@@ -43,7 +43,7 @@ macro_rules! ensure_spanned {
     };
 }
 
-/// Check if the given type `ty` is `pyo3::Python`.
+/// Check if the given type `ty` is `pyforge::Python`.
 pub fn is_python(ty: &syn::Type) -> bool {
     match unwrap_ty_group(ty) {
         syn::Type::Path(typath) => typath
@@ -233,7 +233,7 @@ impl PyO3CratePath {
     pub fn to_tokens_spanned(&self, span: Span) -> TokenStream {
         match self {
             Self::Given(path) => quote::quote_spanned! { span => #path },
-            Self::Default => quote::quote_spanned! {  span => ::pyo3 },
+            Self::Default => quote::quote_spanned! {  span => ::pyforge },
         }
     }
 }
@@ -242,7 +242,7 @@ impl quote::ToTokens for PyO3CratePath {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         match self {
             Self::Given(path) => path.to_tokens(tokens),
-            Self::Default => quote::quote! { ::pyo3 }.to_tokens(tokens),
+            Self::Default => quote::quote! { ::pyforge }.to_tokens(tokens),
         }
     }
 }
@@ -284,7 +284,7 @@ pub(crate) fn has_attribute_with_namespace(
                     segments.push(IdentOrStr::Ident(p.ident.clone()));
                 }
             }
-            PyO3CratePath::Default => segments.push(IdentOrStr::Str("pyo3")),
+            PyO3CratePath::Default => segments.push(IdentOrStr::Str("pyforge")),
         }
     };
     for i in idents {

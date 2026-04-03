@@ -36,8 +36,6 @@ use target_lexicon::OperatingSystem;
 /// | `#[cfg(Py_3_8)]`, `#[cfg(Py_3_9)]`, `#[cfg(Py_3_10)]`, `#[cfg(Py_3_11)]`, ... | These attributes mark code only for a given Python version and up. For example, `#[cfg(Py_3_8)]` marks code which can run on Python 3.8 **and newer**. There is one attribute for each Python version currently supported by PyO3. |
 /// | `#[cfg(Py_LIMITED_API)]` | This marks code which is run when compiling with PyO3's `abi3` feature enabled. |
 /// | `#[cfg(Py_GIL_DISABLED)]` | This marks code which is run on the free-threaded interpreter. |
-/// | `#[cfg(PyPy)]` | This marks code which is run when compiling for PyPy. |
-/// | `#[cfg(GraalPy)]` | This marks code which is run when compiling for GraalPy. |
 ///
 /// For examples of how to use these attributes,
 #[doc = concat!("[see PyO3's guide](https://pyo3.rs/v", env!("CARGO_PKG_VERSION"), "/building-and-distribution/multiple_python_versions.html)")]
@@ -264,8 +262,6 @@ pub fn print_expected_cfgs() {
 
     println!("cargo:rustc-check-cfg=cfg(Py_LIMITED_API)");
     println!("cargo:rustc-check-cfg=cfg(Py_GIL_DISABLED)");
-    println!("cargo:rustc-check-cfg=cfg(PyPy)");
-    println!("cargo:rustc-check-cfg=cfg(GraalPy)");
     println!("cargo:rustc-check-cfg=cfg(py_sys_config, values(\"Py_DEBUG\", \"Py_REF_DEBUG\", \"Py_TRACE_REFS\", \"COUNT_ALLOCS\"))");
     println!("cargo:rustc-check-cfg=cfg(pyo3_disable_reference_pool)");
     println!("cargo:rustc-check-cfg=cfg(pyo3_leak_on_drop_without_reference_pool)");

@@ -1,5 +1,5 @@
-use pyo3::prelude::*;
-use pyo3::types::PyList;
+use pyforge::prelude::*;
+use pyforge::types::PyList;
 
 #[pyfunction]
 fn static_ref(list: &'static Bound<'_, PyList>) -> usize {

@@ -18,12 +18,6 @@ pub struct Py_buffer {
     pub strides: *mut Py_ssize_t,
     pub suboffsets: *mut Py_ssize_t,
     pub internal: *mut c_void,
-    #[cfg(PyPy)]
-    pub flags: c_int,
-    #[cfg(PyPy)]
-    pub _strides: [Py_ssize_t; PyBUF_MAX_NDIM],
-    #[cfg(PyPy)]
-    pub _shape: [Py_ssize_t; PyBUF_MAX_NDIM],
 }
 
 impl Py_buffer {
@@ -41,12 +35,6 @@ impl Py_buffer {
             strides: ptr::null_mut(),
             suboffsets: ptr::null_mut(),
             internal: ptr::null_mut(),
-            #[cfg(PyPy)]
-            flags: 0,
-            #[cfg(PyPy)]
-            _strides: [0; PyBUF_MAX_NDIM],
-            #[cfg(PyPy)]
-            _shape: [0; PyBUF_MAX_NDIM],
         }
     }
 }
@@ -56,23 +44,17 @@ pub type releasebufferproc = unsafe extern "C" fn(*mut PyObject, *mut crate::Py_
 
 /* Return 1 if the getbuffer function is available, otherwise return 0. */
 extern_libpython! {
-    #[cfg(not(PyPy))]
     pub fn PyObject_CheckBuffer(obj: *mut PyObject) -> c_int;
 
-    #[cfg_attr(PyPy, link_name = "PyPyObject_GetBuffer")]
     pub fn PyObject_GetBuffer(obj: *mut PyObject, view: *mut Py_buffer, flags: c_int) -> c_int;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_GetPointer")]
     pub fn PyBuffer_GetPointer(view: *const Py_buffer, indices: *const Py_ssize_t) -> *mut c_void;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_SizeFromFormat")]
     pub fn PyBuffer_SizeFromFormat(format: *const c_char) -> Py_ssize_t;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_ToContiguous")]
     pub fn PyBuffer_ToContiguous(
         buf: *mut c_void,
         view: *const Py_buffer,
         len: Py_ssize_t,
         order: c_char,
     ) -> c_int;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_FromContiguous")]
     pub fn PyBuffer_FromContiguous(
         view: *const Py_buffer,
         buf: *const c_void,
@@ -80,7 +62,6 @@ extern_libpython! {
         order: c_char,
     ) -> c_int;
     pub fn PyObject_CopyData(dest: *mut PyObject, src: *mut PyObject) -> c_int;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_IsContiguous")]
     pub fn PyBuffer_IsContiguous(view: *const Py_buffer, fort: c_char) -> c_int;
     pub fn PyBuffer_FillContiguousStrides(
         ndims: c_int,
@@ -89,7 +70,6 @@ extern_libpython! {
         itemsize: c_int,
         fort: c_char,
     );
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_FillInfo")]
     pub fn PyBuffer_FillInfo(
         view: *mut Py_buffer,
         o: *mut PyObject,
@@ -98,7 +78,6 @@ extern_libpython! {
         readonly: c_int,
         flags: c_int,
     ) -> c_int;
-    #[cfg_attr(PyPy, link_name = "PyPyBuffer_Release")]
     pub fn PyBuffer_Release(view: *mut Py_buffer);
 }
 

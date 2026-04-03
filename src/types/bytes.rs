@@ -28,8 +28,8 @@ use std::str;
 /// additional overhead of a Python method call.
 ///
 /// ```rust
-/// # use pyo3::prelude::*;
-/// use pyo3::types::PyBytes;
+/// # use pyforge::prelude::*;
+/// use pyforge::types::PyBytes;
 ///
 /// # Python::attach(|py| {
 /// let py_bytes = PyBytes::new(py, b"foo".as_slice());
@@ -76,7 +76,7 @@ impl PyBytes {
     /// # Examples
     ///
     /// ```
-    /// use pyo3::{prelude::*, types::PyBytes};
+    /// use pyforge::{prelude::*, types::PyBytes};
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -122,7 +122,7 @@ impl PyBytes {
     /// # Example
     ///
     /// ```
-    /// use pyo3::{prelude::*, types::PyBytes};
+    /// use pyforge::{prelude::*, types::PyBytes};
     /// use std::io::Write;
     ///
     /// # fn main() -> PyResult<()> {

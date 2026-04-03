@@ -1,10 +1,10 @@
 use crate::object::*;
 use crate::PyFrameObject;
-#[cfg(all(Py_3_11, not(any(PyPy, GraalPy, Py_3_14))))]
+#[cfg(not(Py_3_14))]
 use std::ffi::c_char;
 use std::ffi::c_int;
 
-#[cfg(not(any(PyPy, GraalPy, Py_3_14)))]
+#[cfg(not(Py_3_14))]
 #[repr(C)]
 pub struct PyGenObject {
     pub ob_base: PyObject,
@@ -18,21 +18,15 @@ pub struct PyGenObject {
         reason = "PyGenObject layout was public until 3.14"
     )]
     pub gi_exc_state: crate::cpython::pystate::_PyErr_StackItem,
-    #[cfg(Py_3_11)]
     pub gi_origin_or_finalizer: *mut PyObject,
-    #[cfg(Py_3_11)]
     pub gi_hooks_inited: c_char,
-    #[cfg(Py_3_11)]
     pub gi_closed: c_char,
-    #[cfg(Py_3_11)]
     pub gi_running_async: c_char,
-    #[cfg(Py_3_11)]
     pub gi_frame_state: i8,
-    #[cfg(Py_3_11)]
     pub gi_iframe: [*mut PyObject; 1],
 }
 
-#[cfg(all(Py_3_14, not(any(PyPy, GraalPy))))]
+#[cfg(Py_3_14)]
 opaque_struct!(pub PyGenObject);
 
 extern_libpython! {
@@ -56,9 +50,6 @@ extern_libpython! {
     // skipped _PyGen_FetchStopIterationValue
     // skipped _PyGen_yf
     // skipped _PyGen_Finalize
-    #[cfg(not(any(Py_3_9, PyPy)))]
-    #[deprecated(note = "This function was never documented in the Python API.")]
-    pub fn PyGen_NeedsFinalizing(op: *mut PyGenObject) -> c_int;
 }
 
 // skipped PyCoroObject

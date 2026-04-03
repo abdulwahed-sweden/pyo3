@@ -16,7 +16,6 @@ use crate::{ffi, BoundObject, IntoPyObject, IntoPyObjectExt, Python};
 #[repr(transparent)]
 pub struct PyDict(PyAny);
 
-#[cfg(not(GraalPy))]
 pyobject_subclassable_native_type!(PyDict, crate::ffi::PyDictObject);
 
 pyobject_native_type!(
@@ -29,11 +28,11 @@ pyobject_native_type!(
 );
 
 /// Represents a Python `dict_keys`.
-#[cfg(not(any(PyPy, GraalPy)))]
+
 #[repr(transparent)]
 pub struct PyDictKeys(PyAny);
 
-#[cfg(not(any(PyPy, GraalPy)))]
+
 pyobject_native_type_core!(
     PyDictKeys,
     pyobject_native_static_type_object!(ffi::PyDictKeys_Type),
@@ -43,11 +42,11 @@ pyobject_native_type_core!(
 );
 
 /// Represents a Python `dict_values`.
-#[cfg(not(any(PyPy, GraalPy)))]
+
 #[repr(transparent)]
 pub struct PyDictValues(PyAny);
 
-#[cfg(not(any(PyPy, GraalPy)))]
+
 pyobject_native_type_core!(
     PyDictValues,
     pyobject_native_static_type_object!(ffi::PyDictValues_Type),
@@ -57,11 +56,11 @@ pyobject_native_type_core!(
 );
 
 /// Represents a Python `dict_items`.
-#[cfg(not(any(PyPy, GraalPy)))]
+
 #[repr(transparent)]
 pub struct PyDictItems(PyAny);
 
-#[cfg(not(any(PyPy, GraalPy)))]
+
 pyobject_native_type_core!(
     PyDictItems,
     pyobject_native_static_type_object!(ffi::PyDictItems_Type),
@@ -83,7 +82,7 @@ impl PyDict {
     ///
     /// Returns an error on invalid input. In the case of key collisions,
     /// this keeps the last entry seen.
-    #[cfg(not(any(PyPy, GraalPy)))]
+    
     pub fn from_sequence<'py>(seq: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyDict>> {
         let py = seq.py();
         let dict = Self::new(py);
@@ -399,12 +398,12 @@ impl<'a, 'py> Borrowed<'a, 'py, PyDict> {
 }
 
 fn dict_len(dict: &Bound<'_, PyDict>) -> Py_ssize_t {
-    #[cfg(any(PyPy, GraalPy, Py_LIMITED_API, Py_GIL_DISABLED))]
+    #[cfg(any(Py_LIMITED_API, Py_GIL_DISABLED))]
     unsafe {
         ffi::PyDict_Size(dict.as_ptr())
     }
 
-    #[cfg(not(any(PyPy, GraalPy, Py_LIMITED_API, Py_GIL_DISABLED)))]
+    #[cfg(not(any(Py_LIMITED_API, Py_GIL_DISABLED)))]
     unsafe {
         (*dict.as_ptr().cast::<ffi::PyDictObject>()).ma_used
     }
@@ -848,7 +847,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(PyPy, GraalPy)))]
+    
     fn test_from_sequence() {
         Python::attach(|py| {
             let items = PyList::new(py, vec![("a", 1), ("b", 2)]).unwrap();
@@ -879,7 +878,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(PyPy, GraalPy)))]
+    
     fn test_from_sequence_err() {
         Python::attach(|py| {
             let items = PyList::new(py, vec!["a", "b"]).unwrap();
@@ -1378,7 +1377,7 @@ mod tests {
         });
     }
 
-    #[cfg(not(any(PyPy, GraalPy)))]
+    
     fn abc_dict(py: Python<'_>) -> Bound<'_, PyDict> {
         let mut map = HashMap::<&'static str, i32>::new();
         map.insert("a", 1);
@@ -1388,7 +1387,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(PyPy, GraalPy)))]
+    
     fn dict_keys_view() {
         Python::attach(|py| {
             let dict = abc_dict(py);
@@ -1398,7 +1397,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(PyPy, GraalPy)))]
+    
     fn dict_values_view() {
         Python::attach(|py| {
             let dict = abc_dict(py);
@@ -1408,7 +1407,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(PyPy, GraalPy)))]
+    
     fn dict_items_view() {
         Python::attach(|py| {
             let dict = abc_dict(py);

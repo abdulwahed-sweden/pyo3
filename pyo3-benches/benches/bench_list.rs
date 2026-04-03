@@ -2,8 +2,8 @@ use std::hint::black_box;
 
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::prelude::*;
-use pyo3::types::{PyList, PySequence};
+use pyforge::prelude::*;
+use pyforge::types::{PyList, PySequence};
 
 fn iter_list(b: &mut Bencher<'_>) {
     Python::attach(|py| {

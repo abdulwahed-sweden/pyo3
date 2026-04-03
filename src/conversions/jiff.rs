@@ -22,7 +22,7 @@
 //! # #![cfg_attr(windows, allow(unused_imports))]
 //! # use jiff_02 as jiff;
 //! use jiff::{Zoned, SignedDuration, ToSpan};
-//! use pyo3::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
+//! use pyforge::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
 //!
 //! # #[cfg(windows)]
 //! # fn main() -> () {}

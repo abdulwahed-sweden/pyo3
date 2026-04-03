@@ -14,8 +14,8 @@ use crate::{ffi, Bound, Py, PyAny, PyErr, PyResult};
 /// # Examples
 ///
 /// ```rust
-/// use pyo3::prelude::*;
-/// use pyo3::ffi::c_str;
+/// use pyforge::prelude::*;
+/// use pyforge::ffi::c_str;
 ///
 /// # fn main() -> PyResult<()> {
 /// Python::attach(|py| -> PyResult<()> {
@@ -63,7 +63,7 @@ impl PyIterator {
 
 /// Outcomes from sending a value into a python generator
 #[derive(Debug)]
-#[cfg(all(not(PyPy), Py_3_10))]
+#[cfg(Py_3_10)]
 pub enum PySendResult<'py> {
     /// The generator yielded a new value
     Next(Bound<'py, PyAny>),
@@ -71,7 +71,7 @@ pub enum PySendResult<'py> {
     Return(Bound<'py, PyAny>),
 }
 
-#[cfg(all(not(PyPy), Py_3_10))]
+#[cfg(Py_3_10)]
 impl<'py> Bound<'py, PyIterator> {
     /// Sends a value into a python generator. This is the equivalent of calling
     /// `generator.send(value)` in Python. This resumes the generator and continues its execution
@@ -160,10 +160,10 @@ impl<'py> IntoIterator for &Bound<'py, PyIterator> {
 #[cfg(test)]
 mod tests {
     use super::PyIterator;
-    #[cfg(all(not(PyPy), Py_3_10))]
+    #[cfg(Py_3_10)]
     use super::PySendResult;
     use crate::exceptions::PyTypeError;
-    #[cfg(all(not(PyPy), Py_3_10))]
+    #[cfg(Py_3_10)]
     use crate::types::PyNone;
     use crate::types::{PyAnyMethods, PyDict, PyList, PyListMethods};
     #[cfg(feature = "macros")]
@@ -258,7 +258,7 @@ def fibonacci(target):
     }
 
     #[test]
-    #[cfg(all(not(PyPy), Py_3_10))]
+    #[cfg(Py_3_10)]
     fn send_generator() {
         let generator = cr#"
 def gen():

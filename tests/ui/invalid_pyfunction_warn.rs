@@ -1,4 +1,4 @@
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pyfunction]
 #[pyo3(warn)]
@@ -9,11 +9,11 @@ fn no_parenthesis_deprecated() {}
 fn no_message_deprecated() {}
 
 #[pyfunction]
-#[pyo3(warn(category = pyo3::exceptions::PyDeprecationWarning))]
+#[pyo3(warn(category = pyforge::exceptions::PyDeprecationWarning))]
 fn no_message_deprecated_with_category() {}
 
 #[pyfunction]
-#[pyo3(warn(category = pyo3::exceptions::PyDeprecationWarning, message = ,))]
+#[pyo3(warn(category = pyforge::exceptions::PyDeprecationWarning, message = ,))]
 fn empty_message_deprecated_with_category() {}
 
 #[pyfunction]
@@ -39,7 +39,7 @@ impl DeprecatedMethodContainer {
 #[pymethods]
 impl DeprecatedMethodContainer {
     #[pyo3(warn(message = "deprecated __traverse__"))]
-    fn __traverse__(&self, _visit: pyo3::gc::PyVisit<'_>) -> Result<(), pyo3::PyTraverseError> {
+    fn __traverse__(&self, _visit: pyforge::gc::PyVisit<'_>) -> Result<(), pyforge::PyTraverseError> {
         Ok(())
     }
 }

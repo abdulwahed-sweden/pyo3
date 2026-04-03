@@ -1,14 +1,14 @@
 use crate::err::PyResult;
 use crate::ffi_ptr_ext::FfiPtrExt;
 use crate::py_result_ext::PyResultExt;
-#[cfg(any(PyPy, GraalPy, Py_LIMITED_API))]
+#[cfg(Py_LIMITED_API)]
 use crate::sync::PyOnceLock;
 use crate::types::any::PyAny;
-#[cfg(any(PyPy, GraalPy, Py_LIMITED_API))]
+#[cfg(Py_LIMITED_API)]
 use crate::types::typeobject::PyTypeMethods;
-#[cfg(any(PyPy, GraalPy, Py_LIMITED_API))]
+#[cfg(Py_LIMITED_API)]
 use crate::types::PyType;
-#[cfg(any(PyPy, GraalPy, Py_LIMITED_API))]
+#[cfg(Py_LIMITED_API)]
 use crate::Py;
 use crate::{ffi, Borrowed, Bound, BoundObject, IntoPyObject, IntoPyObjectExt};
 
@@ -20,10 +20,10 @@ use super::PyWeakrefMethods;
 #[repr(transparent)]
 pub struct PyWeakrefReference(PyAny);
 
-#[cfg(not(any(PyPy, GraalPy, Py_LIMITED_API)))]
+#[cfg(not(Py_LIMITED_API))]
 pyobject_subclassable_native_type!(PyWeakrefReference, ffi::PyWeakReference);
 
-#[cfg(not(any(PyPy, GraalPy, Py_LIMITED_API)))]
+#[cfg(not(Py_LIMITED_API))]
 pyobject_native_type!(
     PyWeakrefReference,
     ffi::PyWeakReference,
@@ -36,7 +36,7 @@ pyobject_native_type!(
 );
 
 // When targeting alternative or multiple interpreters, it is better to not use the internal API.
-#[cfg(any(PyPy, GraalPy, Py_LIMITED_API))]
+#[cfg(Py_LIMITED_API)]
 pyobject_native_type_core!(
     PyWeakrefReference,
     |py| {
@@ -65,8 +65,8 @@ impl PyWeakrefReference {
         all(feature = "macros", not(all(Py_LIMITED_API, not(Py_3_9)))),
         doc = "```rust"
     )]
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::PyWeakrefReference;
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::PyWeakrefReference;
     ///
     /// #[pyclass(weakref)]
     /// struct Foo { /* fields omitted */ }
@@ -113,9 +113,9 @@ impl PyWeakrefReference {
         all(feature = "macros", not(all(Py_LIMITED_API, not(Py_3_9)))),
         doc = "```rust"
     )]
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::PyWeakrefReference;
-    /// use pyo3::ffi::c_str;
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::PyWeakrefReference;
+    /// use pyforge::ffi::c_str;
     ///
     /// #[pyclass(weakref)]
     /// struct Foo { /* fields omitted */ }

@@ -1,10 +1,10 @@
 #![cfg(feature = "macros")]
 
-use pyo3::exceptions::{PyIndexError, PyValueError};
-use pyo3::types::{IntoPyDict, PyList, PyMapping, PySequence};
-use pyo3::{ffi, prelude::*};
+use pyforge::exceptions::{PyIndexError, PyValueError};
+use pyforge::types::{IntoPyDict, PyList, PyMapping, PySequence};
+use pyforge::{ffi, prelude::*};
 
-use pyo3::py_run;
+use pyforge::py_run;
 
 mod test_utils;
 
@@ -105,7 +105,7 @@ impl ByteSequence {
 }
 
 /// Return a dict with `s = ByteSequence([1, 2, 3])`.
-fn seq_dict(py: Python<'_>) -> Bound<'_, pyo3::types::PyDict> {
+fn seq_dict(py: Python<'_>) -> Bound<'_, pyforge::types::PyDict> {
     let d = [("ByteSequence", py.get_type::<ByteSequence>())]
         .into_py_dict(py)
         .unwrap();
@@ -383,7 +383,7 @@ impl GenericList {
 
     fn __getitem__(&self, idx: isize) -> PyResult<Py<PyAny>> {
         match self.items.get(idx as usize) {
-            Some(x) => pyo3::Python::attach(|py| Ok(x.clone_ref(py))),
+            Some(x) => pyforge::Python::attach(|py| Ok(x.clone_ref(py))),
             None => Err(PyIndexError::new_err("Index out of bounds")),
         }
     }
@@ -392,7 +392,7 @@ impl GenericList {
 #[cfg(Py_3_10)]
 #[test]
 fn test_generic_both_subscriptions_types() {
-    use pyo3::types::PyInt;
+    use pyforge::types::PyInt;
     use std::convert::Infallible;
 
     Python::attach(|py| {

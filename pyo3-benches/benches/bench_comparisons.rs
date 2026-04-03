@@ -1,6 +1,6 @@
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::{prelude::*, pyclass::CompareOp, Python};
+use pyforge::{prelude::*, pyclass::CompareOp, Python};
 
 #[pyclass]
 struct OrderedDunderMethods(i64);

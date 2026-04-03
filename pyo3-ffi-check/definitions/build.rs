@@ -20,7 +20,7 @@ impl bindgen::callbacks::ParseCallbacks for ParseCallbacks {
 }
 
 fn main() {
-    let config = pyo3_build_config::get();
+    let config = pyforge_build_config::get();
 
     let python_include_dir = config
         .run_python_script(

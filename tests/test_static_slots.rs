@@ -1,10 +1,10 @@
 #![cfg(feature = "macros")]
 
-use pyo3::exceptions::PyIndexError;
-use pyo3::prelude::*;
-use pyo3::types::IntoPyDict;
+use pyforge::exceptions::PyIndexError;
+use pyforge::prelude::*;
+use pyforge::types::IntoPyDict;
 
-use pyo3::py_run;
+use pyforge::py_run;
 
 mod test_utils;
 
@@ -36,7 +36,7 @@ impl Count5 {
 }
 
 /// Return a dict with `s = Count5()`.
-fn test_dict(py: Python<'_>) -> Bound<'_, pyo3::types::PyDict> {
+fn test_dict(py: Python<'_>) -> Bound<'_, pyforge::types::PyDict> {
     let d = [("Count5", py.get_type::<Count5>())]
         .into_py_dict(py)
         .unwrap();

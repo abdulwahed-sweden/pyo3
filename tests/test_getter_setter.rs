@@ -2,10 +2,10 @@
 
 use std::cell::Cell;
 
-use pyo3::prelude::*;
-use pyo3::py_run;
-use pyo3::types::PyString;
-use pyo3::types::{IntoPyDict, PyList};
+use pyforge::prelude::*;
+use pyforge::py_run;
+use pyforge::types::PyString;
+use pyforge::types::{IntoPyDict, PyList};
 
 mod test_utils;
 

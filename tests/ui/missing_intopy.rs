@@ -1,6 +1,6 @@
 struct Blah;
 
-#[pyo3::pyfunction]
+#[pyforge::pyfunction]
 fn blah() -> Blah {
     Blah
 }

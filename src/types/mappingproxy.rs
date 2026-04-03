@@ -414,7 +414,7 @@ mod tests {
         });
     }
 
-    #[cfg(not(any(PyPy, GraalPy)))]
+
     fn abc_mappingproxy(py: Python<'_>) -> Bound<'_, PyMappingProxy> {
         let mut map = HashMap::<&'static str, i32>::new();
         map.insert("a", 1);
@@ -425,7 +425,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(PyPy, GraalPy)))]
+
     fn mappingproxy_keys_view() {
         Python::attach(|py| {
             let mappingproxy = abc_mappingproxy(py);
@@ -435,7 +435,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(PyPy, GraalPy)))]
+
     fn mappingproxy_values_view() {
         Python::attach(|py| {
             let mappingproxy = abc_mappingproxy(py);
@@ -445,7 +445,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(PyPy, GraalPy)))]
+
     fn mappingproxy_items_view() {
         Python::attach(|py| {
             let mappingproxy = abc_mappingproxy(py);

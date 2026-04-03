@@ -76,7 +76,7 @@ Author set to **Abdulwahed Mansour** across all crates.
 
 ## Development Roadmap
 
-### Phase 1: Foundation (Current)
+### Phase 1: Foundation (COMPLETE)
 
 - [x] Rename all crates to `pyforge-*`
 - [x] Set sole authorship to Abdulwahed Mansour
@@ -84,10 +84,12 @@ Author set to **Abdulwahed Mansour** across all crates.
 - [x] Make async first-class
 - [x] Remove deprecated APIs
 - [x] Enforce CPython-only at build time
-- [ ] Full source rename (`pyo3` -> `pyforge` in all Rust code)
-- [ ] Remove `#[cfg(PyPy)]` and `#[cfg(GraalPy)]` code paths from source
-- [ ] Remove Python 3.8/3.9/3.10 compatibility shims from FFI
+- [x] Full source rename (`pyo3` -> `pyforge` in all Rust code)
+- [x] Remove ALL `#[cfg(PyPy)]` and `#[cfg(GraalPy)]` code paths (~925 blocks)
+- [x] Remove Python 3.8/3.9/3.10 compatibility shims from FFI
+- [x] 925 tests passing, zero compilation errors
 - [ ] Simplify CI matrix to CPython 3.11/3.12/3.13
+- [ ] Update UI test snapshots for renamed error messages
 
 ### Phase 2: Modern API Surface
 

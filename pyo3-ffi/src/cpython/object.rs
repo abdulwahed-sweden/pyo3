@@ -82,7 +82,6 @@ pub struct PyMappingMethods {
     pub mp_ass_subscript: Option<object::objobjargproc>,
 }
 
-#[cfg(Py_3_10)]
 pub type sendfunc = unsafe extern "C" fn(
     iter: *mut PyObject,
     value: *mut PyObject,
@@ -95,7 +94,6 @@ pub struct PyAsyncMethods {
     pub am_await: Option<object::unaryfunc>,
     pub am_aiter: Option<object::unaryfunc>,
     pub am_anext: Option<object::unaryfunc>,
-    #[cfg(Py_3_10)]
     pub am_send: Option<sendfunc>,
 }
 
@@ -180,7 +178,6 @@ pub struct PyTypeObject {
     pub tp_versions_used: u16,
 }
 
-#[cfg(Py_3_11)]
 #[repr(C)]
 #[derive(Clone)]
 struct _specialization_cache {
@@ -202,14 +199,11 @@ pub struct PyHeapTypeObject {
     pub ht_name: *mut object::PyObject,
     pub ht_slots: *mut object::PyObject,
     pub ht_qualname: *mut object::PyObject,
-    #[cfg(not(PyPy))]
     pub ht_cached_keys: *mut c_void,
     pub ht_module: *mut object::PyObject,
-    #[cfg(all(Py_3_11, not(PyPy)))]
     _ht_tpname: *mut c_char,
     #[cfg(Py_3_14)]
     pub ht_token: *mut c_void,
-    #[cfg(all(Py_3_11, not(PyPy)))]
     _spec_cache: _specialization_cache,
     #[cfg(all(Py_GIL_DISABLED, Py_3_14))]
     pub unique_id: Py_ssize_t,
@@ -230,7 +224,6 @@ extern_libpython! {
     #[cfg(Py_3_12)]
     pub fn PyType_GetDict(o: *mut PyTypeObject) -> *mut PyObject;
 
-    #[cfg_attr(PyPy, link_name = "PyPyObject_Print")]
     pub fn PyObject_Print(o: *mut PyObject, fp: *mut ::libc::FILE, flags: c_int) -> c_int;
 
     // skipped private _Py_BreakPoint
@@ -240,7 +233,6 @@ extern_libpython! {
 
     // skipped private _PyObject_GetDictPtr
     pub fn PyObject_CallFinalizer(arg1: *mut PyObject);
-    #[cfg_attr(PyPy, link_name = "PyPyObject_CallFinalizerFromDealloc")]
     pub fn PyObject_CallFinalizerFromDealloc(arg1: *mut PyObject) -> c_int;
 
     // skipped private _PyObject_GenericGetAttrWithDict

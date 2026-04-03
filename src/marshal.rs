@@ -22,8 +22,8 @@ pub const VERSION: i32 = 4;
 ///
 /// # Examples
 /// ```
-/// # use pyo3::{marshal, types::PyDict, prelude::PyDictMethods};
-/// # pyo3::Python::attach(|py| {
+/// # use pyforge::{marshal, types::PyDict, prelude::PyDictMethods};
+/// # pyforge::Python::attach(|py| {
 /// let dict = PyDict::new(py);
 /// dict.set_item("aap", "noot").unwrap();
 /// dict.set_item("mies", "wim").unwrap();

@@ -83,7 +83,7 @@ where
     /// # Examples
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// #[pyclass]
     /// struct Foo {/* fields omitted */}
@@ -119,8 +119,8 @@ impl<'py, T> Bound<'py, T> {
     /// # Example: Casting to a specific Python object
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::{PyDict, PyList};
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::{PyDict, PyList};
     ///
     /// Python::attach(|py| {
     ///     let dict = PyDict::new(py);
@@ -137,8 +137,8 @@ impl<'py, T> Bound<'py, T> {
     /// This is useful if you want to mutate a `Py<PyAny>` that might actually be a pyclass.
     ///
     /// ```rust
-    /// # fn main() -> Result<(), pyo3::PyErr> {
-    /// use pyo3::prelude::*;
+    /// # fn main() -> Result<(), pyforge::PyErr> {
+    /// use pyforge::prelude::*;
     ///
     /// #[pyclass]
     /// struct Class {
@@ -193,8 +193,8 @@ impl<'py, T> Bound<'py, T> {
     /// # Example
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::{PyDict, PyList};
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::{PyDict, PyList};
     ///
     /// Python::attach(|py| {
     ///     let obj: Bound<'_, PyAny> = PyDict::new(py).into_any();
@@ -244,8 +244,8 @@ impl<'py, T> Bound<'py, T> {
     /// # Example: Casting to a specific Python object but not a subtype
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::{PyBool, PyInt};
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::{PyBool, PyInt};
     ///
     /// Python::attach(|py| {
     ///     let b = PyBool::new(py, true);
@@ -525,7 +525,7 @@ where
     /// # Examples
     ///
     /// ```rust
-    /// # use pyo3::prelude::*;
+    /// # use pyforge::prelude::*;
     /// #
     /// #[pyclass]
     /// struct Foo {
@@ -561,7 +561,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// # use pyo3::prelude::*;
+    /// # use pyforge::prelude::*;
     /// #
     /// #[pyclass]
     /// struct Foo {
@@ -625,7 +625,7 @@ where
     ///
     /// ```
     /// use std::sync::atomic::{AtomicUsize, Ordering};
-    /// # use pyo3::prelude::*;
+    /// # use pyforge::prelude::*;
     ///
     /// #[pyclass(frozen)]
     /// struct FrozenCounter {
@@ -667,7 +667,7 @@ where
     ///
     /// ```rust
     /// # fn main() {
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// #[pyclass(subclass)]
     /// struct BaseClass;
@@ -719,7 +719,7 @@ where
     ///
     /// ```rust
     /// # fn main() {
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// #[pyclass(subclass)]
     /// struct BaseClass;
@@ -858,7 +858,7 @@ impl<'py, T> Bound<'py, T> {
     /// # Safety
     ///
     /// The reference is owned; when finished the caller should either transfer ownership
-    /// of the pointer or decrease the reference count (e.g. with [`pyo3::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
+    /// of the pointer or decrease the reference count (e.g. with [`pyforge::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
     #[inline]
     pub fn into_ptr(self) -> *mut ffi::PyObject {
         ManuallyDrop::new(self).as_ptr()
@@ -962,7 +962,7 @@ impl<'a, 'py, T> Borrowed<'a, 'py, T> {
     ///
     /// # Example
     /// ```
-    /// use pyo3::{prelude::*, types::PyTuple};
+    /// use pyforge::{prelude::*, types::PyTuple};
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -1083,7 +1083,7 @@ impl<'a, 'py, T> Borrowed<'a, 'py, T> {
     ///
     /// ```
     /// use std::sync::atomic::{AtomicUsize, Ordering};
-    /// # use pyo3::prelude::*;
+    /// # use pyforge::prelude::*;
     ///
     /// #[pyclass(frozen)]
     /// struct FrozenCounter {
@@ -1307,8 +1307,8 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 /// For example, this won't compile:
 ///
 /// ```compile_fail
-/// # use pyo3::prelude::*;
-/// # use pyo3::types::PyDict;
+/// # use pyforge::prelude::*;
+/// # use pyforge::types::PyDict;
 /// #
 /// #[pyclass]
 /// struct Foo<'py> {
@@ -1338,8 +1338,8 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 /// [`Py`]`<T>` can be used to get around this by removing the lifetime from `dict` and with it the proof of attachment.
 ///
 /// ```rust
-/// use pyo3::prelude::*;
-/// use pyo3::types::PyDict;
+/// use pyforge::prelude::*;
+/// use pyforge::types::PyDict;
 ///
 /// #[pyclass]
 /// struct Foo {
@@ -1359,7 +1359,7 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 /// #
 /// # fn main() -> PyResult<()> {
 /// #     Python::attach(|py| {
-/// #         let m = pyo3::types::PyModule::new(py, "test")?;
+/// #         let m = pyforge::types::PyModule::new(py, "test")?;
 /// #         m.add_class::<Foo>()?;
 /// #
 /// #         let foo: Bound<'_, Foo> = m.getattr("Foo")?.call0()?.cast_into()?;
@@ -1373,7 +1373,7 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 ///
 /// This can also be done with other pyclasses:
 /// ```rust
-/// use pyo3::prelude::*;
+/// use pyforge::prelude::*;
 ///
 /// #[pyclass]
 /// struct Bar {/* ... */}
@@ -1396,7 +1396,7 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 /// #
 /// # fn main() -> PyResult<()> {
 /// #     Python::attach(|py| {
-/// #         let m = pyo3::types::PyModule::new(py, "test")?;
+/// #         let m = pyforge::types::PyModule::new(py, "test")?;
 /// #         m.add_class::<Foo>()?;
 /// #
 /// #         let foo: Bound<'_, Foo> = m.getattr("Foo")?.call0()?.cast_into()?;
@@ -1419,8 +1419,8 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 /// is not attached to the Python interpreter (and is gated behind the `py-clone` feature flag).
 ///
 /// ```rust
-/// use pyo3::prelude::*;
-/// use pyo3::types::PyDict;
+/// use pyforge::prelude::*;
+/// use pyforge::types::PyDict;
 ///
 /// # fn main() {
 /// Python::attach(|py| {
@@ -1503,7 +1503,7 @@ where
     /// # Examples
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
+    /// use pyforge::prelude::*;
     ///
     /// #[pyclass]
     /// struct Foo {/* fields omitted */}
@@ -1541,7 +1541,7 @@ impl<T> Py<T> {
     /// # Safety
     ///
     /// The reference is owned; when finished the caller should either transfer ownership
-    /// of the pointer or decrease the reference count (e.g. with [`pyo3::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
+    /// of the pointer or decrease the reference count (e.g. with [`pyforge::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
     #[inline]
     pub fn into_ptr(self) -> *mut ffi::PyObject {
         ManuallyDrop::new(self).0.as_ptr()
@@ -1580,7 +1580,7 @@ where
     /// # Examples
     ///
     /// ```rust
-    /// # use pyo3::prelude::*;
+    /// # use pyforge::prelude::*;
     /// #
     /// #[pyclass]
     /// struct Foo {
@@ -1618,7 +1618,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// # use pyo3::prelude::*;
+    /// # use pyforge::prelude::*;
     /// #
     /// #[pyclass]
     /// struct Foo {
@@ -1690,7 +1690,7 @@ where
     ///
     /// ```
     /// use std::sync::atomic::{AtomicUsize, Ordering};
-    /// # use pyo3::prelude::*;
+    /// # use pyforge::prelude::*;
     ///
     /// #[pyclass(frozen)]
     /// struct FrozenCounter {
@@ -1763,7 +1763,7 @@ impl<T> Py<T> {
     #[inline]
     #[deprecated(
         since = "0.29.0",
-        note = "use `pyo3::ffi::Py_REFCNT(obj.as_ptr())` instead"
+        note = "use `pyforge::ffi::Py_REFCNT(obj.as_ptr())` instead"
     )]
     pub fn get_refcnt(&self, py: Python<'_>) -> isize {
         self._get_refcnt(py)
@@ -1784,8 +1784,8 @@ impl<T> Py<T> {
     /// # Examples
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::PyDict;
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::PyDict;
     ///
     /// # fn main() {
     /// Python::attach(|py| {
@@ -1819,8 +1819,8 @@ impl<T> Py<T> {
     /// # Examples
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::PyDict;
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::PyDict;
     ///
     /// # fn main() {
     /// Python::attach(|py| {
@@ -1872,7 +1872,7 @@ impl<T> Py<T> {
     /// # Example: `intern!`ing the attribute name
     ///
     /// ```
-    /// # use pyo3::{prelude::*, intern};
+    /// # use pyforge::{prelude::*, intern};
     /// #
     /// #[pyfunction]
     /// fn version(sys: Py<PyModule>, py: Python<'_>) -> PyResult<Py<PyAny>> {
@@ -1901,7 +1901,7 @@ impl<T> Py<T> {
     /// # Example: `intern!`ing the attribute name
     ///
     /// ```
-    /// # use pyo3::{intern, pyfunction, types::PyModule, IntoPyObjectExt, Py, PyAny, Python, PyResult};
+    /// # use pyforge::{intern, pyfunction, types::PyModule, IntoPyObjectExt, Py, PyAny, Python, PyResult};
     /// #
     /// #[pyfunction]
     /// fn set_answer(ob: Py<PyAny>, py: Python<'_>) -> PyResult<()> {
@@ -2354,8 +2354,8 @@ impl Py<PyAny> {
     ///
     /// ```rust
     /// # #![allow(deprecated)]
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::{PyDict, PyList};
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::{PyDict, PyList};
     ///
     /// Python::attach(|py| {
     ///     let any = PyDict::new(py).into_any().unbind();
@@ -2371,8 +2371,8 @@ impl Py<PyAny> {
     ///
     /// ```rust
     /// # #![allow(deprecated)]
-    /// # fn main() -> Result<(), pyo3::PyErr> {
-    /// use pyo3::prelude::*;
+    /// # fn main() -> Result<(), pyforge::PyErr> {
+    /// use pyforge::prelude::*;
     ///
     /// #[pyclass]
     /// struct Class {
@@ -2431,8 +2431,8 @@ impl<T> Py<T> {
     /// # Example: Casting to a specific Python object
     ///
     /// ```rust
-    /// use pyo3::prelude::*;
-    /// use pyo3::types::{PyDict, PyList};
+    /// use pyforge::prelude::*;
+    /// use pyforge::types::{PyDict, PyList};
     ///
     /// Python::attach(|py| {
     ///     let any = PyDict::new(py).into_any().unbind();
@@ -2447,8 +2447,8 @@ impl<T> Py<T> {
     /// This is useful if you want to mutate a `Py<PyAny>` that might actually be a pyclass.
     ///
     /// ```rust
-    /// # fn main() -> Result<(), pyo3::PyErr> {
-    /// use pyo3::prelude::*;
+    /// # fn main() -> Result<(), pyforge::PyErr> {
+    /// use pyforge::prelude::*;
     ///
     /// #[pyclass]
     /// struct Class {

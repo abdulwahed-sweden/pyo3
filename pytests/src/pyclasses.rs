@@ -1,11 +1,11 @@
 use std::{thread, time};
 
-use pyo3::basic::CompareOp;
-use pyo3::exceptions::{PyAttributeError, PyStopIteration, PyValueError};
-use pyo3::prelude::*;
-use pyo3::types::{PyComplex, PyType};
-#[cfg(not(any(Py_LIMITED_API, GraalPy)))]
-use pyo3::types::{PyDict, PyTuple};
+use pyforge::basic::CompareOp;
+use pyforge::exceptions::{PyAttributeError, PyStopIteration, PyValueError};
+use pyforge::prelude::*;
+use pyforge::types::{PyComplex, PyType};
+#[cfg(not(Py_LIMITED_API))]
+use pyforge::types::{PyDict, PyTuple};
 
 #[pyclass(from_py_object)]
 #[derive(Clone, Default)]
@@ -108,11 +108,11 @@ impl ClassWithDict {
     }
 }
 
-#[cfg(not(any(Py_LIMITED_API, GraalPy)))] // Can't subclass native types on abi3 yet
+#[cfg(not(Py_LIMITED_API))] // Can't subclass native types on abi3 yet
 #[pyclass(extends = PyDict)]
 struct SubClassWithInit;
 
-#[cfg(not(any(Py_LIMITED_API, GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 #[pymethods]
 impl SubClassWithInit {
     #[new]
@@ -335,7 +335,7 @@ pub mod pyclasses {
     #[cfg(any(Py_3_10, not(Py_LIMITED_API)))]
     #[pymodule_export]
     use super::ClassWithDict;
-    #[cfg(not(any(Py_LIMITED_API, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     #[pymodule_export]
     use super::SubClassWithInit;
     #[pymodule_export]

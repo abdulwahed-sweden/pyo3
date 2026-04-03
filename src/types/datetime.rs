@@ -36,12 +36,12 @@ use std::ffi::c_int;
 
 #[cfg(not(Py_LIMITED_API))]
 fn ensure_datetime_api(py: Python<'_>) -> PyResult<&'static PyDateTime_CAPI> {
-    if let Some(api) = unsafe { pyo3_ffi::PyDateTimeAPI().as_ref() } {
+    if let Some(api) = unsafe { pyforge_ffi::PyDateTimeAPI().as_ref() } {
         Ok(api)
     } else {
         unsafe {
             PyDateTime_IMPORT();
-            pyo3_ffi::PyDateTimeAPI().as_ref()
+            pyforge_ffi::PyDateTimeAPI().as_ref()
         }
         .ok_or_else(|| PyErr::fetch(py))
     }

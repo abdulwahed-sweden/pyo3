@@ -2,9 +2,9 @@ use std::hint::black_box;
 
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
-use pyo3::intern;
+use pyforge::intern;
 
 fn getattr_direct(b: &mut Bencher<'_>) {
     Python::attach(|py| {

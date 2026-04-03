@@ -1,6 +1,6 @@
 #![deny(deprecated)]
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pymodule]
 fn module_with_pyfn(m: &Bound<'_, PyModule>) -> PyResult<()> {

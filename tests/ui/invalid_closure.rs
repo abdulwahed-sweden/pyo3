@@ -1,5 +1,5 @@
-use pyo3::prelude::*;
-use pyo3::types::{PyCFunction, PyDict, PyTuple};
+use pyforge::prelude::*;
+use pyforge::types::{PyCFunction, PyDict, PyTuple};
 
 fn main() {
     let fun: Py<PyCFunction> = Python::attach(|py| {

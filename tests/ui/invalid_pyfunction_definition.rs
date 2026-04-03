@@ -1,6 +1,6 @@
-#[pyo3::pymodule]
+#[pyforge::pymodule]
 mod pyo3_scratch {
-    use pyo3::prelude::*;
+    use pyforge::prelude::*;
 
     #[pyclass]
     struct Foo {}

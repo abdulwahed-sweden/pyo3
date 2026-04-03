@@ -2,8 +2,8 @@ use std::hint::black_box;
 
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::prelude::*;
-use pyo3::types::{PyList, PySequence, PyTuple};
+use pyforge::prelude::*;
+use pyforge::types::{PyList, PySequence, PyTuple};
 
 fn iter_tuple(b: &mut Bencher<'_>) {
     Python::attach(|py| {
@@ -39,7 +39,7 @@ fn tuple_get_item(b: &mut Bencher<'_>) {
     });
 }
 
-#[cfg(not(any(Py_LIMITED_API, PyPy)))]
+#[cfg(not(Py_LIMITED_API))]
 fn tuple_get_item_unchecked(b: &mut Bencher<'_>) {
     Python::attach(|py| {
         const LEN: usize = 50_000;
@@ -72,7 +72,7 @@ fn tuple_get_borrowed_item(b: &mut Bencher<'_>) {
     });
 }
 
-#[cfg(not(any(Py_LIMITED_API, PyPy)))]
+#[cfg(not(Py_LIMITED_API))]
 fn tuple_get_borrowed_item_unchecked(b: &mut Bencher<'_>) {
     Python::attach(|py| {
         const LEN: usize = 50_000;
@@ -157,10 +157,10 @@ fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("tuple_get_item", tuple_get_item);
     c.bench_function("tuple_nth", tuple_nth);
     c.bench_function("tuple_nth_back", tuple_nth_back);
-    #[cfg(not(any(Py_LIMITED_API, PyPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     c.bench_function("tuple_get_item_unchecked", tuple_get_item_unchecked);
     c.bench_function("tuple_get_borrowed_item", tuple_get_borrowed_item);
-    #[cfg(not(any(Py_LIMITED_API, PyPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     c.bench_function(
         "tuple_get_borrowed_item_unchecked",
         tuple_get_borrowed_item_unchecked,

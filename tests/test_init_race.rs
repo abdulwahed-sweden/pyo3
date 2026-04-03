@@ -1,7 +1,7 @@
 #![cfg(not(any(PyPy, GraalPy)))]
 #![cfg(not(target_arch = "wasm32"))]
 
-use pyo3::types::PyAnyMethods;
+use pyforge::types::PyAnyMethods;
 
 // Regression test for `try_attach` fast-path returning before site.py had
 // finished initializing.
@@ -23,11 +23,11 @@ fn test_concurrent_init_site_race() {
 
     std::thread::scope(|s| {
         s.spawn(|| {
-            pyo3::Python::initialize();
+            pyforge::Python::initialize();
         });
 
         s.spawn(|| loop {
-            let result = pyo3::Python::try_attach(|py| {
+            let result = pyforge::Python::try_attach(|py| {
                 let done = py
                     .import("sys")
                     .unwrap()

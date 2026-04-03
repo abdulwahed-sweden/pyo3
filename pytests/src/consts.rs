@@ -1,8 +1,8 @@
-use pyo3::pymodule;
+use pyforge::pymodule;
 
 #[pymodule]
 pub mod consts {
-    use pyo3::{pyclass, pymethods};
+    use pyforge::{pyclass, pymethods};
 
     /// Exports PI constant as part of the module
     #[pymodule_export]

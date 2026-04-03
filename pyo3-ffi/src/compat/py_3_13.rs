@@ -7,7 +7,7 @@ compat_function!(
         key: *mut crate::PyObject,
         result: *mut *mut crate::PyObject,
     ) -> std::ffi::c_int {
-        use crate::{compat::Py_NewRef, PyDict_GetItemWithError, PyErr_Occurred};
+        use crate::{Py_NewRef, PyDict_GetItemWithError, PyErr_Occurred};
 
         let item = PyDict_GetItemWithError(dp, key);
         if !item.is_null() {
@@ -45,7 +45,7 @@ compat_function!(
     pub unsafe fn PyImport_AddModuleRef(
         name: *const std::ffi::c_char,
     ) -> *mut crate::PyObject {
-        use crate::{compat::Py_XNewRef, PyImport_AddModule};
+        use crate::{Py_XNewRef, PyImport_AddModule};
 
         Py_XNewRef(PyImport_AddModule(name))
     }
@@ -60,7 +60,7 @@ compat_function!(
         pobj: *mut *mut crate::PyObject,
     ) -> std::ffi::c_int {
         use crate::{
-            compat::Py_NewRef, PyErr_SetString, PyExc_TypeError, PyWeakref_Check,
+            Py_NewRef, PyErr_SetString, PyExc_TypeError, PyWeakref_Check,
             PyWeakref_GetObject, Py_None,
         };
 
@@ -114,7 +114,7 @@ compat_function!(
         name: *const std::ffi::c_char,
         value: *mut crate::PyObject,
     ) -> std::ffi::c_int {
-        let result = crate::compat::PyModule_AddObjectRef(module, name, value);
+        let result = crate::PyModule_AddObjectRef(module, name, value);
         crate::Py_XDECREF(value);
         result
     }

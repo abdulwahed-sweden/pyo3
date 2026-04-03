@@ -1,9 +1,7 @@
 use crate::object::*;
 use crate::pyport::Py_ssize_t;
 
-#[cfg(not(GraalPy))]
 use crate::PyCodeObject;
-#[cfg(not(GraalPy))]
 use std::ffi::c_char;
 use std::ffi::{c_int, c_void};
 
@@ -64,28 +62,18 @@ pub const CO_FUTURE_GENERATOR_STOP: c_int = 0x8_0000;
 
 pub const CO_MAXBLOCKS: usize = 20;
 
-#[cfg(not(PyPy))]
 extern_libpython! {
     pub static mut PyCode_Type: PyTypeObject;
 }
 
 #[inline]
-#[cfg(not(PyPy))]
 pub unsafe fn PyCode_Check(op: *mut PyObject) -> c_int {
     (Py_TYPE(op) == &raw mut PyCode_Type) as c_int
-}
-
-extern_libpython! {
-    #[cfg(PyPy)]
-    #[link_name = "PyPyCode_Check"]
-    pub fn PyCode_Check(op: *mut PyObject) -> c_int;
 }
 
 // skipped PyCode_GetNumFree (requires knowledge of code object layout)
 
 extern_libpython! {
-    #[cfg(not(GraalPy))]
-    #[cfg_attr(PyPy, link_name = "PyPyCode_New")]
     pub fn PyCode_New(
         argcount: c_int,
         kwonlyargcount: c_int,
@@ -103,7 +91,6 @@ extern_libpython! {
         firstlineno: c_int,
         lnotab: *mut PyObject,
     ) -> *mut PyCodeObject;
-    #[cfg(not(GraalPy))]
     pub fn PyCode_NewWithPosOnlyArgs(
         argcount: c_int,
         posonlyargcount: c_int,
@@ -122,14 +109,11 @@ extern_libpython! {
         firstlineno: c_int,
         lnotab: *mut PyObject,
     ) -> *mut PyCodeObject;
-    #[cfg(not(GraalPy))]
-    #[cfg_attr(PyPy, link_name = "PyPyCode_NewEmpty")]
     pub fn PyCode_NewEmpty(
         filename: *const c_char,
         funcname: *const c_char,
         firstlineno: c_int,
     ) -> *mut PyCodeObject;
-    #[cfg(not(GraalPy))]
     pub fn PyCode_Addr2Line(arg1: *mut PyCodeObject, arg2: c_int) -> c_int;
     // skipped PyCodeAddressRange "for internal use only"
     // skipped _PyCode_CheckLineNumber

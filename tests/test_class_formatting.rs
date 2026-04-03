@@ -1,7 +1,7 @@
 #![cfg(feature = "macros")]
 
-use pyo3::prelude::*;
-use pyo3::py_run;
+use pyforge::prelude::*;
+use pyforge::py_run;
 use std::fmt::{Display, Formatter};
 
 mod test_utils;

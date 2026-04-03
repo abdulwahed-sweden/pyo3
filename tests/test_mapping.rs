@@ -2,13 +2,13 @@
 
 use std::collections::HashMap;
 
-use pyo3::exceptions::PyKeyError;
-use pyo3::prelude::*;
-use pyo3::py_run;
-use pyo3::types::IntoPyDict;
-use pyo3::types::PyList;
-use pyo3::types::PyMapping;
-use pyo3::types::PySequence;
+use pyforge::exceptions::PyKeyError;
+use pyforge::prelude::*;
+use pyforge::py_run;
+use pyforge::types::IntoPyDict;
+use pyforge::types::PyList;
+use pyforge::types::PyMapping;
+use pyforge::types::PySequence;
 
 mod test_utils;
 
@@ -74,7 +74,7 @@ impl Mapping {
 }
 
 /// Return a dict with `m = Mapping(['1', '2', '3'])`.
-fn map_dict(py: Python<'_>) -> Bound<'_, pyo3::types::PyDict> {
+fn map_dict(py: Python<'_>) -> Bound<'_, pyforge::types::PyDict> {
     let d = [("Mapping", py.get_type::<Mapping>())]
         .into_py_dict(py)
         .unwrap();

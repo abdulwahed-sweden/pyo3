@@ -4,7 +4,6 @@ use std::ffi::{c_char, c_int};
 extern_libpython! {
     pub fn PyCodec_Register(search_function: *mut PyObject) -> c_int;
     #[cfg(Py_3_10)]
-    #[cfg(not(PyPy))]
     pub fn PyCodec_Unregister(search_function: *mut PyObject) -> c_int;
     // skipped non-limited _PyCodec_Lookup from Include/codecs.h
     // skipped non-limited _PyCodec_Forget from Include/codecs.h
@@ -26,12 +25,10 @@ extern_libpython! {
     // skipped non-limited _PyCodecInfo_GetIncrementalEncoder from Include/codecs.h
     pub fn PyCodec_Encoder(encoding: *const c_char) -> *mut PyObject;
     pub fn PyCodec_Decoder(encoding: *const c_char) -> *mut PyObject;
-    #[cfg_attr(PyPy, link_name = "PyPyCodec_IncrementalEncoder")]
     pub fn PyCodec_IncrementalEncoder(
         encoding: *const c_char,
         errors: *const c_char,
     ) -> *mut PyObject;
-    #[cfg_attr(PyPy, link_name = "PyPyCodec_IncrementalDecoder")]
     pub fn PyCodec_IncrementalDecoder(
         encoding: *const c_char,
         errors: *const c_char,

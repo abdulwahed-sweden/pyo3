@@ -23,5 +23,5 @@
 #[cfg(test)]
 mod tests;
 
-//  reexport raw bindings exposed in pyo3_ffi
-pub use pyo3_ffi::*;
+//  reexport raw bindings exposed in pyforge_ffi
+pub use pyforge_ffi::*;

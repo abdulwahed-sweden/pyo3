@@ -14,13 +14,9 @@ extern_libpython! {
         arg7: *const c_char,
         arg8: c_int,
     ) -> *mut PyObject;
-    #[cfg_attr(PyPy, link_name = "PyPyFile_GetLine")]
     pub fn PyFile_GetLine(arg1: *mut PyObject, arg2: c_int) -> *mut PyObject;
-    #[cfg_attr(PyPy, link_name = "PyPyFile_WriteObject")]
     pub fn PyFile_WriteObject(arg1: *mut PyObject, arg2: *mut PyObject, arg3: c_int) -> c_int;
-    #[cfg_attr(PyPy, link_name = "PyPyFile_WriteString")]
     pub fn PyFile_WriteString(arg1: *const c_char, arg2: *mut PyObject) -> c_int;
-    #[cfg_attr(PyPy, link_name = "PyPyFile_AsFileDescriptor")]
     pub fn PyObject_AsFileDescriptor(arg1: *mut PyObject) -> c_int;
 }
 

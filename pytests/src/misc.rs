@@ -1,4 +1,4 @@
-use pyo3::{
+use pyforge::{
     prelude::*,
     types::{PyDict, PyString},
 };

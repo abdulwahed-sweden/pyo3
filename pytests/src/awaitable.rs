@@ -5,12 +5,12 @@
 //! when awaited, see guide examples related to pyo3-async-runtimes for ways
 //! to suspend tasks and await results.
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pymodule]
 pub mod awaitable {
-    use pyo3::exceptions::PyStopIteration;
-    use pyo3::prelude::*;
+    use pyforge::exceptions::PyStopIteration;
+    use pyforge::prelude::*;
 
     #[pyclass]
     #[derive(Debug)]

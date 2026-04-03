@@ -1,12 +1,12 @@
 //! Test for [#220](https://github.com/PyO3/pyo3/issues/220)
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pymodule(gil_used = false)]
 pub mod subclassing {
-    use pyo3::prelude::*;
-    #[cfg(not(any(Py_LIMITED_API, GraalPy)))]
-    use pyo3::types::PyDict;
+    use pyforge::prelude::*;
+    #[cfg(not(Py_LIMITED_API))]
+    use pyforge::types::PyDict;
 
     #[pyclass(subclass)]
     pub struct Subclassable {}
@@ -38,11 +38,11 @@ pub mod subclassing {
         }
     }
 
-    #[cfg(not(any(Py_LIMITED_API, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     #[pyclass(extends = PyDict)]
     pub struct SubDict {}
 
-    #[cfg(not(any(Py_LIMITED_API, GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     #[pymethods]
     impl SubDict {
         #[new]

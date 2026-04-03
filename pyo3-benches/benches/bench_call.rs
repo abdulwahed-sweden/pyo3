@@ -2,9 +2,9 @@ use std::hint::black_box;
 
 use codspeed_criterion_compat::{criterion_group, criterion_main, Bencher, Criterion};
 
-use pyo3::ffi::c_str;
-use pyo3::prelude::*;
-use pyo3::types::IntoPyDict;
+use pyforge::ffi::c_str;
+use pyforge::prelude::*;
+use pyforge::types::IntoPyDict;
 
 macro_rules! test_module {
     ($py:ident, $code:literal) => {

@@ -2,7 +2,7 @@ use crate::err::{self, PyResult};
 use crate::instance::Borrowed;
 #[cfg(not(Py_3_13))]
 use crate::pybacked::PyBackedStr;
-#[cfg(any(Py_LIMITED_API, PyPy, not(Py_3_13)))]
+#[cfg(any(Py_LIMITED_API, not(Py_3_13)))]
 use crate::types::any::PyAnyMethods;
 use crate::types::PyTuple;
 use crate::{ffi, Bound, PyAny, PyTypeInfo, Python};
@@ -200,14 +200,14 @@ impl<'py> PyTypeMethods<'py> for Bound<'py, PyType> {
     }
 
     fn mro(&self) -> Bound<'py, PyTuple> {
-        #[cfg(any(Py_LIMITED_API, PyPy))]
+        #[cfg(Py_LIMITED_API)]
         let mro = self
             .getattr(intern!(self.py(), "__mro__"))
             .expect("Cannot get `__mro__` from object.")
             .extract()
             .expect("Unexpected type in `__mro__` attribute.");
 
-        #[cfg(not(any(Py_LIMITED_API, PyPy)))]
+        #[cfg(not(Py_LIMITED_API))]
         let mro = unsafe {
             use crate::ffi_ptr_ext::FfiPtrExt;
             (*self.as_type_ptr())
@@ -221,14 +221,14 @@ impl<'py> PyTypeMethods<'py> for Bound<'py, PyType> {
     }
 
     fn bases(&self) -> Bound<'py, PyTuple> {
-        #[cfg(any(Py_LIMITED_API, PyPy))]
+        #[cfg(Py_LIMITED_API)]
         let bases = self
             .getattr(intern!(self.py(), "__bases__"))
             .expect("Cannot get `__bases__` from object.")
             .extract()
             .expect("Unexpected type in `__bases__` attribute.");
 
-        #[cfg(not(any(Py_LIMITED_API, PyPy)))]
+        #[cfg(not(Py_LIMITED_API))]
         let bases = unsafe {
             use crate::ffi_ptr_ext::FfiPtrExt;
             (*self.as_type_ptr())
@@ -248,7 +248,7 @@ mod tests {
     use crate::types::{PyAnyMethods, PyBool, PyInt, PyModule, PyTuple, PyType, PyTypeMethods};
     use crate::PyAny;
     use crate::Python;
-    use pyo3_ffi::c_str;
+    use pyforge_ffi::c_str;
 
     #[test]
     fn test_type_is_subclass() {

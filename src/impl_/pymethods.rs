@@ -309,8 +309,8 @@ impl PyDeleterDef {
 /// NB cannot accept `'static` visitor, this is a sanity check below:
 ///
 /// ```rust,compile_fail
-/// use pyo3::prelude::*;
-/// use pyo3::pyclass::{PyTraverseError, PyVisit};
+/// use pyforge::prelude::*;
+/// use pyforge::pyclass::{PyTraverseError, PyVisit};
 ///
 /// #[pyclass]
 /// struct Foo;
@@ -326,8 +326,8 @@ impl PyDeleterDef {
 /// Elided lifetime should compile ok:
 ///
 /// ```rust,no_run
-/// use pyo3::prelude::*;
-/// use pyo3::pyclass::{PyTraverseError, PyVisit};
+/// use pyforge::prelude::*;
+/// use pyforge::pyclass::{PyTraverseError, PyVisit};
 ///
 /// #[pyclass]
 /// struct Foo;

@@ -1,5 +1,5 @@
-use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyTuple};
+use pyforge::prelude::*;
+use pyforge::types::{PyDict, PyTuple};
 
 #[pyfunction(signature = ())]
 fn none() {}

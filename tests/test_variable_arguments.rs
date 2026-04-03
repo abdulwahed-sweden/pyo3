@@ -1,7 +1,7 @@
 #![cfg(feature = "macros")]
 
-use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyTuple};
+use pyforge::prelude::*;
+use pyforge::types::{PyDict, PyTuple};
 
 mod test_utils;
 

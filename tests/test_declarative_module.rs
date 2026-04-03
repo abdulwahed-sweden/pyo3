@@ -2,17 +2,17 @@
 
 use std::sync::OnceLock;
 
-use pyo3::create_exception;
-use pyo3::exceptions::PyException;
-use pyo3::prelude::*;
-use pyo3::sync::OnceLockExt;
+use pyforge::create_exception;
+use pyforge::exceptions::PyException;
+use pyforge::prelude::*;
+use pyforge::sync::OnceLockExt;
 
 mod test_utils;
 
 mod some_module {
-    use pyo3::create_exception;
-    use pyo3::exceptions::PyException;
-    use pyo3::prelude::*;
+    use pyforge::create_exception;
+    use pyforge::exceptions::PyException;
+    use pyforge::prelude::*;
 
     #[pyclass]
     pub struct SomePyClass;
@@ -136,7 +136,7 @@ mod declarative_module {
         struct Struct;
     }
 
-    #[pyo3::prelude::pymodule]
+    #[pyforge::prelude::pymodule]
     mod full_path_inner {}
 
     #[pymodule_init]
@@ -166,7 +166,7 @@ fn declarative_module(py: Python<'_>) -> &Bound<'_, PyModule> {
     static MODULE: OnceLock<Py<PyModule>> = OnceLock::new();
 
     MODULE
-        .get_or_init_py_attached(py, || pyo3::wrap_pymodule!(declarative_module)(py))
+        .get_or_init_py_attached(py, || pyforge::wrap_pymodule!(declarative_module)(py))
         .bind(py)
 }
 
@@ -235,7 +235,7 @@ mod r#type {
 #[test]
 fn test_raw_ident_module() {
     Python::attach(|py| {
-        let m = pyo3::wrap_pymodule!(r#type)(py).into_bound(py);
+        let m = pyforge::wrap_pymodule!(r#type)(py).into_bound(py);
         py_assert!(py, m, "m.double(2) == 4");
     })
 }

@@ -140,7 +140,6 @@ pub trait PySequenceMethods<'py>: crate::sealed::Sealed {
 
     /// Returns the number of occurrences of `value` in self, that is, return the
     /// number of keys for which `self[key] == value`.
-    #[cfg(not(PyPy))]
     fn count<V>(&self, value: V) -> PyResult<usize>
     where
         V: IntoPyObject<'py>;
@@ -282,7 +281,6 @@ impl<'py> PySequenceMethods<'py> for Bound<'py, PySequence> {
     }
 
     #[inline]
-    #[cfg(not(PyPy))]
     fn count<V>(&self, value: V) -> PyResult<usize>
     where
         V: IntoPyObject<'py>,
@@ -567,7 +565,6 @@ mod tests {
     }
 
     #[test]
-    #[cfg(not(any(PyPy, GraalPy)))]
     fn test_seq_count() {
         Python::attach(|py| {
             let v: Vec<i32> = vec![1, 1, 2, 3, 5, 8];

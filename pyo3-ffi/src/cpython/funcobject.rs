@@ -1,7 +1,7 @@
 use crate::PyObject;
 use std::ffi::c_int;
 
-#[cfg(all(not(any(PyPy, GraalPy)), not(Py_3_10)))]
+#[cfg(not(Py_3_10))]
 #[repr(C)]
 pub struct PyFunctionObject {
     pub ob_base: PyObject,
@@ -20,7 +20,7 @@ pub struct PyFunctionObject {
     pub vectorcall: Option<crate::vectorcallfunc>,
 }
 
-#[cfg(all(not(any(PyPy, GraalPy)), Py_3_10))]
+#[cfg(Py_3_10)]
 #[repr(C)]
 pub struct PyFunctionObject {
     pub ob_base: PyObject,
@@ -46,20 +46,7 @@ pub struct PyFunctionObject {
     pub func_version: u32,
 }
 
-#[cfg(PyPy)]
-#[repr(C)]
-pub struct PyFunctionObject {
-    pub ob_base: PyObject,
-    pub func_name: *mut PyObject,
-}
-
-#[cfg(GraalPy)]
-pub struct PyFunctionObject {
-    pub ob_base: PyObject,
-}
-
 extern_libpython! {
-    #[cfg_attr(PyPy, link_name = "PyPyFunction_Type")]
     pub static mut PyFunction_Type: crate::PyTypeObject;
 }
 

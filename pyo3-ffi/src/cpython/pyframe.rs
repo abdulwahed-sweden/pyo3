@@ -1,4 +1,4 @@
-#[cfg(any(Py_3_11, all(Py_3_9, not(PyPy))))]
+#[cfg(Py_3_9)]
 use crate::PyFrameObject;
 use crate::{PyObject, PyTypeObject, Py_TYPE};
 #[cfg(Py_3_12)]
@@ -6,7 +6,7 @@ use std::ffi::c_char;
 use std::ffi::c_int;
 
 // NB used in `_PyEval_EvalFrameDefault`, maybe we remove this too.
-#[cfg(all(Py_3_11, not(PyPy)))]
+#[cfg(Py_3_11)]
 opaque_struct!(pub _PyInterpreterFrame);
 
 #[cfg(Py_3_13)]
@@ -42,7 +42,7 @@ pub unsafe fn PyFrameLocalsProxy_Check(op: *mut PyObject) -> c_int {
 }
 
 extern_libpython! {
-    #[cfg(all(Py_3_9, not(PyPy)))]
+    #[cfg(Py_3_9)]
     pub fn PyFrame_GetBack(frame: *mut PyFrameObject) -> *mut PyFrameObject;
 
     #[cfg(Py_3_11)]

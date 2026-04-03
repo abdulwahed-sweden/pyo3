@@ -1,7 +1,7 @@
 use crate::err::{error_on_minusone, PyResult};
 use crate::types::{any::PyAnyMethods, string::PyStringMethods, PyString};
 use crate::{ffi, Bound, PyAny};
-#[cfg(all(not(Py_LIMITED_API), not(PyPy), not(GraalPy)))]
+#[cfg(not(Py_LIMITED_API))]
 use crate::{types::PyFrame, PyTypeCheck, Python};
 
 /// Represents a Python traceback.
@@ -27,7 +27,7 @@ impl PyTraceback {
     ///
     /// The `next` is the next traceback in the direction of where the exception was raised
     /// or `None` if this is the last frame in the traceback.
-    #[cfg(all(not(Py_LIMITED_API), not(PyPy), not(GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     pub fn new<'py>(
         py: Python<'py>,
         next: Option<Bound<'py, PyTraceback>>,
@@ -60,7 +60,7 @@ pub trait PyTracebackMethods<'py>: crate::sealed::Sealed {
     /// The following code formats a Python traceback and exception pair from Rust:
     ///
     /// ```rust
-    /// # use pyo3::{Python, PyResult, prelude::PyTracebackMethods, ffi::c_str};
+    /// # use pyforge::{Python, PyResult, prelude::PyTracebackMethods, ffi::c_str};
     /// # let result: PyResult<()> =
     /// Python::attach(|py| {
     ///     let err = py
@@ -172,7 +172,7 @@ def f():
     }
 
     #[test]
-    #[cfg(all(not(Py_LIMITED_API), not(PyPy), not(GraalPy)))]
+    #[cfg(not(Py_LIMITED_API))]
     fn test_create_traceback() {
         Python::attach(|py| {
             let traceback = PyTraceback::new(

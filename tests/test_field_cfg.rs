@@ -1,6 +1,6 @@
 #![cfg(feature = "macros")]
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pyclass]
 struct CfgClass {
@@ -41,7 +41,7 @@ fn test_cfg() {
 fn test_cfg_simple_enum() {
     Python::attach(|py| {
         let simple = py.get_type::<CfgSimpleEnum>();
-        pyo3::py_run!(
+        pyforge::py_run!(
             py,
             simple,
             r#"

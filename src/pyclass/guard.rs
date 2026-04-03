@@ -47,8 +47,8 @@ use std::ptr::NonNull;
 /// - you need to access the pointer of the `PyClass`, or
 /// - you want to get a super class.
 /// ```
-/// # use pyo3::prelude::*;
-/// # use pyo3::PyClassGuard;
+/// # use pyforge::prelude::*;
+/// # use pyforge::PyClassGuard;
 /// #[pyclass(subclass)]
 /// struct Parent {
 ///     basename: &'static str,
@@ -74,7 +74,7 @@ use std::ptr::NonNull;
 /// }
 /// # Python::attach(|py| {
 /// #     let sub = Py::new(py, Child::new()).unwrap();
-/// #     pyo3::py_run!(py, sub, "assert sub.format() == 'Caterpillar(base: Butterfly)', sub.format()");
+/// #     pyforge::py_run!(py, sub, "assert sub.format() == 'Caterpillar(base: Butterfly)', sub.format()");
 /// # });
 /// ```
 ///
@@ -123,8 +123,8 @@ impl<'a, T: PyClass> PyClassGuard<'a, T> {
     /// # Examples
     ///
     /// ```
-    /// # use pyo3::prelude::*;
-    /// # use pyo3::PyClassGuard;
+    /// # use pyforge::prelude::*;
+    /// # use pyforge::PyClassGuard;
     ///
     /// #[pyclass]
     /// pub struct MyClass {
@@ -163,8 +163,8 @@ where
     ///
     /// # Examples
     /// ```
-    /// # use pyo3::prelude::*;
-    /// # use pyo3::PyClassGuard;
+    /// # use pyforge::prelude::*;
+    /// # use pyforge::PyClassGuard;
     /// #[pyclass(subclass)]
     /// struct Base {
     ///     base_name: &'static str,
@@ -196,7 +196,7 @@ where
     /// }
     /// # Python::attach(|py| {
     /// #     let sub = Py::new(py, Sub::new()).unwrap();
-    /// #     pyo3::py_run!(py, sub, "assert sub.format_name_lengths() == '9 8'")
+    /// #     pyforge::py_run!(py, sub, "assert sub.format_name_lengths() == '9 8'")
     /// # });
     /// ```
     pub fn as_super(&self) -> &PyClassGuard<'a, T::BaseType> {
@@ -211,8 +211,8 @@ where
     ///
     /// # Examples
     /// ```
-    /// # use pyo3::prelude::*;
-    /// # use pyo3::PyClassGuard;
+    /// # use pyforge::prelude::*;
+    /// # use pyforge::PyClassGuard;
     /// #[pyclass(subclass)]
     /// struct Base1 {
     ///     name1: &'static str,
@@ -244,7 +244,7 @@ where
     /// }
     /// # Python::attach(|py| {
     /// #     let sub = Py::new(py, Sub::new()).unwrap();
-    /// #     pyo3::py_run!(py, sub, "assert sub.name() == 'base1 base2 sub'")
+    /// #     pyforge::py_run!(py, sub, "assert sub.name() == 'base1 base2 sub'")
     /// # });
     /// ```
     pub fn into_super(self) -> PyClassGuard<'a, T::BaseType> {
@@ -399,7 +399,7 @@ impl From<PyClassGuardError<'_, '_>> for PyErr {
 /// arguments, and you won't need to use [`PyClassGuardMut`] directly:
 ///
 /// ```rust,no_run
-/// use pyo3::prelude::*;
+/// use pyforge::prelude::*;
 ///
 /// #[pyclass]
 /// struct Number {
@@ -418,7 +418,7 @@ impl From<PyClassGuardError<'_, '_>> for PyErr {
 /// function (and more), using [`PyClassGuardMut`] under the hood:
 ///
 /// ```rust,no_run
-/// # use pyo3::prelude::*;
+/// # use pyforge::prelude::*;
 /// # #[pyclass]
 /// # struct Number {
 /// #    inner: u32,
@@ -433,37 +433,37 @@ impl From<PyClassGuardError<'_, '_>> for PyErr {
 /// #
 /// // The function which is exported to Python looks roughly like the following
 /// unsafe extern "C" fn __pymethod_increment__(
-///     _slf: *mut ::pyo3::ffi::PyObject,
-///     _args: *mut ::pyo3::ffi::PyObject,
-/// ) -> *mut ::pyo3::ffi::PyObject {
+///     _slf: *mut ::pyforge::ffi::PyObject,
+///     _args: *mut ::pyforge::ffi::PyObject,
+/// ) -> *mut ::pyforge::ffi::PyObject {
 ///     unsafe fn inner<'py>(
-///         py: ::pyo3::Python<'py>,
-///         _slf: *mut ::pyo3::ffi::PyObject,
-///     ) -> ::pyo3::PyResult<*mut ::pyo3::ffi::PyObject> {
+///         py: ::pyforge::Python<'py>,
+///         _slf: *mut ::pyforge::ffi::PyObject,
+///     ) -> ::pyforge::PyResult<*mut ::pyforge::ffi::PyObject> {
 ///         let function = Number::increment;
 /// #       #[allow(clippy::let_unit_value)]
-///         let mut holder_0 = ::pyo3::impl_::extract_argument::FunctionArgumentHolder::INIT;
+///         let mut holder_0 = ::pyforge::impl_::extract_argument::FunctionArgumentHolder::INIT;
 ///         let result = {
-///             let ret = function(::pyo3::impl_::extract_argument::extract_pyclass_ref_mut::<Number>(
-///                 unsafe { ::pyo3::impl_::extract_argument::cast_function_argument(py, _slf) },
+///             let ret = function(::pyforge::impl_::extract_argument::extract_pyclass_ref_mut::<Number>(
+///                 unsafe { ::pyforge::impl_::extract_argument::cast_function_argument(py, _slf) },
 ///                 &mut holder_0,
 ///             )?);
 ///             {
 ///                 let result = {
 ///                     let obj = ret;
 /// #                   #[allow(clippy::useless_conversion)]
-///                     ::pyo3::impl_::wrap::converter(&obj)
+///                     ::pyforge::impl_::wrap::converter(&obj)
 ///                         .wrap(obj)
-///                         .map_err(::core::convert::Into::<::pyo3::PyErr>::into)
+///                         .map_err(::core::convert::Into::<::pyforge::PyErr>::into)
 ///                 };
-///                 ::pyo3::impl_::wrap::converter(&result).map_into_ptr(py, result)
+///                 ::pyforge::impl_::wrap::converter(&result).map_into_ptr(py, result)
 ///             }
 ///         };
 ///         result
 ///     }
 ///
 ///     unsafe {
-///         ::pyo3::impl_::trampoline::get_trampoline_function!(noargs, inner)(
+///         ::pyforge::impl_::trampoline::get_trampoline_function!(noargs, inner)(
 ///             _slf,
 ///             _args,
 ///         )
@@ -477,8 +477,8 @@ impl From<PyClassGuardError<'_, '_>> for PyErr {
 /// However, we *do* need [`PyClassGuardMut`] if we want to call its methods
 /// from Rust:
 /// ```rust
-/// # use pyo3::prelude::*;
-/// # use pyo3::{PyClassGuard, PyClassGuardMut};
+/// # use pyforge::prelude::*;
+/// # use pyforge::{PyClassGuard, PyClassGuardMut};
 /// #
 /// # #[pyclass]
 /// # struct Number {
@@ -519,7 +519,7 @@ impl From<PyClassGuardError<'_, '_>> for PyErr {
 /// arguments that may overlap. Suppose the following function that swaps the
 /// values of two `Number`s:
 /// ```
-/// # use pyo3::prelude::*;
+/// # use pyforge::prelude::*;
 /// # #[pyclass]
 /// # pub struct Number {
 /// #     inner: u32,
@@ -533,7 +533,7 @@ impl From<PyClassGuardError<'_, '_>> for PyErr {
 /// #         let n = Py::new(py, Number{inner: 35}).unwrap();
 /// #         let n2 = n.clone_ref(py);
 /// #         assert!(n.is(&n2));
-/// #         let fun = pyo3::wrap_pyfunction!(swap_numbers, py).unwrap();
+/// #         let fun = pyforge::wrap_pyfunction!(swap_numbers, py).unwrap();
 /// #         fun.call1((n, n2)).expect_err("Managed to create overlapping mutable references. Note: this is undefined behaviour.");
 /// #     });
 /// # }
@@ -550,8 +550,8 @@ impl From<PyClassGuardError<'_, '_>> for PyErr {
 ///
 /// It is better to write that function like this:
 /// ```rust
-/// # use pyo3::prelude::*;
-/// # use pyo3::{PyClassGuard, PyClassGuardMut};
+/// # use pyforge::prelude::*;
+/// # use pyforge::{PyClassGuard, PyClassGuardMut};
 /// # #[pyclass]
 /// # pub struct Number {
 /// #     inner: u32,
@@ -574,7 +574,7 @@ impl From<PyClassGuardError<'_, '_>> for PyErr {
 /// #         let n = Py::new(py, Number{inner: 35}).unwrap();
 /// #         let n2 = n.clone_ref(py);
 /// #         assert!(n.is(&n2));
-/// #         let fun = pyo3::wrap_pyfunction!(swap_numbers, py).unwrap();
+/// #         let fun = pyforge::wrap_pyfunction!(swap_numbers, py).unwrap();
 /// #         fun.call1((n, n2)).unwrap();
 /// #     });
 /// #
@@ -583,7 +583,7 @@ impl From<PyClassGuardError<'_, '_>> for PyErr {
 /// #         let n = Py::new(py, Number{inner: 35}).unwrap();
 /// #         let n2 = Py::new(py, Number{inner: 42}).unwrap();
 /// #         assert!(!n.is(&n2));
-/// #         let fun = pyo3::wrap_pyfunction!(swap_numbers, py).unwrap();
+/// #         let fun = pyforge::wrap_pyfunction!(swap_numbers, py).unwrap();
 /// #         fun.call1((&n, &n2)).unwrap();
 /// #         let n: u32 = n.extract::<PyClassGuard<'_, Number>>(py).unwrap().inner;
 /// #         let n2: u32 = n2.extract::<PyClassGuard<'_, Number>>(py).unwrap().inner;
@@ -635,8 +635,8 @@ impl<'a, T: PyClass<Frozen = False>> PyClassGuardMut<'a, T> {
     /// # Examples
     ///
     /// ```
-    /// # use pyo3::prelude::*;
-    /// # use pyo3::PyClassGuardMut;
+    /// # use pyforge::prelude::*;
+    /// # use pyforge::PyClassGuardMut;
     ///
     /// #[pyclass]
     /// pub struct MyClass {

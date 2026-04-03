@@ -29,7 +29,7 @@
 //! # // please file an issue if it breaks!
 //! use nalgebra::base::{dimension::Const, Matrix};
 //! use num_complex::Complex;
-//! use pyo3::prelude::*;
+//! use pyforge::prelude::*;
 //!
 //! type T = Complex<f64>;
 //!
@@ -51,7 +51,7 @@
 //! # // test
 //! # use assert_approx_eq::assert_approx_eq;
 //! # use nalgebra::ComplexField;
-//! # use pyo3::types::PyComplex;
+//! # use pyforge::types::PyComplex;
 //! #
 //! # fn main() -> PyResult<()> {
 //! #     Python::attach(|py| -> PyResult<()> {
@@ -163,7 +163,7 @@ macro_rules! complex_conversion {
             const INPUT_TYPE: PyStaticExpr = type_hint_identifier!("builtins", "complex");
 
             fn extract(obj: Borrowed<'_, '_, PyAny>) -> Result<Complex<$float>, Self::Error> {
-                #[cfg(not(any(Py_LIMITED_API, PyPy)))]
+                #[cfg(not(Py_LIMITED_API))]
                 unsafe {
                     let val = ffi::PyComplex_AsCComplex(obj.as_ptr());
                     if val.real == -1.0 {
@@ -174,7 +174,7 @@ macro_rules! complex_conversion {
                     Ok(Complex::new(val.real as $float, val.imag as $float))
                 }
 
-                #[cfg(any(Py_LIMITED_API, PyPy))]
+                #[cfg(Py_LIMITED_API)]
                 unsafe {
                     use $crate::types::any::PyAnyMethods;
                     let complex;

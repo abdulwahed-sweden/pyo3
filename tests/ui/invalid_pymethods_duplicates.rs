@@ -1,7 +1,7 @@
 //! These tests are located in a separate file because they cause conflicting implementation
 //! errors, which means other errors such as typechecking errors are not reported.
 
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pyclass]
 struct TwoNew {}

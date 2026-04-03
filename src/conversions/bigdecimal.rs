@@ -22,7 +22,7 @@
 //!
 //! ```rust
 //! use bigdecimal::BigDecimal;
-//! use pyo3::prelude::*;
+//! use pyforge::prelude::*;
 //!
 //! #[pyfunction]
 //! fn add_one(d: BigDecimal) -> BigDecimal {

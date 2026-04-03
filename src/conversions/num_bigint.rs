@@ -23,7 +23,7 @@
 //! in which case it will fail its conversion and raise `OverflowError`.
 //! ```rust,no_run
 //! use num_bigint::BigInt;
-//! use pyo3::prelude::*;
+//! use pyforge::prelude::*;
 //!
 //! #[pyfunction]
 //! fn add_one(n: BigInt) -> BigInt {
@@ -344,7 +344,7 @@ mod tests {
     use crate::exceptions::PyTypeError;
     use crate::test_utils::generate_unique_module_name;
     use crate::types::{PyAnyMethods as _, PyDict, PyModule};
-    use pyo3_ffi::c_str;
+    use pyforge_ffi::c_str;
 
     fn rust_fib<T>() -> impl Iterator<Item = T>
     where
