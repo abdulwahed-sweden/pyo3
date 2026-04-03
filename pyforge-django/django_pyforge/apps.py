@@ -7,6 +7,8 @@ The ready() hook verifies that the native extension loads correctly
 and logs the active version at startup.
 """
 
+__author__ = "Abdulwahed Mansour"
+
 from django.apps import AppConfig
 
 
@@ -21,7 +23,13 @@ class DjangoPyforgeConfig(AppConfig):
         """Verify the native extension loads and log the version."""
         import logging
 
-        from django_pyforge import __version__
-
         logger = logging.getLogger("django_pyforge")
-        logger.info("pyforge-django %s loaded — Rust acceleration active", __version__)
+
+        try:
+            from django_pyforge import __version__
+            logger.info("pyforge-django %s loaded — Rust acceleration active", __version__)
+        except ImportError:
+            logger.warning(
+                "pyforge-django native extension not found — "
+                "serialization will fall back to pure Python DRF"
+            )

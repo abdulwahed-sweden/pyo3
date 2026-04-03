@@ -6,11 +6,18 @@ Drop-in accelerators for Django REST Framework serializers and validators.
 Requires pyforge_django native extension (built via maturin).
 """
 
+__author__ = "Abdulwahed Mansour"
+__version__ = "0.1.0"
+
 try:
     from pyforge_django import (
+        ModelSchema,
         extract_model_fields,
+        serialize_batch,
         serialize_fields,
+        serialize_instance,
         validate_fields,
+        validate_instance,
         version,
     )
 except ImportError as exc:
@@ -19,9 +26,12 @@ except ImportError as exc:
         "Install with: pip install pyforge-django"
     ) from exc
 
-__version__ = version()
 __all__ = [
+    "ModelSchema",
     "extract_model_fields",
+    "serialize_instance",
+    "serialize_batch",
     "serialize_fields",
+    "validate_instance",
     "validate_fields",
 ]
