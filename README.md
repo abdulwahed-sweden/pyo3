@@ -14,28 +14,32 @@ Rust-accelerated serialization and validation for Django — drop-in, zero rewri
 PyForge moves Django REST Framework's serialization and validation hot paths
 from Python to Rust. It reads your existing Django model definitions, compiles
 a typed schema once at startup, and processes field values through Rust-native
-code on every request. The result is 3-8x faster API responses for list views,
-bulk operations, and any endpoint that touches more than a handful of records.
+code on every request. The result is 30-50x faster serialization and validation
+for list views, bulk operations, and any endpoint that touches more than a
+handful of records.
 
 It is designed for Django developers running production APIs on DRF who need
 better throughput without migrating to a different framework.
 
 ## Benchmarks
 
-Measured on CPython 3.12, Rust 1.93, macOS ARM64.
+Measured against DRF `ModelSerializer` — PyForge's actual replacement target.
+CPython 3.12, Django 6.0, in-memory SQLite, macOS.
 Model: 9-field `RentalApplication` (CharField, DecimalField, DateTimeField, UUIDField, etc.)
 
-| Scenario | Pure Python (est.) | PyForge | Speedup |
+| Scenario | DRF | PyForge | Speedup |
 |---|---|---|---|
-| Serialize 100 records | 1.5-2.5 ms | 340 µs | **3-5x** |
-| Serialize 1,000 records | 15-25 ms | 3.4 ms | **4-6x** |
-| Serialize 10,000 records | 150-250 ms | 40.4 ms | **4-6x** |
-| Validate 1,000 fields | 2-4 ms | 321 µs | **5-8x** |
-| Validate 10,000 fields (parallel) | 20-40 ms | ~3 ms | **6-10x** |
+| Serialize 100 instances | 40.8 ms | 1.2 ms | **33x** |
+| Serialize 1,000 instances | 475.2 ms | 14.6 ms | **33x** |
+| Validate 100 instances | 49.8 ms | 963 µs | **52x** |
+| Validate 1,000 instances | 506.0 ms | 10.2 ms | **50x** |
 
-Small batches (<10 records) show minimal gain due to the Python/Rust bridge overhead (~5-8µs per call).
+Benchmarks run against DRF ModelSerializer — PyForge's actual replacement target.
+Comparison against raw dict comprehensions is not meaningful.
+Small batches (<10 records) may show minimal gain due to Rust/Python bridge overhead.
+Database query time is not included — PyForge accelerates serialization and validation only.
 
-Full methodology and per-field-type breakdown: [BENCHMARKS.md](BENCHMARKS.md)
+Full methodology and reproduction steps: [BENCHMARKS.md](BENCHMARKS.md)
 
 ## Installation
 

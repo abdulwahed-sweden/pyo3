@@ -30,7 +30,7 @@ class MySerializer(RustSerializerMixin, serializers.ModelSerializer):
 
 ## Performance
 
-3-8x faster than pure Python DRF for 100+ record batches.
+30-50x faster than DRF ModelSerializer for 100+ record batches.
 
 See [BENCHMARKS.md](https://github.com/abdulwahed-sweden/pyforge/blob/main/BENCHMARKS.md) for full results.
 
