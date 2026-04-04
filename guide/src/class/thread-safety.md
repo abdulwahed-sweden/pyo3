@@ -23,7 +23,7 @@ Errors will be raised if the usage overlaps.
 For example, the below simple class is thread-safe:
 
 ```rust,no_run
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 
 #[pyclass]
 struct MyClass {
@@ -54,7 +54,7 @@ To remove the possibility of having overlapping `&self` and `&mut self` referenc
 For example, a thread-safe version of the above `MyClass` using atomic integers would be as follows:
 
 ```rust,no_run
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 use std::sync::atomic::{AtomicI32, Ordering};
 
 #[pyclass(frozen)]
@@ -82,7 +82,7 @@ An alternative to atomic data structures is to use [locks](https://doc.rust-lang
 For example, a thread-safe version of the above `MyClass` using locks would be as follows:
 
 ```rust,no_run
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 use std::sync::Mutex;
 
 struct MyClassInner {
@@ -118,4 +118,4 @@ In some cases, the data structures stored within a `#[pyclass]` may themselves n
 Rust will therefore not implement `Send` and `Sync` on the `#[pyclass]` type.
 
 To achieve thread-safety, a manual `Send` and `Sync` implementation is required which is `unsafe` and should only be done following careful review of the soundness of the implementation.
-Doing this for PyO3 types is no different than for any other Rust code, [the Rustonomicon](https://doc.rust-lang.org/nomicon/send-and-sync.html) has a great discussion on this.
+Doing this for PyForge types is no different than for any other Rust code, [the Rustonomicon](https://doc.rust-lang.org/nomicon/send-and-sync.html) has a great discussion on this.

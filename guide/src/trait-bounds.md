@@ -1,6 +1,6 @@
 # Using in Python a Rust function with trait bounds
 
-PyO3 allows for easy conversion from Rust to Python for certain functions and classes (see the [conversion table](conversions/tables.md)).
+PyForge allows for easy conversion from Rust to Python for certain functions and classes (see the [conversion table](conversions/tables.md)).
 However, it is not always straightforward to convert Rust code that requires a given trait implementation as an argument.
 
 This tutorial explains how to convert a Rust function that takes a trait as argument for use in Python with classes implementing the same methods as the trait.
@@ -44,7 +44,7 @@ Let's assume we have the following constraints:
 
 Rewriting it in Python would be cumbersome and error-prone, as everything is already available in Rust.
 
-How could we expose this solver to Python thanks to PyO3 ?
+How could we expose this solver to Python thanks to PyForge ?
 
 ## Implementation of the trait bounds for the Python class
 
@@ -70,8 +70,8 @@ The following wrapper will call the Python model from Rust, using a struct to ho
 
 ```rust,no_run
 # #![allow(dead_code)]
-use pyo3::prelude::*;
-use pyo3::types::PyList;
+use pyforge::prelude::*;
+use pyforge::types::PyList;
 
 # pub trait Model {
 #   fn set_variables(&mut self, inputs: &Vec<f64>);
@@ -119,7 +119,7 @@ impl Model for UserModel {
 ```
 
 Now that this bit is implemented, let's expose the model wrapper to Python.
-Let's add the PyO3 annotations and add a constructor:
+Let's add the PyForge annotations and add a constructor:
 
 ```rust,no_run
 # #![allow(dead_code)]
@@ -129,7 +129,7 @@ Let's add the PyO3 annotations and add a constructor:
 #   fn compute(&mut self);
 #   fn get_results(&self) -> Vec<f64>;
 # }
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 
 #[pyclass]
 struct UserModel {
@@ -151,7 +151,7 @@ mod trait_exposure {
 }
 ```
 
-Now we add the PyO3 annotations to the trait implementation:
+Now we add the PyForge annotations to the trait implementation:
 
 ```rust,ignore
 #[pymethods]
@@ -169,8 +169,8 @@ This wrapper will also perform the type conversions between Python and Rust.
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyo3::prelude::*;
-# use pyo3::types::PyList;
+# use pyforge::prelude::*;
+# use pyforge::types::PyList;
 #
 # pub trait Model {
 #   fn set_variables(&mut self, inputs: &Vec<f64>);
@@ -236,8 +236,8 @@ impl UserModel {
 }
 ```
 
-This wrapper handles the type conversion between the PyO3 requirements and the trait.
-In order to meet PyO3 requirements, this wrapper must:
+This wrapper handles the type conversion between the PyForge requirements and the trait.
+In order to meet PyForge requirements, this wrapper must:
 
 - return an object of type `PyResult`
 - use only values, not references in the method signatures
@@ -325,11 +325,11 @@ This call results in the following panic:
 pyo3_runtime.PanicException: called `Result::unwrap()` on an `Err` value: PyErr { type: Py(0x10dcf79f0, PhantomData) }
 ```
 
-This error code is not helpful for a Python user that does not know anything about Rust, or someone that does not know PyO3 was used to interface the Rust code.
+This error code is not helpful for a Python user that does not know anything about Rust, or someone that does not know PyForge was used to interface the Rust code.
 
 However, as we are responsible for making the Rust code available to Python, we can do something about it.
 
-The issue is that we called `unwrap` anywhere we could, and therefore any panic from PyO3 will be directly forwarded to the end user.
+The issue is that we called `unwrap` anywhere we could, and therefore any panic from PyForge will be directly forwarded to the end user.
 
 Let's modify the code performing the type conversion to give a helpful error message to the Python user:
 
@@ -337,8 +337,8 @@ We used in our `get_results` method the following call that performs the type co
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyo3::prelude::*;
-# use pyo3::types::PyList;
+# use pyforge::prelude::*;
+# use pyforge::types::PyList;
 #
 # pub trait Model {
 #   fn set_variables(&mut self, inputs: &Vec<f64>);
@@ -388,8 +388,8 @@ Let's break it down in order to perform better error handling:
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyo3::prelude::*;
-# use pyo3::types::PyList;
+# use pyforge::prelude::*;
+# use pyforge::types::PyList;
 #
 # pub trait Model {
 #   fn set_variables(&mut self, inputs: &Vec<f64>);
@@ -446,7 +446,7 @@ impl Model for UserModel {
 By doing so, you catch the result of the Python computation and check its type in order to be able to deliver a better error message before performing the unwrapping.
 
 Of course, it does not cover all the possible wrong outputs: the user could return a list of strings instead of a list of floats.
-In this case, a runtime panic would still occur due to PyO3, but with an error message much more difficult to decipher for non-rust user.
+In this case, a runtime panic would still occur due to PyForge, but with an error message much more difficult to decipher for non-rust user.
 
 It is up to the developer exposing the rust code to decide how much effort to invest into Python type error handling and improved error messages.
 
@@ -465,8 +465,8 @@ It is also required to make the struct public.
 ```rust,no_run
 # #![allow(dead_code)]
 # fn main() {}
-use pyo3::prelude::*;
-use pyo3::types::PyList;
+use pyforge::prelude::*;
+use pyforge::types::PyList;
 
 pub trait Model {
     fn set_variables(&mut self, var: &Vec<f64>);
@@ -479,7 +479,7 @@ pub fn solve<T: Model>(model: &mut T) {
 }
 
 #[pyfunction]
-#[pyo3(name = "solve")]
+#[pyforge(name = "solve")]
 pub fn solve_wrapper(model: &mut UserModel) {
     solve(model);
 }

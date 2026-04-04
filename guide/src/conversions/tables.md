@@ -2,11 +2,11 @@
 
 When writing functions callable from Python (such as a `#[pyfunction]` or in a `#[pymethods]` block), the trait `FromPyObject` is required for function arguments, and `IntoPyObject` is required for function return values.
 
-Consult the tables in the following section to find the Rust types provided by PyO3 which implement these traits.
+Consult the tables in the following section to find the Rust types provided by PyForge which implement these traits.
 
 ## Argument Types
 
-When accepting a function argument, it is possible to either use Rust library types or PyO3's Python-native types. (See the next section for discussion on when to use each.)
+When accepting a function argument, it is possible to either use Rust library types or PyForge's Python-native types. (See the next section for discussion on when to use each.)
 
 The table below contains the Python type and the corresponding function argument types that will accept them:
 
@@ -52,7 +52,7 @@ It is also worth remembering the following special types:
 | What             | Description                           |
 | ---------------- | ------------------------------------- |
 | `Python<'py>`    | A token used to prove attachment to the Python interpreter. |
-| `Bound<'py, T>`  | A Python object with a lifetime which binds it to the attachment to the Python interpreter. This provides access to most of PyO3's APIs. |
+| `Bound<'py, T>`  | A Python object with a lifetime which binds it to the attachment to the Python interpreter. This provides access to most of PyForge's APIs. |
 | `Py<T>`          | A Python object not connected to any lifetime of attachment to the Python interpreter. This can be sent to other threads. |
 | `PyRef<T>`       | A `#[pyclass]` borrowed immutably.    |
 | `PyRefMut<T>`    | A `#[pyclass]` borrowed mutably.      |
@@ -73,12 +73,12 @@ However, once that conversion cost has been paid, the Rust standard library type
   For example you can specify `Vec<i32>`, which will only accept a Python `list` containing integers.
   The Python-native equivalent, `&PyList`, would accept a Python `list` containing Python objects of any type.
 
-For most PyO3 usage the conversion cost is worth paying to get these benefits.
+For most PyForge usage the conversion cost is worth paying to get these benefits.
 As always, if you're not sure it's worth it in your case, benchmark it!
 
 ## Returning Rust values to Python
 
-When returning values from functions callable from Python, PyO3's smart pointers (`Py<T>`, `Bound<'py, T>`, and `Borrowed<'a, 'py, T>`) can be used with zero cost.
+When returning values from functions callable from Python, PyForge's smart pointers (`Py<T>`, `Bound<'py, T>`, and `Borrowed<'a, 'py, T>`) can be used with zero cost.
 
 Because `Bound<'py, T>` and `Borrowed<'a, 'py, T>` have lifetime parameters, the Rust compiler may ask for lifetime annotations to be added to your function.
 See the [section of the guide dedicated to this](../types.md#function-argument-lifetimes).

@@ -1,6 +1,6 @@
 # Conversion traits
 
-PyO3 provides some handy traits to convert between Python types and Rust types.
+PyForge provides some handy traits to convert between Python types and Rust types.
 
 ## `.extract()` and the `FromPyObject` trait
 
@@ -8,8 +8,8 @@ The easiest way to convert a Python object to a Rust value is using `.extract()`
 It returns a `PyResult` with a type error if the conversion fails, so usually you will use something like
 
 ```rust
-# use pyo3::prelude::*;
-# use pyo3::types::PyList;
+# use pyforge::prelude::*;
+# use pyforge::types::PyList;
 # fn main() -> PyResult<()> {
 #     Python::attach(|py| {
 #         let list = PyList::new(py, b"foo")?;
@@ -23,7 +23,7 @@ let v: Vec<i32> = list.extract()?;
 This method is available for many Python object types, and can produce a wide variety of Rust types, which you can check out in the implementor list of [`FromPyObject`].
 
 [`FromPyObject`] is also implemented for your own Rust types wrapped as Python objects (see [the chapter about classes](../class.md)).
-There, in order to both be able to operate on mutable references *and* satisfy Rust's rules of non-aliasing mutable references, you have to extract the PyO3 reference wrappers [`PyRef`] and [`PyRefMut`].
+There, in order to both be able to operate on mutable references *and* satisfy Rust's rules of non-aliasing mutable references, you have to extract the PyForge reference wrappers [`PyRef`] and [`PyRefMut`].
 They work like the reference wrappers of `std::cell::RefCell` and ensure (at runtime) that Rust borrows are allowed.
 
 ### Deriving [`FromPyObject`]
@@ -37,7 +37,7 @@ Derivation for empty enums, enum variants and structs is not supported.
 The derivation generates code that will attempt to access the attribute `my_string` on the Python object, i.e. `obj.getattr("my_string")`, and call `extract()` on the attribute.
 
 ```rust
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[derive(FromPyObject)]
 struct RustyStruct {
@@ -64,18 +64,18 @@ struct RustyStruct {
 # }
 ```
 
-By setting the `#[pyo3(item)]` attribute on the field, PyO3 will attempt to extract the value by calling the `get_item` method on the Python object.
+By setting the `#[pyforge(item)]` attribute on the field, PyForge will attempt to extract the value by calling the `get_item` method on the Python object.
 
 ```rust
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[derive(FromPyObject)]
 struct RustyStruct {
-    #[pyo3(item)]
+    #[pyforge(item)]
     my_string: String,
 }
 #
-# use pyo3::types::PyDict;
+# use pyforge::types::PyDict;
 # fn main() -> PyResult<()> {
 #     Python::attach(|py| -> PyResult<()> {
 #         let dict = PyDict::new(py);
@@ -91,13 +91,13 @@ struct RustyStruct {
 The argument passed to `getattr` and `get_item` can also be configured:
 
 ```rust
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[derive(FromPyObject)]
 struct RustyStruct {
-    #[pyo3(item("key"))]
+    #[pyforge(item("key"))]
     string_in_mapping: String,
-    #[pyo3(attribute("name"))]
+    #[pyforge(attribute("name"))]
     string_attr: String,
 }
 #
@@ -127,19 +127,19 @@ struct RustyStruct {
 This tries to extract `string_attr` from the attribute `name` and `string_in_mapping` from a mapping with the key `"key"`.
 The arguments for `attribute` are restricted to non-empty string literals while `item` can take any valid literal that implements `ToBorrowedObject`.
 
-You can use `#[pyo3(from_item_all)]` on a struct to extract every field with `get_item` method.
-In this case, you can't use `#[pyo3(attribute)]` or barely use `#[pyo3(item)]` on any field.
-However, using `#[pyo3(item("key"))]` to specify the key for a field is still allowed.
+You can use `#[pyforge(from_item_all)]` on a struct to extract every field with `get_item` method.
+In this case, you can't use `#[pyforge(attribute)]` or barely use `#[pyforge(item)]` on any field.
+However, using `#[pyforge(item("key"))]` to specify the key for a field is still allowed.
 
 ```rust
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[derive(FromPyObject)]
-#[pyo3(from_item_all)]
+#[pyforge(from_item_all)]
 struct RustyStruct {
     foo: String,
     bar: String,
-    #[pyo3(item("foobar"))]
+    #[pyforge(item("foobar"))]
     baz: String,
 }
 #
@@ -162,12 +162,12 @@ Tuple structs are also supported but do not allow customizing the extraction.
 The input is always assumed to be a Python tuple with the same length as the Rust type, the `n`th field is extracted from the `n`th item in the Python tuple.
 
 ```rust
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[derive(FromPyObject)]
 struct RustyTuple(String, String);
 
-# use pyo3::types::PyTuple;
+# use pyforge::types::PyTuple;
 # fn main() -> PyResult<()> {
 #     Python::attach(|py| -> PyResult<()> {
 #         let tuple = PyTuple::new(py, vec!["test", "test2"])?;
@@ -185,12 +185,12 @@ Tuple structs with a single field are treated as wrapper types which are describ
 To override this behaviour and ensure that the input is in fact a tuple, specify the struct as
 
 ```rust
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[derive(FromPyObject)]
 struct RustyTuple((String,));
 
-# use pyo3::types::PyTuple;
+# use pyforge::types::PyTuple;
 # fn main() -> PyResult<()> {
 #     Python::attach(|py| -> PyResult<()> {
 #         let tuple = PyTuple::new(py, vec!["test"])?;
@@ -205,23 +205,23 @@ struct RustyTuple((String,));
 
 ### Deriving [`FromPyObject`] for wrapper types
 
-The `pyo3(transparent)` attribute can be used on structs with exactly one field.
+The `pyforge(transparent)` attribute can be used on structs with exactly one field.
 This results in extracting directly from the input object, i.e. `obj.extract()`, rather than trying to access an item or attribute.
 This behaviour is enabled per default for newtype structs and tuple-variants with a single field.
 
 ```rust
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[derive(FromPyObject)]
 struct RustyTransparentTupleStruct(String);
 
 #[derive(FromPyObject)]
-#[pyo3(transparent)]
+#[pyforge(transparent)]
 struct RustyTransparentStruct {
     inner: String,
 }
 
-# use pyo3::types::PyString;
+# use pyforge::types::PyString;
 # fn main() -> PyResult<()> {
 #     Python::attach(|py| -> PyResult<()> {
 #         let s = PyString::new(py, "test");
@@ -247,7 +247,7 @@ The same customizations and restrictions described for struct derivations apply 
 The `transparent` attribute can be applied to single-field-variants.
 
 ```rust
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[derive(FromPyObject)]
 # #[derive(Debug)]
@@ -264,16 +264,16 @@ enum RustyEnum<'py> {
     },
     Coordinates2d {
         // only gets checked if the input did not have `z`
-        #[pyo3(attribute("x"))]
+        #[pyforge(attribute("x"))]
         a: usize,
-        #[pyo3(attribute("y"))]
+        #[pyforge(attribute("y"))]
         b: usize,
     },
-    #[pyo3(transparent)]
+    #[pyforge(transparent)]
     CatchAll(Bound<'py, PyAny>), // This extraction never fails
 }
 #
-# use pyo3::types::{PyBytes, PyString};
+# use pyforge::types::{PyBytes, PyString};
 # fn main() -> PyResult<()> {
 #     Python::attach(|py| -> PyResult<()> {
 #         {
@@ -391,17 +391,17 @@ enum RustyEnum<'py> {
 ```
 
 If none of the enum variants match, a `PyTypeError` containing the names of the tested variants is returned.
-The names reported in the error message can be customized through the `#[pyo3(annotation = "name")]` attribute, e.g. to use conventional Python type names:
+The names reported in the error message can be customized through the `#[pyforge(annotation = "name")]` attribute, e.g. to use conventional Python type names:
 
 ```rust
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[derive(FromPyObject)]
 # #[derive(Debug)]
 enum RustyEnum {
-    #[pyo3(transparent, annotation = "str")]
+    #[pyforge(transparent, annotation = "str")]
     String(String),
-    #[pyo3(transparent, annotation = "int")]
+    #[pyforge(transparent, annotation = "int")]
     Int(isize),
 }
 #
@@ -436,7 +436,7 @@ enum RustyEnum {
 #         {
 #             let thing = b"foo".into_pyobject(py)?;
 #             let error = thing.extract::<RustyEnum>().unwrap_err();
-#             assert!(error.is_instance_of::<pyo3::exceptions::PyTypeError>(py));
+#             assert!(error.is_instance_of::<pyforge::exceptions::PyTypeError>(py));
 #         }
 #
 #         Ok(())
@@ -448,33 +448,33 @@ If the input is neither a string nor an integer, the error message will be: `"'<
 
 ### `#[derive(FromPyObject)]` Container Attributes
 
-- `pyo3(transparent)`
+- `pyforge(transparent)`
   - extract the field directly from the object as `obj.extract()` instead of `get_item()` or
       `getattr()`
   - Newtype structs and tuple-variants are treated as transparent per default.
   - only supported for single-field structs and enum variants
-- `pyo3(annotation = "name")`
+- `pyforge(annotation = "name")`
   - changes the name of the failed variant in the generated error message in case of failure.
-  - e.g. `pyo3("int")` reports the variant's type as `int`.
+  - e.g. `pyforge("int")` reports the variant's type as `int`.
   - only supported for enum variants
-- `pyo3(rename_all = "...")`
+- `pyforge(rename_all = "...")`
   - renames all attributes/item keys according to the specified renaming rule
   - Possible values are: "camelCase", "kebab-case", "lowercase", "PascalCase", "SCREAMING-KEBAB-CASE", "SCREAMING_SNAKE_CASE", "snake_case", "UPPERCASE".
   - fields with an explicit renaming via `attribute(...)`/`item(...)` are not affected
 
 ### `#[derive(FromPyObject)]` Field Attributes
 
-- `pyo3(attribute)`, `pyo3(attribute("name"))`
+- `pyforge(attribute)`, `pyforge(attribute("name"))`
   - retrieve the field from an attribute, possibly with a custom name specified as an argument
   - argument must be a string-literal.
-- `pyo3(item)`, `pyo3(item("key"))`
+- `pyforge(item)`, `pyforge(item("key"))`
   - retrieve the field from a mapping, possibly with the custom key specified as an argument.
   - can be any literal that implements `ToBorrowedObject`
-- `pyo3(from_py_with = ...)`
+- `pyforge(from_py_with = ...)`
   - apply a custom function to convert the field from Python the desired Rust type.
   - the argument must be the path to the function.
   - the function signature must be `fn(&Bound<PyAny>) -> PyResult<T>` where `T` is the Rust type of the argument.
-- `pyo3(default)`, `pyo3(default = ...)`
+- `pyforge(default)`, `pyforge(default = ...)`
   - if the argument is set, uses the given default value.
   - in this case, the argument must be a Rust expression returning a value of the desired Rust type.
   - if the argument is not set, [`Default::default`](https://doc.rust-lang.org/std/default/trait.Default.html#tymethod.default) is used.
@@ -485,17 +485,17 @@ If the input is neither a string nor an integer, the error message will be: `"'<
 For example, the code below applies the given conversion function on the `"value"` dict item to compute its length or fall back to the type default value (0):
 
 ```rust
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[derive(FromPyObject)]
 struct RustyStruct {
-    #[pyo3(item("value"), default, from_py_with = Bound::<'_, PyAny>::len)]
+    #[pyforge(item("value"), default, from_py_with = Bound::<'_, PyAny>::len)]
     len: usize,
-    #[pyo3(item)]
+    #[pyforge(item)]
     other: usize,
 }
 #
-# use pyo3::types::PyDict;
+# use pyforge::types::PyDict;
 # fn main() -> PyResult<()> {
 #     Python::attach(|py| -> PyResult<()> {
 #         // Filled case
@@ -519,23 +519,23 @@ struct RustyStruct {
 
 ### ⚠ Phase-Out of `FromPyObject` blanket implementation for cloneable PyClasses ⚠
 
-Historically PyO3 has provided a blanket implementation for `#[pyclass]` types that also implement `Clone`, to allow extraction of such types by value.
+Historically PyForge has provided a blanket implementation for `#[pyclass]` types that also implement `Clone`, to allow extraction of such types by value.
 Over time this has turned out problematic for a few reasons, the major one being the prevention of custom conversions by downstream crates if their type is `Clone`.
 Over the next few releases the blanket implementation is gradually phased out, and eventually replaced by an opt-in option.
 As a first step of this migration a new `skip_from_py_object` option for `#[pyclass]` was introduced, to opt-out of the blanket implementation and allow downstream users to provide their own implementation:
 
 ```rust
 # #![allow(dead_code)]
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 
-#[pyclass(skip_from_py_object)] // opt-out of the PyO3 FromPyObject blanket
+#[pyclass(skip_from_py_object)] // opt-out of the PyForge FromPyObject blanket
 #[derive(Clone)]
 struct Number(i32);
 
 impl<'py> FromPyObject<'_, 'py> for Number {
     type Error = PyErr;
 
-    fn extract(obj: pyo3::Borrowed<'_, 'py, pyo3::PyAny>) -> Result<Self, Self::Error> {
+    fn extract(obj: pyforge::Borrowed<'_, 'py, pyforge::PyAny>) -> Result<Self, Self::Error> {
         if let Ok(obj) = obj.cast::<Self>() { // first try extraction via class object
             Ok(obj.borrow().clone())
         } else {
@@ -551,7 +551,7 @@ This option also opts-out of the blanket implementation and instead generates a 
 ## `IntoPyObject`
 
 The [`IntoPyObject`] trait defines the to-python conversion for a Rust type.
-All types in PyO3 implement this trait, as does a `#[pyclass]` which doesn't use `extends`.
+All types in PyForge implement this trait, as does a `#[pyclass]` which doesn't use `extends`.
 
 This trait defines a single method, `into_pyobject()`, which returns a [`Result`] with `Ok` and `Err` types depending on the input value.
 For convenience, there is a companion [`IntoPyObjectExt`] trait which adds methods such as `into_py_any()` which converts the `Ok` and `Err` types to commonly used types (in the case of `into_py_any()`, `Py<PyAny>` and `PyErr` respectively).
@@ -567,7 +567,7 @@ Both `struct`s and `enum`s are supported.
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 # use std::collections::HashMap;
 # use std::hash::Hash;
 
@@ -585,18 +585,18 @@ struct Struct {
 struct Tuple<'a, K: Hash + Eq, V>(&'a str, HashMap<K, V>);
 ```
 
-For structs with a single field (newtype pattern) the `#[pyo3(transparent)]` option can be used to forward the implementation to the inner type.
+For structs with a single field (newtype pattern) the `#[pyforge(transparent)]` option can be used to forward the implementation to the inner type.
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 
 // newtype tuple structs are implicitly `transparent`
 #[derive(IntoPyObject)]
 struct TransparentTuple(Py<PyAny>);
 
 #[derive(IntoPyObject)]
-#[pyo3(transparent)]
+#[pyforge(transparent)]
 struct TransparentStruct<'py> {
     inner: Bound<'py, PyAny>, // `'py` lifetime will be used as the Python lifetime
 }
@@ -606,14 +606,14 @@ For `enum`s each variant is converted according to the rules for `struct`s above
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 # use std::collections::HashMap;
 # use std::hash::Hash;
 
 #[derive(IntoPyObject)]
 enum Enum<'a, 'py, K: Hash + Eq, V> { // enums are supported and convert using the same
     TransparentTuple(Py<PyAny>),       // rules on the variants as the structs above
-    #[pyo3(transparent)]
+    #[pyforge(transparent)]
     TransparentStruct { inner: Bound<'py, PyAny> },
     Tuple(&'a str, HashMap<K, V>),
     Struct { count: usize, obj: Py<PyAny> }
@@ -625,7 +625,7 @@ All the same rules from above apply as well.
 
 #### `#[derive(IntoPyObject)]`/`#[derive(IntoPyObjectRef)]` Field Attributes
 
-- `pyo3(into_py_with = ...)`
+- `pyforge(into_py_with = ...)`
   - apply a custom function to convert the field from Rust into Python.
   - the argument must be the function identifier
   - the function signature must be `fn(Cow<'_, T>, Python<'py>) -> PyResult<Bound<'py, PyAny>>` where `T` is the Rust type of the argument.
@@ -633,15 +633,15 @@ All the same rules from above apply as well.
     - `#[derive(IntoPyObjectRef)]` will invoke the function with `Cow::Borrowed`
 
     ```rust,no_run
-    # use pyo3::prelude::*;
-    # use pyo3::IntoPyObjectExt;
+    # use pyforge::prelude::*;
+    # use pyforge::IntoPyObjectExt;
     # use std::borrow::Cow;
     #[derive(Clone)]
     struct NotIntoPy(usize);
 
     #[derive(IntoPyObject, IntoPyObjectRef)]
     struct MyStruct {
-        #[pyo3(into_py_with = convert)]
+        #[pyforge(into_py_with = convert)]
         not_into_py: NotIntoPy,
     }
 
@@ -656,7 +656,7 @@ All the same rules from above apply as well.
 If the derive macro is not suitable for your use case, `IntoPyObject` can be implemented manually as demonstrated below.
 
 ```rust,no_run
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 # #[allow(dead_code)]
 struct MyPyObjectWrapper(Py<PyAny>);
 
@@ -688,9 +688,9 @@ impl<'a, 'py> IntoPyObject<'py> for &'a MyPyObjectWrapper {
 For example, the `IntoPyObject` implementation for `u32` produces a `Bound<'py, PyInt>` and the `bool` implementation produces a `Borrowed<'py, 'py, PyBool>`:
 
 ```rust,no_run
-use pyo3::prelude::*;
-use pyo3::IntoPyObject;
-use pyo3::types::{PyBool, PyInt};
+use pyforge::prelude::*;
+use pyforge::IntoPyObject;
+use pyforge::types::{PyBool, PyInt};
 
 let ints: Vec<u32> = vec![1, 2, 3, 4];
 let bools = vec![true, false, false, true];
@@ -715,9 +715,9 @@ In this example if we wanted to combine `ints_as_pyints` and `bools_as_pybool` i
 Instead, we can write a function that generically converts vectors of either integers or bools into a vector of `Py<PyAny>` using the [`BoundObject`] trait:
 
 ```rust,no_run
-# use pyo3::prelude::*;
-# use pyo3::BoundObject;
-# use pyo3::IntoPyObject;
+# use pyforge::prelude::*;
+# use pyforge::BoundObject;
+# use pyforge::IntoPyObject;
 
 # let bools = vec![true, false, false, true];
 # let ints = vec![1, 2, 3, 4];
@@ -752,12 +752,12 @@ let vec_of_pyobjs: Vec<Py<PyAny>> = Python::attach(|py| {
 
 In the example above we used `BoundObject::into_any` and `BoundObject::unbind` to manipulate the python types and smart pointers into the result type we wanted to produce from the function.
 
-[`FromPyObject`]: {{#PYO3_DOCS_URL}}/pyo3/conversion/trait.FromPyObject.html
-[`IntoPyObject`]: {{#PYO3_DOCS_URL}}/pyo3/conversion/trait.IntoPyObject.html
-[`IntoPyObjectExt`]: {{#PYO3_DOCS_URL}}/pyo3/conversion/trait.IntoPyObjectExt.html
+[`FromPyObject`]: {{#PYO3_DOCS_URL}}/pyforge/conversion/trait.FromPyObject.html
+[`IntoPyObject`]: {{#PYO3_DOCS_URL}}/pyforge/conversion/trait.IntoPyObject.html
+[`IntoPyObjectExt`]: {{#PYO3_DOCS_URL}}/pyforge/conversion/trait.IntoPyObjectExt.html
 
-[`PyRef`]: {{#PYO3_DOCS_URL}}/pyo3/pycell/struct.PyRef.html
-[`PyRefMut`]: {{#PYO3_DOCS_URL}}/pyo3/pycell/struct.PyRefMut.html
-[`BoundObject`]: {{#PYO3_DOCS_URL}}/pyo3/instance/trait.BoundObject.html
+[`PyRef`]: {{#PYO3_DOCS_URL}}/pyforge/pycell/struct.PyRef.html
+[`PyRefMut`]: {{#PYO3_DOCS_URL}}/pyforge/pycell/struct.PyRefMut.html
+[`BoundObject`]: {{#PYO3_DOCS_URL}}/pyforge/instance/trait.BoundObject.html
 
 [`Result`]: https://doc.rust-lang.org/stable/std/result/enum.Result.html

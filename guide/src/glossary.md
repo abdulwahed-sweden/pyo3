@@ -2,12 +2,12 @@
 
 Many of the terms used in this guide are common to the Python or Rust ecosystem, and accordingly can be found in the [Python Glossary](https://docs.python.org/3/glossary.html), [Rust Glossary](https://doc.rust-lang.org/reference/glossary.html), or [Cargo Glossary](https://doc.rust-lang.org/cargo/appendix/glossary.html).
 
-Below are some terms that are particularly relevant to PyO3 and either are not found in the above glossaries or have a specific meaning in the context of PyO3:
+Below are some terms that are particularly relevant to PyForge and either are not found in the above glossaries or have a specific meaning in the context of PyForge:
 
 attached
   : To call into the Python interpreter from Rust, the Rust thread must have an associated Python thread state which is "attached" to the Python interpreter.
     This is a safety invariant required by the Python C API, which ensures that the Python interpreter can handle exceptions, avoid data races with the garbage collector, etc.
-    The [`Python::attach`]({{#PYO3_DOCS_URL}}/pyo3/marker/struct.Python.html#method.attach) method is used to attach the current thread to the Python interpreter and obtain a `Python` token which can be used to call Python APIs.
+    The [`Python::attach`]({{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html#method.attach) method is used to attach the current thread to the Python interpreter and obtain a `Python` token which can be used to call Python APIs.
 
 extension module
   : A Python module which is implemeted using native code (e.g. C, C++ or Rust) instead of Python.
@@ -19,12 +19,12 @@ GIL-enabled Python
     This was historically the only thread safety strategy before the introduction of free-threaded Python.
 
 Python token
-  : PyO3's [`Python<'py>`]({{#PYO3_DOCS_URL}}/pyo3/marker/struct.Python.html) type, which can only exist when the current thread is [attached](#attached) to the Python interpreter.
+  : PyForge's [`Python<'py>`]({{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html) type, which can only exist when the current thread is [attached](#attached) to the Python interpreter.
     This type is used to call Python APIs and ensures that the safety invariants required by the Python C API are upheld.
 
 smart pointer
   : Pointers which automatically manage the memory they point to.
-    In particular this guide refers to [PyO3's smart pointers](types.md#pyo3s-smart-pointers) `Py<T>`, `Bound<'py, T>`, and `Borrowed<'a, 'py, T>` which point to Python objects and use Python reference counting to ensure correct memory management.
+    In particular this guide refers to [PyForge's smart pointers](types.md#pyforges-smart-pointers) `Py<T>`, `Bound<'py, T>`, and `Borrowed<'a, 'py, T>` which point to Python objects and use Python reference counting to ensure correct memory management.
 
     See also the [Rust book's chapter on smart pointers](https://doc.rust-lang.org/book/ch15-00-smart-pointers.html).
 

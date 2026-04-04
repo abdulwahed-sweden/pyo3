@@ -15,7 +15,7 @@ To copy an example, use [`cargo-generate`](https://crates.io/crates/cargo-genera
 
 ```bash
 $ cargo install cargo-generate
-$ cargo generate --git https://github.com/PyForge/pyo3 examples/<example>
+$ cargo generate --git https://github.com/abdulwahed-sweden/pyforge examples/<example>
 ```
 
 (`cargo generate` will take a little while to clone the PyForge repo first; be patient when waiting for the command to run.)

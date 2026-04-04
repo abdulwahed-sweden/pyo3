@@ -2,7 +2,7 @@
 
 This crate provides [Rust](https://www.rust-lang.org/) FFI declarations for Python 3.
 It supports both the stable and the unstable component of the ABI through the use of cfg flags.
-Python Versions 3.8+ are supported.
+Python 3.11+ is supported (CPython only).
 It is meant for advanced users only - regular PyForge users shouldn't
 need to interact with this crate at all.
 
@@ -12,12 +12,9 @@ Manual][capi] for up-to-date documentation.
 
 # Minimum supported Rust and Python versions
 
-Requires Rust 1.63 or greater.
+Requires Rust 1.83 or greater.
 
-`pyforge-ffi` supports the following Python distributions:
-  - CPython 3.8 or greater
-  - PyPy 7.3 (Python 3.9+)
-  - GraalPy 24.0 or greater (Python 3.10+)
+`pyforge-ffi` supports CPython 3.11 or greater.
 
 # Example: Building Python Native modules
 
@@ -277,10 +274,10 @@ can be easily converted to rust as well.
 [tutorials]: https://docs.python.org/3/extending/
 [`orjson`]: https://github.com/ijl/orjson
 [capi]: https://docs.python.org/3/c-api/index.html
-[`maturin`]: https://github.com/PyForge/maturin "Build and publish crates with pyo3, rust-cpython and cffi bindings as well as rust binaries as python packages"
+[`maturin`]: https://github.com/PyO3/maturin "Build and publish crates with pyo3, cffi bindings as well as rust binaries as python packages"
 [`pyforge-build-config`]: https://docs.rs/pyforge-build-config
 [feature flags]: https://doc.rust-lang.org/cargo/reference/features.html "Features - The Cargo Book"
 [manual_builds]: https://github.com/abdulwahed-sweden/pyforge/latest/building-and-distribution.html#manual-builds "Manual builds - Building and Distribution - PyForge user guide"
-[setuptools-rust]: https://github.com/PyForge/setuptools-rust "Setuptools plugin for Rust extensions"
+[setuptools-rust]: https://github.com/PyO3/setuptools-rust "Setuptools plugin for Rust extensions"
 [PEP 384]: https://www.python.org/dev/peps/pep-0384 "PEP 384 -- Defining a Stable ABI"
 [Features chapter of the guide]: https://github.com/abdulwahed-sweden/pyforge/latest/features.html#features-reference "Features Reference - PyForge user guide"

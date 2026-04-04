@@ -2,24 +2,24 @@
 
 The `Bound<'py, T>` smart pointer (such as `Bound<'py, PyAny>`, `Bound<'py, PyList>`, or `Bound<'py, MyClass>`) can be used to call Python functions.
 
-PyO3 offers two APIs to make function calls:
+PyForge offers two APIs to make function calls:
 
-- [`call`]({{#PYO3_DOCS_URL}}/pyo3/types/trait.PyAnyMethods.html#tymethod.call) - call any callable Python object.
-- [`call_method`]({{#PYO3_DOCS_URL}}/pyo3/types/trait.PyAnyMethods.html#tymethod.call_method) - call a method on the Python object.
+- [`call`]({{#PYO3_DOCS_URL}}/pyforge/types/trait.PyAnyMethods.html#tymethod.call) - call any callable Python object.
+- [`call_method`]({{#PYO3_DOCS_URL}}/pyforge/types/trait.PyAnyMethods.html#tymethod.call_method) - call a method on the Python object.
 
 Both of these APIs take `args` and `kwargs` arguments (for positional and keyword arguments respectively).
 There are variants for less complex calls:
 
-- [`call1`]({{#PYO3_DOCS_URL}}/pyo3/types/trait.PyAnyMethods.html#tymethod.call1) and [`call_method1`]({{#PYO3_DOCS_URL}}/pyo3/types/trait.PyAnyMethods.html#tymethod.call_method1) to call only with positional `args`.
-- [`call0`]({{#PYO3_DOCS_URL}}/pyo3/types/trait.PyAnyMethods.html#tymethod.call0) and [`call_method0`]({{#PYO3_DOCS_URL}}/pyo3/types/trait.PyAnyMethods.html#tymethod.call_method0) to call with no arguments.
+- [`call1`]({{#PYO3_DOCS_URL}}/pyforge/types/trait.PyAnyMethods.html#tymethod.call1) and [`call_method1`]({{#PYO3_DOCS_URL}}/pyforge/types/trait.PyAnyMethods.html#tymethod.call_method1) to call only with positional `args`.
+- [`call0`]({{#PYO3_DOCS_URL}}/pyforge/types/trait.PyAnyMethods.html#tymethod.call0) and [`call_method0`]({{#PYO3_DOCS_URL}}/pyforge/types/trait.PyAnyMethods.html#tymethod.call_method0) to call with no arguments.
 
 For convenience the [`Py<T>`](../types.md#pyt) smart pointer also exposes these same six API methods, but needs a `Python` token as an additional first argument to prove the thread is attached to the Python interpreter.
 
 The example below calls a Python function behind a `Py<PyAny>` reference:
 
 ```rust
-use pyo3::prelude::*;
-use pyo3::types::PyTuple;
+use pyforge::prelude::*;
+use pyforge::types::PyTuple;
 
 fn main() -> PyResult<()> {
     let arg1 = "arg1";
@@ -60,12 +60,12 @@ fn main() -> PyResult<()> {
 ## Creating keyword arguments
 
 For the `call` and `call_method` APIs, `kwargs` are `Option<&Bound<'py, PyDict>>`, so can either be `None` or `Some(&dict)`.
-You can use the [`IntoPyDict`]({{#PYO3_DOCS_URL}}/pyo3/types/trait.IntoPyDict.html) trait to convert other dict-like containers, e.g. `HashMap` or `BTreeMap`, as well as tuples with up to 10 elements and `Vec`s where each element is a two-element tuple.
+You can use the [`IntoPyDict`]({{#PYO3_DOCS_URL}}/pyforge/types/trait.IntoPyDict.html) trait to convert other dict-like containers, e.g. `HashMap` or `BTreeMap`, as well as tuples with up to 10 elements and `Vec`s where each element is a two-element tuple.
 To pass keyword arguments of different types, construct a `PyDict` object.
 
 ```rust
-use pyo3::prelude::*;
-use pyo3::types::{PyDict, IntoPyDict};
+use pyforge::prelude::*;
+use pyforge::types::{PyDict, IntoPyDict};
 use std::collections::HashMap;
 
 fn main() -> PyResult<()> {

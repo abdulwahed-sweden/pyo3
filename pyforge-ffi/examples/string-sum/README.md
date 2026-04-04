@@ -30,7 +30,7 @@ Use [`cargo-generate`](https://crates.io/crates/cargo-generate):
 
 ```bash
 $ cargo install cargo-generate
-$ cargo generate --git https://github.com/PyForge/pyo3 examples/string_sum
+$ cargo generate --git https://github.com/abdulwahed-sweden/pyforge examples/string_sum
 ```
 
 (`cargo generate` will take a little while to clone the PyForge repo first; be patient when waiting for the command to run.)

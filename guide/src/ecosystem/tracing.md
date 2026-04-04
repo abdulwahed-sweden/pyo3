@@ -6,9 +6,9 @@ This section of the guide describes a few crates that provide ways to do that.
 They build on [`tracing_subscriber`][tracing-subscriber] and require code changes in both Python and Rust to integrate.
 Note that each extension module must configure its own `tracing` integration; one extension module will not see `tracing` data from a different module.
 
-## `pyo3-tracing-subscriber` ([documentation][pyo3-tracing-subscriber-docs])
+## `pyforge-tracing-subscriber` ([documentation][pyforge-tracing-subscriber-docs])
 
-[`pyo3-tracing-subscriber`][pyo3-tracing-subscriber] provides a way for Python projects to configure `tracing_subscriber`.
+[`pyforge-tracing-subscriber`][pyforge-tracing-subscriber] provides a way for Python projects to configure `tracing_subscriber`.
 It exposes a few `tracing_subscriber` layers:
 
 - `tracing_subscriber::fmt` for writing human-readable output to file or stdout
@@ -19,13 +19,13 @@ The extension module must call [`pyo3_tracing_subscriber::add_submodule`][add-su
 
 On the Python side, use the `Tracing` context manager to initialize tracing and run Rust code inside the context manager's block. `Tracing` takes a `GlobalTracingConfig` instance describing the layers to be used.
 
-See [the README on crates.io][pyo3-tracing-subscriber] for example code.
+See [the README on crates.io][pyforge-tracing-subscriber] for example code.
 
-## `pyo3-python-tracing-subscriber` ([documentation][pyo3-python-tracing-subscriber-docs])
+## `pyforge-python-tracing-subscriber` ([documentation][pyforge-python-tracing-subscriber-docs])
 
-The similarly-named [`pyo3-python-tracing-subscriber`][pyo3-python-tracing-subscriber] implements a shim in Rust that forwards `tracing` data to a `Layer` implementation defined in and passed in from Python.
+The similarly-named [`pyforge-python-tracing-subscriber`][pyforge-python-tracing-subscriber] implements a shim in Rust that forwards `tracing` data to a `Layer` implementation defined in and passed in from Python.
 
-There are many ways an extension module could integrate `pyo3-python-tracing-subscriber` but a simple one may look something like this:
+There are many ways an extension module could integrate `pyforge-python-tracing-subscriber` but a simple one may look something like this:
 
 ```rust,no_run
 #[tracing::instrument]
@@ -80,16 +80,16 @@ def main():
     print("10th fibonacci number: ", rust_extension.fibonacci(10, True))
 ```
 
-`pyo3-python-tracing-subscriber` has [working examples] showing both the Rust side and the Python side of an integration.
+`pyforge-python-tracing-subscriber` has [working examples] showing both the Rust side and the Python side of an integration.
 
-[pyo3-tracing-subscriber]: https://crates.io/crates/pyo3-tracing-subscriber
-[pyo3-tracing-subscriber-docs]: https://docs.rs/pyo3-tracing-subscriber
-[add-submodule]: https://docs.rs/pyo3-tracing-subscriber/*/pyo3_tracing_subscriber/fn.add_submodule.html
+[pyforge-tracing-subscriber]: https://crates.io/crates/pyforge-tracing-subscriber
+[pyforge-tracing-subscriber-docs]: https://docs.rs/pyforge-tracing-subscriber
+[add-submodule]: https://docs.rs/pyforge-tracing-subscriber/*/pyo3_tracing_subscriber/fn.add_submodule.html
 
-[pyo3-python-tracing-subscriber]: https://crates.io/crates/pyo3-python-tracing-subscriber
-[pyo3-python-tracing-subscriber-docs]: https://docs.rs/pyo3-python-tracing-subscriber
-[PythonCallbackLayerBridge]: https://docs.rs/pyo3-python-tracing-subscriber/*/pyo3_python_tracing_subscriber/struct.PythonCallbackLayerBridge.html
-[working examples]: https://github.com/getsentry/pyo3-python-tracing-subscriber/tree/main/demo
+[pyforge-python-tracing-subscriber]: https://crates.io/crates/pyforge-python-tracing-subscriber
+[pyforge-python-tracing-subscriber-docs]: https://docs.rs/pyforge-python-tracing-subscriber
+[PythonCallbackLayerBridge]: https://docs.rs/pyforge-python-tracing-subscriber/*/pyo3_python_tracing_subscriber/struct.PythonCallbackLayerBridge.html
+[working examples]: https://github.com/getsentry/pyforge-python-tracing-subscriber/tree/main/demo
 
 [Rust's `tracing` ecosystem]: https://crates.io/crates/tracing
 [tracing-subscriber]: https://docs.rs/tracing-subscriber/*/tracing_subscriber/

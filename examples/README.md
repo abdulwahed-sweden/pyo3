@@ -7,8 +7,8 @@ Below is a brief description of each of these:
 | Example | Description |
 | ------- | ----------- |
 | `decorator` | A project showcasing the example from the [Emulating callable objects](https://github.com/abdulwahed-sweden/pyforge/latest/class/call.html) chapter of the guide. |
-| `maturin-starter` | A template project which is configured to use [`maturin`](https://github.com/PyForge/maturin) for development. |
-| `setuptools-rust-starter` | A template project which is configured to use [`setuptools_rust`](https://github.com/PyForge/setuptools-rust/) for development. |
+| `maturin-starter` | A template project which is configured to use [`maturin`](https://github.com/PyO3/maturin) for development. |
+| `setuptools-rust-starter` | A template project which is configured to use [`setuptools_rust`](https://github.com/PyO3/setuptools-rust/) for development. |
 | `plugin` | Illustrates how to use Python as a scripting language within a Rust application |
 
 Note that there are also other examples in the `pyforge-ffi/examples`
@@ -21,7 +21,7 @@ To copy an example, use [`cargo-generate`](https://crates.io/crates/cargo-genera
 
 ```bash
 $ cargo install cargo-generate
-$ cargo generate --git https://github.com/PyForge/pyo3 examples/<example>
+$ cargo generate --git https://github.com/abdulwahed-sweden/pyforge examples/<example>
 ```
 
 (`cargo generate` will take a little while to clone the PyForge repo first; be patient when waiting for the command to run.)

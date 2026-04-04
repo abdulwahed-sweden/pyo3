@@ -1,6 +1,6 @@
 # Features reference
 
-PyO3 provides a number of Cargo features to customize functionality.
+PyForge provides a number of Cargo features to customize functionality.
 This chapter of the guide provides detail on each of them.
 
 By default, only the `macros` feature is enabled.
@@ -17,7 +17,7 @@ See the [building and distribution](building-and-distribution.md#the-extension-m
 
 This feature is used when building Python extension modules to create wheels which are compatible with multiple Python versions.
 
-It restricts PyO3's API to a subset of the full Python API which is guaranteed by [PEP 384](https://www.python.org/dev/peps/pep-0384/) to be forwards-compatible with future Python versions.
+It restricts PyForge's API to a subset of the full Python API which is guaranteed by [PEP 384](https://www.python.org/dev/peps/pep-0384/) to be forwards-compatible with future Python versions.
 
 See the [building and distribution](building-and-distribution.md#py_limited_apiabi3) section for further detail.
 
@@ -32,14 +32,14 @@ See the [building and distribution](building-and-distribution.md#minimum-python-
 ### `generate-import-lib`
 
 This feature is deprecated and has no effect.
-PyO3 now uses Rust's `raw-dylib` linking feature to link against the Python DLL on Windows, eliminating the need for import library (`.lib`) files entirely.
+PyForge now uses Rust's `raw-dylib` linking feature to link against the Python DLL on Windows, eliminating the need for import library (`.lib`) files entirely.
 Cross-compiling for Windows targets works without any additional setup.
 
 ## Features for embedding Python in Rust
 
 ### `auto-initialize`
 
-This feature changes [`Python::attach`]({{#PYO3_DOCS_URL}}/pyo3/marker/struct.Python.html#method.attach) to automatically initialize a Python interpreter (by calling [`Python::initialize`]({{#PYO3_DOCS_URL}}/pyo3/marker/struct.Python.html#method.initialize)) if needed.
+This feature changes [`Python::attach`]({{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html#method.attach) to automatically initialize a Python interpreter (by calling [`Python::initialize`]({{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html#method.initialize)) if needed.
 
 If you do not enable this feature, you should call `Python::initialize()` before attempting to call any other Python APIs.
 
@@ -50,21 +50,21 @@ If you do not enable this feature, you should call `Python::initialize()` before
 This feature adds support for `async fn` in `#[pyfunction]` and `#[pymethods]`.
 
 The feature has some unfinished refinements and performance improvements.
-To help finish this off, see [issue #1632](https://github.com/PyO3/pyo3/issues/1632) and its associated draft PRs.
+To help finish this off, see [issue #1632](https://github.com/abdulwahed-sweden/pyforge/issues/1632) and its associated draft PRs.
 
 ### `experimental-inspect`
 
-This feature adds to the built binaries introspection data that can be then retrieved using the `pyo3-introspection` crate to generate [type stubs](https://typing.readthedocs.io/en/latest/source/stubs.html).
+This feature adds to the built binaries introspection data that can be then retrieved using the `pyforge-introspection` crate to generate [type stubs](https://typing.readthedocs.io/en/latest/source/stubs.html).
 
-Also, this feature adds the `pyo3::inspect` module, as well as `IntoPy::type_output` and `FromPyObject::type_input` APIs to produce Python type "annotations" for Rust types.
+Also, this feature adds the `pyforge::inspect` module, as well as `IntoPy::type_output` and `FromPyObject::type_input` APIs to produce Python type "annotations" for Rust types.
 
-This is a first step towards adding first-class support for generating type annotations automatically in PyO3, however work is needed to finish this off.
-All feedback and offers of help welcome on [issue #2454](https://github.com/PyO3/pyo3/issues/2454).
+This is a first step towards adding first-class support for generating type annotations automatically in PyForge, however work is needed to finish this off.
+All feedback and offers of help welcome on [issue #2454](https://github.com/abdulwahed-sweden/pyforge/issues/2454).
 
 ### `py-clone`
 
 This feature was introduced to ease migration.
-It was found that delayed reference counting (which PyO3 used historically) could not be made sound and hence `Clone`-ing an instance of `Py<T>` is impossible when not attached to Python interpreter (it will panic).
+It was found that delayed reference counting (which PyForge used historically) could not be made sound and hence `Clone`-ing an instance of `Py<T>` is impossible when not attached to Python interpreter (it will panic).
 To avoid migrations introducing new panics without warning, the `Clone` implementation itself is now gated behind this feature.
 
 ### `pyo3_disable_reference_pool`
@@ -74,7 +74,7 @@ However, if enabled, `Drop`ping an instance of `Py<T>` when not attached to the 
 
 ### `macros`
 
-This feature enables a dependency on the `pyo3-macros` crate, which provides the procedural macros portion of PyO3's API:
+This feature enables a dependency on the `pyforge-macros` crate, which provides the procedural macros portion of PyForge's API:
 
 - `#[pymodule]`
 - `#[pyfunction]`
@@ -84,11 +84,11 @@ This feature enables a dependency on the `pyo3-macros` crate, which provides the
 
 It also provides the `py_run!` macro.
 
-These macros require a number of dependencies which may not be needed by users who just need PyO3 for Python FFI.
+These macros require a number of dependencies which may not be needed by users who just need PyForge for Python FFI.
 Disabling this feature enables faster builds for those users, as these dependencies will not be built if this feature is disabled.
 
 > [!NOTE]
-> This feature is enabled by default. To disable it, set `default-features = false` for the `pyo3` entry in your Cargo.toml.
+> This feature is enabled by default. To disable it, set `default-features = false` for the `pyforge` entry in your Cargo.toml.
 
 ### `multiple-pymethods`
 
@@ -103,13 +103,13 @@ See [the `#[pyclass]` implementation details](class.md#implementation-details) f
 ### `nightly`
 
 The `nightly` feature needs the nightly Rust compiler.
-This allows PyO3 to use the `auto_traits` and `negative_impls` features to fix the `Python::detach` function.
+This allows PyForge to use the `auto_traits` and `negative_impls` features to fix the `Python::detach` function.
 
 ### `resolve-config`
 
-The `resolve-config` feature of the `pyo3-build-config` crate controls whether that crate's build script automatically resolves a Python interpreter / build configuration.
-This feature is primarily useful when building PyO3 itself.
-By default this feature is not enabled, meaning you can freely use `pyo3-build-config` as a standalone library to read or write PyO3 build configuration files or resolve metadata about a Python interpreter.
+The `resolve-config` feature of the `pyforge-build-config` crate controls whether that crate's build script automatically resolves a Python interpreter / build configuration.
+This feature is primarily useful when building PyForge itself.
+By default this feature is not enabled, meaning you can freely use `pyforge-build-config` as a standalone library to read or write PyForge build configuration files or resolve metadata about a Python interpreter.
 
 ## Optional Dependencies
 
@@ -118,7 +118,7 @@ These features enable conversions between Python types and types from other Rust
 ### `anyhow`
 
 Adds a dependency on [anyhow](https://docs.rs/anyhow).
-Enables a conversion from [anyhow](https://docs.rs/anyhow)’s [`Error`](https://docs.rs/anyhow/latest/anyhow/struct.Error.html) type to [`PyErr`]({{#PYO3_DOCS_URL}}/pyo3/struct.PyErr.html), for easy error handling.
+Enables a conversion from [anyhow](https://docs.rs/anyhow)’s [`Error`](https://docs.rs/anyhow/latest/anyhow/struct.Error.html) type to [`PyErr`]({{#PYO3_DOCS_URL}}/pyforge/struct.PyErr.html), for easy error handling.
 
 ### `arc_lock`
 
@@ -138,12 +138,12 @@ Adds a dependency on [bytes](https://docs.rs/bytes/latest/bytes) and enables con
 Adds a dependency on [chrono](https://docs.rs/chrono).
 Enables a conversion from [chrono](https://docs.rs/chrono)'s types to python:
 
-- [TimeDelta](https://docs.rs/chrono/latest/chrono/struct.TimeDelta.html) -> [`PyDelta`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDelta.html)
-- [FixedOffset](https://docs.rs/chrono/latest/chrono/offset/struct.FixedOffset.html) -> [`PyDelta`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDelta.html)
-- [Utc](https://docs.rs/chrono/latest/chrono/offset/struct.Utc.html) -> [`PyTzInfo`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyTzInfo.html)
-- [NaiveDate](https://docs.rs/chrono/latest/chrono/naive/struct.NaiveDate.html) -> [`PyDate`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDate.html)
-- [NaiveTime](https://docs.rs/chrono/latest/chrono/naive/struct.NaiveTime.html) -> [`PyTime`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyTime.html)
-- [DateTime](https://docs.rs/chrono/latest/chrono/struct.DateTime.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDateTime.html)
+- [TimeDelta](https://docs.rs/chrono/latest/chrono/struct.TimeDelta.html) -> [`PyDelta`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDelta.html)
+- [FixedOffset](https://docs.rs/chrono/latest/chrono/offset/struct.FixedOffset.html) -> [`PyDelta`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDelta.html)
+- [Utc](https://docs.rs/chrono/latest/chrono/offset/struct.Utc.html) -> [`PyTzInfo`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyTzInfo.html)
+- [NaiveDate](https://docs.rs/chrono/latest/chrono/naive/struct.NaiveDate.html) -> [`PyDate`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDate.html)
+- [NaiveTime](https://docs.rs/chrono/latest/chrono/naive/struct.NaiveTime.html) -> [`PyTime`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyTime.html)
+- [DateTime](https://docs.rs/chrono/latest/chrono/struct.DateTime.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDateTime.html)
 
 ### `chrono-local`
 
@@ -170,7 +170,7 @@ Enables a conversions into [either](https://docs.rs/either)’s [`Either`](https
 ### `eyre`
 
 Adds a dependency on [eyre](https://docs.rs/eyre).
-Enables a conversion from [eyre](https://docs.rs/eyre)’s [`Report`](https://docs.rs/eyre/latest/eyre/struct.Report.html) type to [`PyErr`]({{#PYO3_DOCS_URL}}/pyo3/struct.PyErr.html), for easy error handling.
+Enables a conversion from [eyre](https://docs.rs/eyre)’s [`Report`](https://docs.rs/eyre/latest/eyre/struct.Report.html) type to [`PyErr`]({{#PYO3_DOCS_URL}}/pyforge/struct.PyErr.html), for easy error handling.
 
 ### `hashbrown`
 
@@ -185,15 +185,15 @@ Adds a dependency on [indexmap](https://docs.rs/indexmap) and enables conversion
 Adds a dependency on [jiff@0.2](https://docs.rs/jiff/0.2).
 Enables a conversion from [jiff](https://docs.rs/jiff)'s types to python:
 
-- [SignedDuration](https://docs.rs/jiff/0.2/jiff/struct.SignedDuration.html) -> [`PyDelta`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDelta.html)
-- [TimeZone](https://docs.rs/jiff/0.2/jiff/tz/struct.TimeZone.html) -> [`PyTzInfo`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyTzInfo.html)
-- [Offset](https://docs.rs/jiff/0.2/jiff/tz/struct.Offset.html) -> [`PyTzInfo`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyTzInfo.html)
-- [Date](https://docs.rs/jiff/0.2/jiff/civil/struct.Date.html) -> [`PyDate`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDate.html)
-- [Time](https://docs.rs/jiff/0.2/jiff/civil/struct.Time.html) -> [`PyTime`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyTime.html)
-- [DateTime](https://docs.rs/jiff/0.2/jiff/civil/struct.DateTime.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDateTime.html)
-- [Zoned](https://docs.rs/jiff/0.2/jiff/struct.Zoned.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDateTime.html)
-- [Timestamp](https://docs.rs/jiff/0.2/jiff/struct.Timestamp.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDateTime.html)
-- [ISOWeekDate](https://docs.rs/jiff/0.2/jiff/civil/struct.ISOWeekDate.html) -> [`PyDate`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDate.html)
+- [SignedDuration](https://docs.rs/jiff/0.2/jiff/struct.SignedDuration.html) -> [`PyDelta`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDelta.html)
+- [TimeZone](https://docs.rs/jiff/0.2/jiff/tz/struct.TimeZone.html) -> [`PyTzInfo`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyTzInfo.html)
+- [Offset](https://docs.rs/jiff/0.2/jiff/tz/struct.Offset.html) -> [`PyTzInfo`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyTzInfo.html)
+- [Date](https://docs.rs/jiff/0.2/jiff/civil/struct.Date.html) -> [`PyDate`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDate.html)
+- [Time](https://docs.rs/jiff/0.2/jiff/civil/struct.Time.html) -> [`PyTime`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyTime.html)
+- [DateTime](https://docs.rs/jiff/0.2/jiff/civil/struct.DateTime.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDateTime.html)
+- [Zoned](https://docs.rs/jiff/0.2/jiff/struct.Zoned.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDateTime.html)
+- [Timestamp](https://docs.rs/jiff/0.2/jiff/struct.Timestamp.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDateTime.html)
+- [ISOWeekDate](https://docs.rs/jiff/0.2/jiff/civil/struct.ISOWeekDate.html) -> [`PyDate`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDate.html)
 
 ### `lock_api`
 
@@ -215,8 +215,8 @@ Adds a dependency on [num-rational](https://docs.rs/num-rational) and enables co
 
 Adds a dependency on [ordered-float](https://docs.rs/ordered-float) and enables conversions between [ordered-float](https://docs.rs/ordered-float)'s types and Python:
 
-- [NotNan](https://docs.rs/ordered-float/latest/ordered_float/struct.NotNan.html) -> [`PyFloat`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyFloat.html)
-- [OrderedFloat](https://docs.rs/ordered-float/latest/ordered_float/struct.OrderedFloat.html) -> [`PyFloat`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyFloat.html)
+- [NotNan](https://docs.rs/ordered-float/latest/ordered_float/struct.NotNan.html) -> [`PyFloat`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyFloat.html)
+- [OrderedFloat](https://docs.rs/ordered-float/latest/ordered_float/struct.OrderedFloat.html) -> [`PyFloat`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyFloat.html)
 
 ### `parking-lot`
 
@@ -231,13 +231,13 @@ Adds a dependency on [rust_decimal](https://docs.rs/rust_decimal) and enables co
 Adds a dependency on [time](https://docs.rs/time).
 Enables conversions between [time](https://docs.rs/time)'s types and Python:
 
-- [Date](https://docs.rs/time/0.3.38/time/struct.Date.html) -> [`PyDate`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDate.html)
-- [Time](https://docs.rs/time/0.3.38/time/struct.Time.html) -> [`PyTime`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyTime.html)
-- [OffsetDateTime](https://docs.rs/time/0.3.38/time/struct.OffsetDateTime.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDateTime.html)
-- [PrimitiveDateTime](https://docs.rs/time/0.3.38/time/struct.PrimitiveDateTime.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDateTime.html)
-- [Duration](https://docs.rs/time/0.3.38/time/struct.Duration.html) -> [`PyDelta`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDelta.html)
-- [UtcOffset](https://docs.rs/time/0.3.38/time/struct.UtcOffset.html) -> [`PyTzInfo`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyTzInfo.html)
-- [UtcDateTime](https://docs.rs/time/0.3.38/time/struct.UtcDateTime.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyo3/types/struct.PyDateTime.html)
+- [Date](https://docs.rs/time/0.3.38/time/struct.Date.html) -> [`PyDate`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDate.html)
+- [Time](https://docs.rs/time/0.3.38/time/struct.Time.html) -> [`PyTime`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyTime.html)
+- [OffsetDateTime](https://docs.rs/time/0.3.38/time/struct.OffsetDateTime.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDateTime.html)
+- [PrimitiveDateTime](https://docs.rs/time/0.3.38/time/struct.PrimitiveDateTime.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDateTime.html)
+- [Duration](https://docs.rs/time/0.3.38/time/struct.Duration.html) -> [`PyDelta`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDelta.html)
+- [UtcOffset](https://docs.rs/time/0.3.38/time/struct.UtcOffset.html) -> [`PyTzInfo`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyTzInfo.html)
+- [UtcDateTime](https://docs.rs/time/0.3.38/time/struct.UtcDateTime.html) -> [`PyDateTime`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyDateTime.html)
 
 ### `serde`
 
@@ -248,7 +248,7 @@ This allows to use [`#[derive(Serialize, Deserialize)`](https://serde.rs/derive.
 # #[cfg(feature = "serde")]
 # #[allow(dead_code)]
 # mod serde_only {
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 # use serde::{Deserialize, Serialize};
 
 #[pyclass]

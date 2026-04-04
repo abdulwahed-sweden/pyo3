@@ -2,7 +2,7 @@
 
 ## Macros
 
-PyO3's attributes (`#[pyclass]`, `#[pymodule]`, etc.) are [procedural macros](https://doc.rust-lang.org/reference/procedural-macros.html), which means that they rewrite the source of the annotated item.
+PyForge's attributes (`#[pyclass]`, `#[pymodule]`, etc.) are [procedural macros](https://doc.rust-lang.org/reference/procedural-macros.html), which means that they rewrite the source of the annotated item.
 You can view the generated source with the following command, which also expands a few other things:
 
 ```bash
@@ -40,7 +40,7 @@ The best start to investigate a crash such as an segmentation fault is a backtra
 You can set `RUST_BACKTRACE=1` as an environment variable to get the stack trace on a `panic!`.
 Alternatively you can use a debugger such as `gdb` to explore the issue.
 Rust provides a wrapper, `rust-gdb`, which has pretty-printers for inspecting Rust variables.
-Since PyO3 uses `cdylib` for Python shared objects, it does not receive the pretty-print debug hooks in `rust-gdb` ([rust-lang/rust#96365](https://github.com/rust-lang/rust/issues/96365)).
+Since PyForge uses `cdylib` for Python shared objects, it does not receive the pretty-print debug hooks in `rust-gdb` ([rust-lang/rust#96365](https://github.com/rust-lang/rust/issues/96365)).
 The mentioned issue contains a workaround for enabling pretty-printers in this case.
 
 - Link against a debug build of python as described in the previous chapter
@@ -58,7 +58,7 @@ rust-gdb --args python -c "import my_package; my_package.sum_to_string(1, 2)"
 ## Setting breakpoints in your Rust code
 
 One of the preferred ways by developers to debug their code is by setting breakpoints.
-This can be achieved in PyO3 by using a debugger like `rust-gdb` or `rust-lldb` with your Python interpreter.
+This can be achieved in PyForge by using a debugger like `rust-gdb` or `rust-lldb` with your Python interpreter.
 
 For more information about how to use both `lldb` and `gdb` you can read the [gdb to lldb command map](https://lldb.llvm.org/use/map.html) from the lldb documentation.
 
@@ -156,7 +156,7 @@ VS Code with the Rust and Python extensions provides an integrated debugging exp
      "version": "0.2.0",
      "configurations": [
        {
-         "name": "Debug PyO3",
+         "name": "Debug PyForge",
          "type": "lldb",
          "request": "attach",
          "program": "${workspaceFolder}/.venv/bin/python",
@@ -164,7 +164,7 @@ VS Code with the Rust and Python extensions provides an integrated debugging exp
          "sourceLanguages": ["rust"]
        },
        {
-         "name": "Launch Python with PyO3",
+         "name": "Launch Python with PyForge",
          "type": "lldb",
          "request": "launch",
          "program": "${workspaceFolder}/.venv/bin/python",
@@ -173,7 +173,7 @@ VS Code with the Rust and Python extensions provides an integrated debugging exp
          "sourceLanguages": ["rust"]
        },
        {
-         "name": "Debug PyO3 with Args",
+         "name": "Debug PyForge with Args",
          "type": "lldb",
          "request": "launch",
          "program": "${workspaceFolder}/.venv/bin/python",
@@ -182,7 +182,7 @@ VS Code with the Rust and Python extensions provides an integrated debugging exp
          "sourceLanguages": ["rust"]
        },
        {
-         "name": "Debug PyO3 Tests",
+         "name": "Debug PyForge Tests",
          "type": "lldb",
          "request": "launch",
          "program": "${workspaceFolder}/.venv/bin/python",
@@ -203,13 +203,13 @@ VS Code with the Rust and Python extensions provides an integrated debugging exp
 3. Set breakpoints in your Rust code by clicking in the gutter next to line numbers.
 
 4. Start debugging:
-   - For attaching to a running Python process: First start the process, then select the "Debug PyO3" configuration and click Start Debugging (F5).
+   - For attaching to a running Python process: First start the process, then select the "Debug PyForge" configuration and click Start Debugging (F5).
      You'll be prompted to select the Python process to attach to.
-   - For launching a Python script: Open your Python script, select the "Launch Python with PyO3" configuration and click Start Debugging (F5).
-   - For running with arguments: Select "Debug PyO3 with Args" (remember to edit the configuration with your actual script path and arguments).
-   - For running tests: Select "Debug PyO3 Tests" (edit the test path as needed).
+   - For launching a Python script: Open your Python script, select the "Launch Python with PyForge" configuration and click Start Debugging (F5).
+   - For running with arguments: Select "Debug PyForge with Args" (remember to edit the configuration with your actual script path and arguments).
+   - For running tests: Select "Debug PyForge Tests" (edit the test path as needed).
 
-5. When debugging PyO3 code:
+5. When debugging PyForge code:
    - You can inspect Rust variables and data structures
    - Use the debug console to evaluate expressions
    - Step through Rust code line by line using the step controls
@@ -221,7 +221,7 @@ For advanced debugging scenarios, you might want to add environment variables or
 
 ```json
 {
-  "name": "Debug PyO3 with Environment",
+  "name": "Debug PyForge with Environment",
   "type": "lldb",
   "request": "launch",
   "program": "${workspaceFolder}/.venv/bin/python",
@@ -271,7 +271,7 @@ def update_launch_json(vscode_config_file_path=None):
         "version": "0.2.0",
         "configurations": [
             {
-                "name": "Debug PyO3 (Jupyter)",
+                "name": "Debug PyForge (Jupyter)",
                 "type": "lldb",
                 "request": "attach",
                 "program": python_path,
@@ -279,7 +279,7 @@ def update_launch_json(vscode_config_file_path=None):
                 "sourceLanguages": ["rust"],
             },
             {
-                "name": "Launch Python with PyO3",
+                "name": "Launch Python with PyForge",
                 "type": "lldb",
                 "request": "launch",
                 "program": python_path,
@@ -303,7 +303,7 @@ def update_launch_json(vscode_config_file_path=None):
                 # Check if our configuration already exists
                 config_exists = False
                 for config in existing_config.get("configurations", []):
-                    if config.get("name") == "Debug PyO3 (Jupyter)":
+                    if config.get("name") == "Debug PyForge (Jupyter)":
                         config["pid"] = pid
                         config["program"] = python_path
                         config_exists = True
@@ -343,18 +343,18 @@ To use these functions:
 
 1. Run the cell containing these functions in your Jupyter notebook
 2. Run `update_launch_json()` in a cell
-3. In VS Code, select the "Debug PyO3 (Jupyter)" configuration and start debugging
+3. In VS Code, select the "Debug PyForge (Jupyter)" configuration and start debugging
 
 ## Thread Safety and Compiler Sanitizers
 
-PyO3 attempts to match the Rust language-level guarantees for thread safety, but that does not preclude other code outside of the control of PyO3 or buggy code managed by a PyO3 extension module from creating a thread safety issue.
+PyForge attempts to match the Rust language-level guarantees for thread safety, but that does not preclude other code outside of the control of PyForge or buggy code managed by a PyForge extension module from creating a thread safety issue.
 Analyzing whether or not a piece of Rust code that uses the CPython C API is thread safe can be quite complicated, since many Python operations can lead to arbitrary Python code execution.
 Automated ways to discover thread safety issues can often be more fruitful than code analysis.
 
 [ThreadSanitizer](https://clang.llvm.org/docs/ThreadSanitizer.html) is a thread safety checking runtime that can be used to detect data races triggered by thread safety bugs or incorrect use of thread-unsafe data structures.
 While it can only detect data races triggered by code at runtime, if it does detect something the reports often point to exactly where the problem is happening.
 
-To use `ThreadSanitizer` with a library that depends on PyO3, you will need to install a nightly Rust toolchain, along with the `rust-src` component, since you will need to compile the Rust standard library:
+To use `ThreadSanitizer` with a library that depends on PyForge, you will need to install a nightly Rust toolchain, along with the `rust-src` component, since you will need to compile the Rust standard library:
 
 ```bash
 rustup install nightly

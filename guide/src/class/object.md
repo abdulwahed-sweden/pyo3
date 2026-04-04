@@ -5,7 +5,7 @@ Recall the `Number` class from the previous chapter:
 ```rust,no_run
 # #![allow(dead_code)]
 # fn main() {}
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 #[pyclass]
 struct Number(i32);
@@ -45,7 +45,7 @@ We can fix that by defining the `__repr__` and `__str__` methods inside a `#[pym
 We do this by accessing the value contained inside `Number`.
 
 ```rust,no_run
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 #
 # #[pyclass]
 # struct Number(i32);
@@ -74,7 +74,7 @@ To automatically generate the `__str__` implementation using a `Display` trait i
 
 ```rust,no_run
 # use std::fmt::{Display, Formatter};
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 #
 # #[allow(dead_code)]
 #[pyclass(str)]
@@ -102,7 +102,7 @@ It expands and is passed into the `format!` macro in the following ways:
 *Note: the pyclass args `name` and `rename_all` are incompatible with the shorthand format string and will raise a compile time error.*
 
 ```rust,no_run
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 #
 # #[allow(dead_code)]
 #[pyclass(str="({x}, {y}, {z})")]
@@ -121,8 +121,8 @@ This is typically done in Python code by accessing `self.__class__.__name__`.
 In order to be able to access the Python type information *and* the Rust struct, we need to use a `Bound` as the `self` argument.
 
 ```rust,no_run
-# use pyo3::prelude::*;
-# use pyo3::types::PyString;
+# use pyforge::prelude::*;
+# use pyforge::types::PyString;
 #
 # #[allow(dead_code)]
 # #[pyclass]
@@ -152,7 +152,7 @@ use std::collections::hash_map::DefaultHasher;
 // Required to call the `.hash` and `.finish` methods, which are defined on traits.
 use std::hash::{Hash, Hasher};
 
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 #
 # #[allow(dead_code)]
 # #[pyclass]
@@ -174,7 +174,7 @@ If you need an `__hash__` implementation for a mutable class, use the manual met
 This option also requires `eq`: According to the [Python docs](https://docs.python.org/3/reference/datamodel.html#object.__hash__) "If a class does not define an `__eq__()` method it should not define a `__hash__()` operation either"
 
 ```rust,no_run
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 #
 # #[allow(dead_code)]
 #[pyclass(frozen, eq, hash)]
@@ -198,7 +198,7 @@ struct Number(i32);
 > This is the same mechanism as for a pure-Python class. This is done like so:
 >
 > ```rust,no_run
-> # use pyo3::prelude::*;
+> # use pyforge::prelude::*;
 > #[pyclass]
 > struct NotHashable {}
 >
@@ -211,14 +211,14 @@ struct Number(i32);
 
 ### Comparisons
 
-PyO3 supports the usual magic comparison methods available in Python such as `__eq__`, `__lt__` and so on.
+PyForge supports the usual magic comparison methods available in Python such as `__eq__`, `__lt__` and so on.
 It is also possible to support all six operations at once with `__richcmp__`.
 This method will be called with a value of `CompareOp` depending on the operation.
 
 ```rust,no_run
-use pyo3::class::basic::CompareOp;
+use pyforge::class::basic::CompareOp;
 
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 #
 # #[allow(dead_code)]
 # #[pyclass]
@@ -242,9 +242,9 @@ impl Number {
 If you obtain the result by comparing two Rust values, as in this example, you can take a shortcut using `CompareOp::matches`:
 
 ```rust,no_run
-use pyo3::class::basic::CompareOp;
+use pyforge::class::basic::CompareOp;
 
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 #
 # #[allow(dead_code)]
 # #[pyclass]
@@ -263,7 +263,7 @@ It checks that the `std::cmp::Ordering` obtained from Rust's `Ord` matches the g
 Alternatively, you can implement just equality using `__eq__`:
 
 ```rust
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 #
 # #[pyclass]
 # struct Number(i32);
@@ -289,7 +289,7 @@ impl Number {
 To implement `__eq__` using the Rust [`PartialEq`] trait implementation, the `eq` option can be used.
 
 ```rust,no_run
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 #
 # #[allow(dead_code)]
 #[pyclass(eq)]
@@ -301,7 +301,7 @@ To implement `__lt__`, `__le__`, `__gt__`, & `__ge__` using the Rust `PartialOrd
 *Note: Requires `eq`.*
 
 ```rust,no_run
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 #
 # #[allow(dead_code)]
 #[pyclass(eq, ord)]
@@ -314,7 +314,7 @@ struct Number(i32);
 We'll consider `Number` to be `True` if it is nonzero:
 
 ```rust,no_run
-# use pyo3::prelude::*;
+# use pyforge::prelude::*;
 #
 # #[allow(dead_code)]
 # #[pyclass]
@@ -335,9 +335,9 @@ impl Number {
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
-use pyo3::prelude::*;
-use pyo3::class::basic::CompareOp;
-use pyo3::types::PyString;
+use pyforge::prelude::*;
+use pyforge::class::basic::CompareOp;
+use pyforge::types::PyString;
 
 #[pyclass]
 struct Number(i32);

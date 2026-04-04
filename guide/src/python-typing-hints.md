@@ -1,12 +1,12 @@
 # Typing and IDE hints for your Python package
 
-PyO3 provides an easy to use interface to code native Python libraries in Rust.
+PyForge provides an easy to use interface to code native Python libraries in Rust.
 The accompanying Maturin allows you to build and publish them as a package.
 Yet, for a better user experience, Python libraries should provide typing hints and documentation for all public entities, so that IDEs can show them during development and type analyzing tools such as `mypy` can use them to properly verify the code.
 
 Currently the best solution for the problem is to manually maintain `*.pyi` files and ship them along with the package.
 
-PyO3 is working on automated their generation.
+PyForge is working on automated their generation.
 See the [type stub generation](type-stub.md) documentation for a description of the current state of automated generation.
 
 ## Introduction to `pyi` files
@@ -72,7 +72,7 @@ In particular it contains information about how the stub files must be distribut
 - `separate package with stub files` - the typing is placed in `pyi` files distributed in their own, separate package;
 - `in-package stub files` - the typing is placed in `pyi` files distributed in the same package as source files.
 
-The first way is tricky with PyO3 since we do not have `py` files.
+The first way is tricky with PyForge since we do not have `py` files.
 When it has been investigated and necessary changes are implemented, this document will be updated.
 
 The second way is easy to do, and the whole work can be fully separated from the main library code.
@@ -80,7 +80,7 @@ The example repo for the package with stub files can be found in [PEP561 referen
 
 The third way is described below.
 
-### Including `pyi` files in your PyO3/Maturin build package
+### Including `pyi` files in your PyForge/Maturin build package
 
 When source files are in the same package as stub files, they should be placed next to each other.
 We need a way to do that with Maturin.
@@ -130,7 +130,7 @@ Let's go a little bit more into detail regarding the files inside the package fo
 
 As we now specify our own package content, we have to provide the `__init__.py` file, so the folder is treated as a package and we can import things from it.
 We can always use the same content that Maturin creates for us if we do not specify a Python source folder.
-For PyO3 bindings it would be:
+For PyForge bindings it would be:
 
 ```python
 from .my_project import *
@@ -222,7 +222,7 @@ class Car[W]:
 #### Runtime Behaviour
 
 Stub files (`pyi`) are only useful for static type checkers and ignored at runtime.
-Therefore, PyO3 classes do not inherit from `typing.Generic` even if specified in the stub files.
+Therefore, PyForge classes do not inherit from `typing.Generic` even if specified in the stub files.
 
 This can cause some runtime issues, as annotating a variable like `f1_car: Car[AlloyWheel] = ...` can make Python call magic methods that are not defined.
 
@@ -240,7 +240,7 @@ Advanced users can opt to manually implement [`__class_getitem__`](https://docs.
 ```rust ignore
 impl MyClass {
     #[classmethod]
-    #[pyo3(signature = (key, /))]
+    #[pyforge(signature = (key, /))]
     pub fn __class_getitem__(
         cls: &Bound<'_, PyType>,
         key: &Bound<'_, PyAny>,
@@ -250,7 +250,7 @@ impl MyClass {
 }
 ```
 
-Note that [`pyo3::types::PyGenericAlias`][pygenericalias] can be helpful when implementing `__class_getitem__` as it can create [`types.GenericAlias`][genericalias] objects from Rust.
+Note that [`pyforge::types::PyGenericAlias`][pygenericalias] can be helpful when implementing `__class_getitem__` as it can create [`types.GenericAlias`][genericalias] objects from Rust.
 
-[pygenericalias]: {{#PYO3_DOCS_URL}}/pyo3/types/struct.PyGenericAlias.html
+[pygenericalias]: {{#PYO3_DOCS_URL}}/pyforge/types/struct.PyGenericAlias.html
 [genericalias]: https://docs.python.org/3/library/types.html#types.GenericAlias

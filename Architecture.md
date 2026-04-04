@@ -27,7 +27,7 @@ To summarize, there are six main parts to the PyForge codebase.
 4. [Procedural macros to simplify usage for users.](#4-procedural-macros-to-simplify-usage-for-users)
    - [`src/impl_`], [`pyforge-macros`] and [`pyforge-macros-backend`]
 5. [`build.rs` and `pyforge-build-config`](#5-buildrs-and-pyforge-build-config)
-   - [`build.rs`](https://github.com/PyForge/pyo3/tree/main/build.rs)
+   - [`build.rs`](https://github.com/abdulwahed-sweden/pyforge/tree/main/build.rs)
    - [`pyforge-build-config`]
 
 ## 1. Low-level bindings of Python/C API
@@ -40,7 +40,7 @@ automated tooling because:
 
 We aim to provide straight-forward Rust wrappers resembling the file structure of [`cpython/Include`](https://github.com/python/cpython/tree/main/Include).
 
-We are continuously updating the module to match the latest CPython version which PyForge supports (i.e. as of time of writing Python 3.13). The tracking issue is [#1289](https://github.com/PyForge/pyo3/issues/1289), and contribution is welcome.
+We are continuously updating the module to match the latest CPython version which PyForge supports (i.e. as of time of writing Python 3.13).
 
 In the [`pyforge-ffi`] crate, there is lots of conditional compilation such as `#[cfg(Py_LIMITED_API)]`,
 `#[cfg(Py_3_8)]`, and `#[cfg(PyPy)]`.
@@ -56,7 +56,7 @@ Those flags are set in [`build.rs`](#6-buildrs-and-pyforge-build-config).
 
 [`src/types`] contains bindings to [built-in types](https://docs.python.org/3/library/stdtypes.html)
 of Python, such as `dict` and `list`.
-For historical reasons, Python's `object` is called `PyAny` in PyForge and located in [`src/types/any.rs`].
+For historical reasons, Python's `object` is called `PyAny` in PyForge (inherited from PyO3) and located in [`src/types/any.rs`].
 
 Currently, `PyAny` is a straightforward wrapper of `ffi::PyObject`, defined as:
 
@@ -147,18 +147,18 @@ Some of the functionality of `pyforge-build-config`:
 - Find the interpreter for build and detect the Python version.
   - We have to set some version flags like `#[cfg(Py_3_8)]`.
   - If the interpreter is PyPy, we set `#[cfg(PyPy)`.
-  - If the `PYFORGE_CONFIG_FILE` environment variable is set then that file's contents will be used
+  - If the `PYO3_CONFIG_FILE` environment variable is set then that file's contents will be used
     instead of any detected configuration.
-  - If the `PYFORGE_NO_PYTHON` environment variable is set then the interpreter detection is bypassed
+  - If the `PYO3_NO_PYTHON` environment variable is set then the interpreter detection is bypassed
     entirely and only abi3 extensions can be built.
 - Check if we are building a Python extension.
   - If we are building an extension (e.g., Python library installable by `pip`),
     we don't link `libpython` on most platforms (to allow for statically-linked Python interpreters).
-    The `PYFORGE_BUILD_EXTENSION_MODULE` environment variable suppresses linking.
+    The `PYO3_BUILD_EXTENSION_MODULE` environment variable suppresses linking.
 - Cross-compiling configuration
   - If `TARGET` architecture and `HOST` architecture differ, we can find cross compile information
-    from environment variables (`PYFORGE_CROSS_LIB_DIR`, `PYFORGE_CROSS_PYTHON_VERSION` and
-    `PYFORGE_CROSS_PYTHON_IMPLEMENTATION`) or system files.
+    from environment variables (`PYO3_CROSS_LIB_DIR`, `PYO3_CROSS_PYTHON_VERSION` and
+    `PYO3_CROSS_PYTHON_IMPLEMENTATION`) or system files.
     When cross compiling extension modules it is often possible to make it work without any
     additional user input.
   - On Windows, `pyforge-ffi` uses Rust's `raw-dylib` linking feature to link against the Python DLL
@@ -173,27 +173,27 @@ Some of the functionality of `pyforge-build-config`:
 
 <!-- Crates -->
 
-[`pyforge-macros`]: https://github.com/PyForge/pyo3/tree/main/pyo3-macros
-[`pyforge-macros-backend`]: https://github.com/PyForge/pyo3/tree/main/pyo3-macros-backend
-[`pyforge-build-config`]: https://github.com/PyForge/pyo3/tree/main/pyforge-build-config
-[`pyforge-ffi`]: https://github.com/PyForge/pyo3/tree/main/pyo3-ffi
+[`pyforge-macros`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/pyforge-macros
+[`pyforge-macros-backend`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/pyforge-macros-backend
+[`pyforge-build-config`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/pyforge-build-config
+[`pyforge-ffi`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/pyforge-ffi
 
 <!-- Directories -->
 
-[`src/class`]: https://github.com/PyForge/pyo3/tree/main/src/class
-[`src/ffi`]: https://github.com/PyForge/pyo3/tree/main/src/ffi
-[`src/types`]: https://github.com/PyForge/pyo3/tree/main/src/types
+[`src/class`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/class
+[`src/ffi`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/ffi
+[`src/types`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/types
 
 <!-- Files -->
 
-[`src/impl_`]: https://github.com/PyForge/pyo3/blob/main/src/impl_
-[`src/instance.rs`]: https://github.com/PyForge/pyo3/tree/main/src/instance.rs
-[`src/pycell.rs`]: https://github.com/PyForge/pyo3/tree/main/src/pycell.rs
-[`src/pyclass.rs`]: https://github.com/PyForge/pyo3/tree/main/src/pyclass.rs
-[`src/pyclass_init.rs`]: https://github.com/PyForge/pyo3/tree/main/src/pyclass_init.rs
-[`src/pyclass_slot.rs`]: https://github.com/PyForge/pyo3/tree/main/src/pyclass_slot.rs
-[`src/type_object.rs`]: https://github.com/PyForge/pyo3/tree/main/src/type_object.rs
-[`src/class/methods.rs`]: https://github.com/PyForge/pyo3/tree/main/src/class/methods.rs
-[`src/class/impl_.rs`]: https://github.com/PyForge/pyo3/tree/main/src/class/impl_.rs
-[`src/types/any.rs`]: https://github.com/PyForge/pyo3/tree/main/src/types/any.rs
-[`src/types/mod.rs`]: https://github.com/PyForge/pyo3/tree/main/src/types/mod.rs
+[`src/impl_`]: https://github.com/abdulwahed-sweden/pyforge/blob/main/src/impl_
+[`src/instance.rs`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/instance.rs
+[`src/pycell.rs`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/pycell.rs
+[`src/pyclass.rs`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/pyclass.rs
+[`src/pyclass_init.rs`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/pyclass_init.rs
+[`src/pyclass_slot.rs`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/pyclass_slot.rs
+[`src/type_object.rs`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/type_object.rs
+[`src/class/methods.rs`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/class/methods.rs
+[`src/class/impl_.rs`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/class/impl_.rs
+[`src/types/any.rs`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/types/any.rs
+[`src/types/mod.rs`]: https://github.com/abdulwahed-sweden/pyforge/tree/main/src/types/mod.rs

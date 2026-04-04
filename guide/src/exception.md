@@ -5,9 +5,9 @@
 Use the [`create_exception!`] macro:
 
 ```rust
-use pyo3::create_exception;
+use pyforge::create_exception;
 
-create_exception!(module, MyError, pyo3::exceptions::PyException);
+create_exception!(module, MyError, pyforge::exceptions::PyException);
 ```
 
 - `module` is the name of the containing module.
@@ -16,35 +16,35 @@ create_exception!(module, MyError, pyo3::exceptions::PyException);
 For example:
 
 ```rust
-use pyo3::prelude::*;
-use pyo3::create_exception;
-use pyo3::types::IntoPyDict;
-use pyo3::exceptions::PyException;
+use pyforge::prelude::*;
+use pyforge::create_exception;
+use pyforge::types::IntoPyDict;
+use pyforge::exceptions::PyException;
 
 create_exception!(mymodule, CustomError, PyException);
 
 # fn main() -> PyResult<()> {
 Python::attach(|py| {
     let ctx = [("CustomError", py.get_type::<CustomError>())].into_py_dict(py)?;
-    pyo3::py_run!(
+    pyforge::py_run!(
         py,
         *ctx,
         "assert str(CustomError) == \"<class 'mymodule.CustomError'>\""
     );
-    pyo3::py_run!(py, *ctx, "assert CustomError('oops').args == ('oops',)");
+    pyforge::py_run!(py, *ctx, "assert CustomError('oops').args == ('oops',)");
 #   Ok(())
 })
 # }
 ```
 
-When using PyO3 to create an extension module, you can add the new exception to the module like this, so that it is importable from Python:
+When using PyForge to create an extension module, you can add the new exception to the module like this, so that it is importable from Python:
 
 ```rust,no_run
 # fn main() {}
-use pyo3::prelude::*;
-use pyo3::exceptions::PyException;
+use pyforge::prelude::*;
+use pyforge::exceptions::PyException;
 
-pyo3::create_exception!(mymodule, CustomError, PyException);
+pyforge::create_exception!(mymodule, CustomError, PyException);
 
 #[pymodule]
 mod mymodule {
@@ -58,13 +58,13 @@ mod mymodule {
 ## Raising an exception
 
 As described in the [function error handling](./function/error-handling.md) chapter, to raise an exception from a `#[pyfunction]` or `#[pymethods]`, return an `Err(PyErr)`.
-PyO3 will automatically raise this exception for you when returning the result to Python.
+PyForge will automatically raise this exception for you when returning the result to Python.
 
 You can also manually write and fetch errors in the Python interpreter's global state:
 
 ```rust
-use pyo3::{Python, PyErr};
-use pyo3::exceptions::PyTypeError;
+use pyforge::{Python, PyErr};
+use pyforge::exceptions::PyTypeError;
 
 Python::attach(|py| {
     PyTypeError::new_err("Error").restore(py);
@@ -76,11 +76,11 @@ Python::attach(|py| {
 ## Checking exception types
 
 Python has an [`isinstance`](https://docs.python.org/3/library/functions.html#isinstance) method to check an object's type.
-In PyO3 every object has the [`PyAny::is_instance`] and [`PyAny::is_instance_of`] methods which do the same thing.
+In PyForge every object has the [`PyAny::is_instance`] and [`PyAny::is_instance_of`] methods which do the same thing.
 
 ```rust,no_run
-use pyo3::prelude::*;
-use pyo3::types::{PyBool, PyList};
+use pyforge::prelude::*;
+use pyforge::types::{PyBool, PyList};
 
 # fn main() -> PyResult<()> {
 Python::attach(|py| {
@@ -96,8 +96,8 @@ Python::attach(|py| {
 To check the type of an exception, you can similarly do:
 
 ```rust,no_run
-# use pyo3::exceptions::PyTypeError;
-# use pyo3::prelude::*;
+# use pyforge::exceptions::PyTypeError;
+# use pyforge::prelude::*;
 # Python::attach(|py| {
 # let err = PyTypeError::new_err(());
 err.is_instance_of::<PyTypeError>(py);
@@ -111,10 +111,10 @@ The [`import_exception!`] macro allows importing a specific exception class and 
 
 ```rust,no_run
 #![allow(dead_code)]
-use pyo3::prelude::*;
+use pyforge::prelude::*;
 
 mod io {
-    pyo3::import_exception!(io, UnsupportedOperation);
+    pyforge::import_exception!(io, UnsupportedOperation);
 }
 
 fn tell(file: &Bound<'_, PyAny>) -> PyResult<u64> {
@@ -125,7 +125,7 @@ fn tell(file: &Bound<'_, PyAny>) -> PyResult<u64> {
 }
 ```
 
-[`pyo3::exceptions`]({{#PYO3_DOCS_URL}}/pyo3/exceptions/index.html) defines exceptions for several standard library modules.
+[`pyforge::exceptions`]({{#PYO3_DOCS_URL}}/pyforge/exceptions/index.html) defines exceptions for several standard library modules.
 
 ## Creating more complex exceptions
 
@@ -134,16 +134,16 @@ If you need to create an exception with more complex behavior, you can also manu
 ```rust
 #![allow(dead_code)]
 # #[cfg(any(not(Py_LIMITED_API), Py_3_12))] {
-use pyo3::prelude::*;
-use pyo3::types::IntoPyDict;
-use pyo3::exceptions::PyException;
+use pyforge::prelude::*;
+use pyforge::types::IntoPyDict;
+use pyforge::exceptions::PyException;
 
 #[pyclass(extends=PyException)]
 struct CustomError {
-    #[pyo3(get)]
+    #[pyforge(get)]
     url: String,
 
-    #[pyo3(get)]
+    #[pyforge(get)]
     message: String,
 }
 
@@ -158,13 +158,13 @@ impl CustomError {
 # fn main() -> PyResult<()> {
 Python::attach(|py| {
     let ctx = [("CustomError", py.get_type::<CustomError>())].into_py_dict(py)?;
-    pyo3::py_run!(
+    pyforge::py_run!(
         py,
         *ctx,
         "assert str(CustomError) == \"<class 'builtins.CustomError'>\", repr(CustomError)"
     );
-    pyo3::py_run!(py, *ctx, "assert CustomError('https://example.com', 'something went bad').args == ('https://example.com', 'something went bad')");
-    pyo3::py_run!(py, *ctx, "assert CustomError('https://example.com', 'something went bad').url == 'https://example.com'");
+    pyforge::py_run!(py, *ctx, "assert CustomError('https://example.com', 'something went bad').args == ('https://example.com', 'something went bad')");
+    pyforge::py_run!(py, *ctx, "assert CustomError('https://example.com', 'something went bad').url == 'https://example.com'");
 #   Ok(())
 })
 # }
@@ -174,7 +174,7 @@ Python::attach(|py| {
 
 Note that when the `abi3` feature is enabled, subclassing `PyException` is only possible on Python 3.12 or greater.
 
-[`create_exception!`]: {{#PYO3_DOCS_URL}}/pyo3/macro.create_exception.html
-[`import_exception!`]: {{#PYO3_DOCS_URL}}/pyo3/macro.import_exception.html
-[`PyAny::is_instance`]: {{#PYO3_DOCS_URL}}/pyo3/types/trait.PyAnyMethods.html#tymethod.is_instance
-[`PyAny::is_instance_of`]: {{#PYO3_DOCS_URL}}/pyo3/types/trait.PyAnyMethods.html#tymethod.is_instance_of
+[`create_exception!`]: {{#PYO3_DOCS_URL}}/pyforge/macro.create_exception.html
+[`import_exception!`]: {{#PYO3_DOCS_URL}}/pyforge/macro.import_exception.html
+[`PyAny::is_instance`]: {{#PYO3_DOCS_URL}}/pyforge/types/trait.PyAnyMethods.html#tymethod.is_instance
+[`PyAny::is_instance_of`]: {{#PYO3_DOCS_URL}}/pyforge/types/trait.PyAnyMethods.html#tymethod.is_instance_of
