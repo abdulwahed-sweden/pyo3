@@ -39,7 +39,3 @@ drf = ["djangorestframework>=3.14"]
 dev = ["pytest>=7.0", "pytest-django>=4.5"]
 
 [tool.maturin]
-# Build from the workspace root so Rust can find all workspace dependencies
-manifest-path = "Cargo.toml"
-python-source = "."
-module-name = "pyforge_django"

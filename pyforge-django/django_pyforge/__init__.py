@@ -3,7 +3,6 @@
 django_pyforge — High-performance Django integration powered by Rust.
 
 Drop-in accelerators for Django REST Framework serializers and validators.
-Requires pyforge_django native extension (built via maturin).
 """
 
 __author__ = "Abdulwahed Mansour"

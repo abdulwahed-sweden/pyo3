@@ -301,7 +301,7 @@ fn version() -> &'static str {
     env!("CARGO_PKG_VERSION")
 }
 
-/// The `pyforge_django` Python module.
+/// The native extension module.
 #[pymodule]
 fn pyforge_django(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<ModelSchema>()?;
