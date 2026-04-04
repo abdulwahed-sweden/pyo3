@@ -9,4 +9,4 @@ name = "string_sum"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3-ffi = { version = "{{PYO3_VERSION}}" }
+pyforge-ffi = { version = "{{PYFORGE_VERSION}}" }

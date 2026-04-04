@@ -1,5 +1,5 @@
 [package]
-name = "pyo3-benches"
+name = "pyforge-benches"
 version = "0.1.0"
 description = "In-tree benchmarks for the PyForge project"
 authors = ["Abdulwahed Mansour"]
@@ -10,7 +10,7 @@ publish = false
 pyforge = { path = "../", features = ["auto-initialize", "full"] }
 
 [build-dependencies]
-pyforge-build-config = { path = "../pyo3-build-config" }
+pyforge-build-config = { path = "../pyforge-build-config" }
 
 [dev-dependencies]
 codspeed-criterion-compat = "4.0"

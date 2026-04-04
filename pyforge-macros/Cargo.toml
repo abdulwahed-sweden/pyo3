@@ -23,7 +23,7 @@ experimental-inspect = ["pyforge-macros-backend/experimental-inspect"]
 proc-macro2 = { version = "1.0.60", default-features = false }
 quote = "1"
 syn = { version = "2", features = ["full", "extra-traits"] }
-pyforge-macros-backend = { path = "../pyo3-macros-backend", version = "=0.1.0" }
+pyforge-macros-backend = { path = "../pyforge-macros-backend", version = "=0.1.0" }
 
 [lints]
 workspace = true

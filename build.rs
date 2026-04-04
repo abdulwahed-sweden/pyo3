@@ -17,9 +17,9 @@ fn ensure_auto_initialize_ok(interpreter_config: &InterpreterConfig) -> Result<(
             PyForge. If you are sure you intend to do this, disable the `auto-initialize` feature.\n\
             \n\
             For more information, see \
-            https://github.com/abdulwahed-sweden/pyforge/v{pyo3_version}/\
+            https://github.com/abdulwahed-sweden/pyforge/v{pyforge_version}/\
                 building-and-distribution.html#embedding-python-in-rust",
-            pyo3_version = env::var("CARGO_PKG_VERSION").unwrap()
+            pyforge_version = env::var("CARGO_PKG_VERSION").unwrap()
         );
     }
     Ok(())
@@ -32,7 +32,7 @@ fn ensure_auto_initialize_ok(interpreter_config: &InterpreterConfig) -> Result<(
 ///
 /// Emits the cargo configuration based on this config as well as a few checks of the Rust compiler
 /// version to enable features which aren't supported on MSRV.
-fn configure_pyo3() -> Result<()> {
+fn configure_pyforge() -> Result<()> {
     let interpreter_config = pyforge_build_config::get();
 
     ensure_auto_initialize_ok(interpreter_config)?;
@@ -51,7 +51,7 @@ fn configure_pyo3() -> Result<()> {
 
 fn main() {
     pyforge_build_config::print_expected_cfgs();
-    if let Err(e) = configure_pyo3() {
+    if let Err(e) = configure_pyforge() {
         eprintln!("error: {}", e.report());
         std::process::exit(1)
     }

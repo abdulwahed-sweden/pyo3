@@ -32,7 +32,7 @@ abi3-py314 = ["abi3", "pyforge-build-config/abi3-py314"]
 paste = "1"
 
 [build-dependencies]
-pyforge-build-config = { path = "../pyo3-build-config", version = "=0.1.0", features = ["resolve-config"] }
+pyforge-build-config = { path = "../pyforge-build-config", version = "=0.1.0", features = ["resolve-config"] }
 
 [lints]
 workspace = true

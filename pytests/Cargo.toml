@@ -1,6 +1,6 @@
 [package]
 authors = ["Abdulwahed Mansour"]
-name = "pyo3-pytests"
+name = "pyforge-pytests"
 version = "0.1.0"
 description = "Python-based tests for PyForge"
 edition = "2021"
@@ -15,7 +15,7 @@ experimental-inspect = ["pyforge/experimental-inspect"]
 pyforge = { path = "../" }
 
 [build-dependencies]
-pyforge-build-config = { path = "../pyo3-build-config" }
+pyforge-build-config = { path = "../pyforge-build-config" }
 
 [lib]
 name = "pyo3_pytests"

@@ -12,6 +12,6 @@ crate-type = ["cdylib"]
 pyforge-ffi = { path = "../../" }
 
 [build-dependencies]
-pyforge-build-config = { path = "../../../pyo3-build-config" }
+pyforge-build-config = { path = "../../../pyforge-build-config" }
 
 [workspace]

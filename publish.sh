@@ -18,7 +18,7 @@ elif [ "$1" = "--from" ] && [ -n "$2" ]; then
 fi
 
 CRATE_NAMES=("pyforge-build-config" "pyforge-ffi" "pyforge-macros-backend" "pyforge-macros" "pyforge" "pyforge-django")
-CRATE_DIRS=("pyo3-build-config" "pyo3-ffi" "pyo3-macros-backend" "pyo3-macros" "." "pyforge-django")
+CRATE_DIRS=("pyforge-build-config" "pyforge-ffi" "pyforge-macros-backend" "pyforge-macros" "." "pyforge-django")
 
 publish_crate() {
     local name=$1

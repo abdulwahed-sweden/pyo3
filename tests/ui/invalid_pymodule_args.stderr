@@ -5,25 +5,25 @@ error: expected one of: `name`, `crate`, `module`, `submodule`, `gil_used`
   |            ^^^^^^^^
 
 error: `gil_used` may only be specified once
- --> tests/ui/invalid_pymodule_args.rs:8:36
+ --> tests/ui/invalid_pymodule_args.rs:8:39
   |
-8 | #[pyo3::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
-  |                                    ^^^^^^^^
+8 | #[pyforge::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
+  |                                       ^^^^^^^^
 
 error: `name` may only be specified once
- --> tests/ui/invalid_pymodule_args.rs:8:67
+ --> tests/ui/invalid_pymodule_args.rs:8:70
   |
-8 | #[pyo3::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
-  |                                                                   ^^^^
+8 | #[pyforge::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
+  |                                                                      ^^^^
 
 error: `gil_used` may only be specified once
-  --> tests/ui/invalid_pymodule_args.rs:13:36
+  --> tests/ui/invalid_pymodule_args.rs:13:39
    |
-13 | #[pyo3::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
-   |                                    ^^^^^^^^
+13 | #[pyforge::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
+   |                                       ^^^^^^^^
 
 error: `name` may only be specified once
-  --> tests/ui/invalid_pymodule_args.rs:13:67
+  --> tests/ui/invalid_pymodule_args.rs:13:70
    |
-13 | #[pyo3::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
-   |                                                                   ^^^^
+13 | #[pyforge::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
+   |                                                                      ^^^^

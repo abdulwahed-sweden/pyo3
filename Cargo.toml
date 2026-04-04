@@ -29,10 +29,10 @@ libc = "0.2.62"
 once_cell = "1.21"
 
 # ffi bindings to the python interpreter, split into a separate crate so they can be used independently
-pyforge-ffi = { path = "pyo3-ffi", version = "=0.1.0" }
+pyforge-ffi = { path = "pyforge-ffi", version = "=0.1.0" }
 
 # support crate for macros feature
-pyforge-macros = { path = "pyo3-macros", version = "=0.1.0", optional = true }
+pyforge-macros = { path = "pyforge-macros", version = "=0.1.0", optional = true }
 
 # support crate for multiple-pymethods feature
 inventory = { version = "0.3.5", optional = true }
@@ -82,7 +82,7 @@ uuid = { version = "1.10.0", features = ["v4"] }
 parking_lot = { version = "0.12.3", features = ["arc_lock"] }
 
 [build-dependencies]
-pyforge-build-config = { path = "pyo3-build-config", version = "=0.1.0", features = ["resolve-config"] }
+pyforge-build-config = { path = "pyforge-build-config", version = "=0.1.0", features = ["resolve-config"] }
 
 [features]
 default = ["macros", "experimental-async"]
@@ -167,11 +167,11 @@ full = [
 
 [workspace]
 members = [
-    "pyo3-ffi",
-    "pyo3-build-config",
-    "pyo3-macros",
-    "pyo3-macros-backend",
-    "pyo3-introspection",
+    "pyforge-ffi",
+    "pyforge-build-config",
+    "pyforge-macros",
+    "pyforge-macros-backend",
+    "pyforge-introspection",
     "pyforge-django",
     "pytests",
     "examples",

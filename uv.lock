@@ -3,7 +3,7 @@ revision = 3
 requires-python = ">=3.8"
 
 [[package]]
-name = "pyo3"
+name = "pyforge"
 source = { virtual = "." }
 
 [package.dev-dependencies]

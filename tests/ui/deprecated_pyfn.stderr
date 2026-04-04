@@ -1,4 +1,4 @@
-error: use of deprecated constant `module_with_pyfn::PYFN_ATTRIBUTE`: `pyfn` will be removed in a future PyO3 version, use declarative `#[pymodule]` with `mod` instead
+error: use of deprecated constant `module_with_pyfn::PYFN_ATTRIBUTE`: `pyfn` will be removed in a future PyForge version, use declarative `#[pymodule]` with `mod` instead
  --> tests/ui/deprecated_pyfn.rs:7:7
   |
 7 |     #[pyfn(m)]

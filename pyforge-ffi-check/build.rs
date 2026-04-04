@@ -5,12 +5,12 @@ fn main() {
     let doc_dir = std::path::Path::new(&out_dir)
         .join(&target)
         .join("doc")
-        .join("pyo3_ffi_check_definitions");
+        .join("pyforge_ffi_check_definitions");
 
     // write docs into the build script output directory, they will be read
     // by the proc macro to resolve what definitions exist
     let status = std::process::Command::new("cargo")
-        .args(["doc", "-p", "pyo3-ffi-check-definitions", "--no-deps"])
+        .args(["doc", "-p", "pyforge-ffi-check-definitions", "--no-deps"])
         .env("CARGO_TARGET_DIR", out_dir)
         // forward target to the doc buid to ensure `--target` is honored
         .env("CARGO_BUILD_TARGET", target)
@@ -30,9 +30,9 @@ fn main() {
 
     // rerun if any of the definitions change, to ensure the docs are up to date
     println!("cargo:rerun-if-changed=definitions");
-    println!("cargo:rerun-if-changed=../pyo3-ffi");
+    println!("cargo:rerun-if-changed=../pyforge-ffi");
 
-    // Because `pyo3-ffi` is a dependency, libpython is linked, this ensures `main.rs` can run.
+    // Because `pyforge-ffi` is a dependency, libpython is linked, this ensures `main.rs` can run.
     // Slightly needless (no symbols from libpython are actually called), but simple to do.
-    pyo3_build_config::add_libpython_rpath_link_args();
+    pyforge_build_config::add_libpython_rpath_link_args();
 }

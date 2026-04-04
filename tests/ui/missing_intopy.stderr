@@ -11,7 +11,7 @@ help: the trait `IntoPyObject<'_>` is not implemented for `Blah`
   | ^^^^^^^^^^^
   = note: `IntoPyObject` is automatically implemented by the `#[pyclass]` macro
   = note: if you do not wish to have a corresponding Python type, implement it manually
-  = note: if you do not own `Blah` you can perform a manual conversion to one of the types in `pyo3::types::*`
+  = note: if you do not own `Blah` you can perform a manual conversion to one of the types in `pyforge::types::*`
   = help: the following other types implement trait `IntoPyObject<'py>`:
             &&'a T
             &&OsStr
