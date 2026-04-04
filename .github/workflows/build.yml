@@ -92,8 +92,8 @@ jobs:
           ref: ${{ github.event.merge_group.head_ref }}
           filters: |
             changed:
-              - 'pyo3-ffi/**'
-              - 'pyo3-ffi-check/**'
+              - 'pyforge-ffi/**'
+              - 'pyforge-ffi-check/**'
               - '.github/workflows/ci.yml'
               - '.github/workflows/build.yml'
 
@@ -125,11 +125,11 @@ jobs:
         # needs investigation why llvm-cov fails on windows-11-arm
         continue-on-error: ${{ inputs.os == 'windows-11-arm' }}
         run: cargo llvm-cov
-          --package=pyo3
-          --package=pyo3-build-config
-          --package=pyo3-macros-backend
-          --package=pyo3-macros
-          --package=pyo3-ffi
+          --package=pyforge
+          --package=pyforge-build-config
+          --package=pyforge-macros-backend
+          --package=pyforge-macros
+          --package=pyforge-ffi
           report --codecov --output-path coverage.json
 
       - name: Upload coverage report
