@@ -1,13 +1,20 @@
-[![PyPI django](https://img.shields.io/pypi/v/clarax-django.svg)](https://pypi.org/project/clarax-django)
-[![PyPI core](https://img.shields.io/pypi/v/clarax-core.svg)](https://pypi.org/project/clarax-core)
-[![crates.io](https://img.shields.io/crates/v/clarax-core.svg)](https://crates.io/crates/clarax-core)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE-MIT)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org)
-[![Django 4.2+](https://img.shields.io/badge/django-4.2%2B-green.svg)](https://www.djangoproject.com)
+<p align="center">
+  <img src="assets/logo.png" alt="ClaraX" width="200">
+</p>
 
-# ClaraX
+<p align="center">
+  <strong>Rust-accelerated serialization and validation for Python.</strong><br>
+  Drop-in for Django REST Framework, standalone for everything else.
+</p>
 
-Rust-accelerated serialization and validation for Python. Drop-in for Django REST Framework, standalone for everything else.
+<p align="center">
+  <a href="https://pypi.org/project/clarax-django"><img src="https://img.shields.io/pypi/v/clarax-django.svg" alt="PyPI django"></a>
+  <a href="https://pypi.org/project/clarax-core"><img src="https://img.shields.io/pypi/v/clarax-core.svg" alt="PyPI core"></a>
+  <a href="https://crates.io/crates/clarax-core"><img src="https://img.shields.io/crates/v/clarax-core.svg" alt="crates.io"></a>
+  <a href="LICENSE-MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://www.python.org"><img src="https://img.shields.io/badge/python-3.11%2B-blue.svg" alt="Python 3.11+"></a>
+  <a href="https://www.djangoproject.com"><img src="https://img.shields.io/badge/django-4.2%2B-green.svg" alt="Django 4.2+"></a>
+</p>
 
 ## Performance
 
