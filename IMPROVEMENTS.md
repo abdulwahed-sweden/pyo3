@@ -1,4 +1,4 @@
-# PyForge Improvement Roadmap
+# ClaraX Improvement Roadmap
 
 Author: Abdulwahed Mansour
 
@@ -82,13 +82,13 @@ pub fn serialize_to_bytes(descriptors: &[FieldDescriptor], values: &[FieldValue]
 
 ## 5. Type Stub Generation (.pyi)
 
-**Current state:** No IDE autocompletion for `pyforge_django` functions.
+**Current state:** No IDE autocompletion for `clarax_django` functions.
 
-**Proposed:** Generate `pyforge_django.pyi` stub file during build, or commit a hand-written one.
+**Proposed:** Generate `clarax_django.pyi` stub file during build, or commit a hand-written one.
 
 **Approach:**
 ```python
-# pyforge_django.pyi
+# clarax_django.pyi
 from typing import Any
 
 def extract_model_fields(model_class: type) -> list[dict[str, Any]]: ...
@@ -101,7 +101,7 @@ def version() -> str: ...
 
 ---
 
-## 6. Reduce PyForge Boundary Crossings
+## 6. Reduce ClaraX Boundary Crossings
 
 **Current state:** `serialize_fields` makes N+1 Python↔Rust boundary crossings (1 per field + 1 for the result dict).
 

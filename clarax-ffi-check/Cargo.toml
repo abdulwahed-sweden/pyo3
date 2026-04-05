@@ -1,0 +1,18 @@
+[package]
+name = "clarax-ffi-check"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+clarax-ffi-check-definitions = { path = "definitions" }
+clarax-ffi-check-macro = { path = "macro" }
+
+[build-dependencies]
+clarax-build-config = { path = "../clarax-build-config" }
+
+[workspace]
+members = [
+    "definitions",
+    "macro"
+]

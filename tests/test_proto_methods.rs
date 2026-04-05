@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
-use pyforge::exceptions::{PyAttributeError, PyIndexError, PyValueError};
-use pyforge::types::{PyDict, PyList, PyMapping, PySequence, PySlice, PyType};
-use pyforge::{prelude::*, py_run};
+use clarax::exceptions::{PyAttributeError, PyIndexError, PyValueError};
+use clarax::types::{PyDict, PyList, PyMapping, PySequence, PySlice, PyType};
+use clarax::{prelude::*, py_run};
 use std::iter;
 use std::sync::Mutex;
 
@@ -790,7 +790,7 @@ impl DescrCounter {
 fn descr_getset() {
     Python::attach(|py| {
         let counter = py.get_type::<DescrCounter>();
-        let source = pyforge_ffi::c_str!(
+        let source = clarax_ffi::c_str!(
             r#"
 class Class:
     counter = Counter()

@@ -1,6 +1,6 @@
-# PyForge Benchmarks
+# ClaraX Benchmarks
 
-Performance comparison between PyForge's Rust backend and pure Python Django serialization/validation.
+Performance comparison between ClaraX's Rust backend and pure Python Django serialization/validation.
 
 ## Running Benchmarks
 
@@ -8,12 +8,12 @@ Performance comparison between PyForge's Rust backend and pure Python Django ser
 
 ```bash
 # All benchmarks
-cargo bench -p pyforge-django
+cargo bench -p clarax-django
 
 # Individual benchmark suites
-cargo bench -p pyforge-django --bench bench_serializer
-cargo bench -p pyforge-django --bench bench_validator
-cargo bench -p pyforge-django --bench bench_field_types
+cargo bench -p clarax-django --bench bench_serializer
+cargo bench -p clarax-django --bench bench_validator
+cargo bench -p clarax-django --bench bench_field_types
 ```
 
 Results are saved to `target/criterion/` with HTML reports.
@@ -21,8 +21,8 @@ Results are saved to `target/criterion/` with HTML reports.
 ### Python Comparison Benchmarks
 
 ```bash
-# Requires pyforge_django native extension installed
-pip install -e pyforge-django/
+# Requires clarax_django native extension installed
+pip install -e clarax-django/
 
 # Serialization comparison
 python benchmarks/bench_serializer_comparison.py
@@ -50,17 +50,17 @@ python benchmarks/bench_validator_comparison.py
 - CharField, TextField, IntegerField, DecimalField, DateField, TimeField, DateTimeField, UUIDField, BooleanField, JSONField, Null
 
 ### `bench_serializer_comparison.py`
-- Side-by-side: PyForge vs pure Python dict construction at different batch sizes
+- Side-by-side: ClaraX vs pure Python dict construction at different batch sizes
 - Includes Python→Rust bridge overhead (realistic end-to-end measurement)
 
 ### `bench_validator_comparison.py`
-- Side-by-side: PyForge vs pure Python field validation
+- Side-by-side: ClaraX vs pure Python field validation
 - Tests different error rates and batch sizes
 
 ## Interpreting Results
 
 - **Pure Rust numbers** (criterion): Represent the maximum achievable speedup when data is already in Rust. This is the ceiling.
-- **Python comparison numbers**: Include the Python→Rust conversion overhead via PyForge's GIL bridge. This is what users actually experience.
+- **Python comparison numbers**: Include the Python→Rust conversion overhead via ClaraX's GIL bridge. This is what users actually experience.
 - **Small batches** (< 10 records): May show modest speedup because bridge overhead dominates.
 - **Large batches** (100+ records): Show significant speedup as Rust's computational advantage outweighs bridge overhead.
 - **Rayon parallelism**: Kicks in at 64+ entries for validation, adding another speedup factor on multi-core systems.

@@ -1,7 +1,7 @@
 #![cfg(feature = "multiple-pymethods")]
 
-use pyforge::prelude::*;
-use pyforge::types::PyType;
+use clarax::prelude::*;
+use clarax::types::PyType;
 
 #[macro_use]
 mod test_utils;

@@ -11,7 +11,7 @@ use std::ffi::c_double;
 
 /// Represents a Python `float` object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyFloat>`][crate::Py] or [`Bound<'py, PyFloat>`][Bound].
 ///
 /// For APIs available on `float` objects, see the [`PyFloatMethods`] trait which is implemented for

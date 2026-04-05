@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
-use pyforge::class::basic::CompareOp;
-use pyforge::py_run;
-use pyforge::{prelude::*, BoundObject};
+use clarax::class::basic::CompareOp;
+use clarax::py_run;
+use clarax::{prelude::*, BoundObject};
 
 mod test_utils;
 

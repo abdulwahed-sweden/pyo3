@@ -89,8 +89,8 @@ impl PyErr {
     /// # Examples
     ///
     /// ```
-    /// use pyforge::prelude::*;
-    /// use pyforge::exceptions::PyTypeError;
+    /// use clarax::prelude::*;
+    /// use clarax::exceptions::PyTypeError;
     ///
     /// #[pyfunction]
     /// fn always_throws() -> PyResult<()> {
@@ -98,7 +98,7 @@ impl PyErr {
     /// }
     /// #
     /// # Python::attach(|py| {
-    /// #     let fun = pyforge::wrap_pyfunction!(always_throws, py).unwrap();
+    /// #     let fun = clarax::wrap_pyfunction!(always_throws, py).unwrap();
     /// #     let err = fun.call0().expect_err("called a function that should always return an error but the return value was Ok");
     /// #     assert!(err.is_instance_of::<PyTypeError>(py))
     /// # });
@@ -107,8 +107,8 @@ impl PyErr {
     /// In most cases, you can use a concrete exception's constructor instead:
     ///
     /// ```
-    /// use pyforge::prelude::*;
-    /// use pyforge::exceptions::PyTypeError;
+    /// use clarax::prelude::*;
+    /// use clarax::exceptions::PyTypeError;
     ///
     /// #[pyfunction]
     /// fn always_throws() -> PyResult<()> {
@@ -116,7 +116,7 @@ impl PyErr {
     /// }
     /// #
     /// # Python::attach(|py| {
-    /// #     let fun = pyforge::wrap_pyfunction!(always_throws, py).unwrap();
+    /// #     let fun = clarax::wrap_pyfunction!(always_throws, py).unwrap();
     /// #     let err = fun.call0().expect_err("called a function that should always return an error but the return value was Ok");
     /// #     assert!(err.is_instance_of::<PyTypeError>(py))
     /// # });
@@ -162,10 +162,10 @@ impl PyErr {
     ///
     /// # Examples
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::PyTypeInfo;
-    /// use pyforge::exceptions::PyTypeError;
-    /// use pyforge::types::PyString;
+    /// use clarax::prelude::*;
+    /// use clarax::PyTypeInfo;
+    /// use clarax::exceptions::PyTypeError;
+    /// use clarax::types::PyString;
     ///
     /// Python::attach(|py| {
     ///     // Case #1: Exception object
@@ -204,7 +204,7 @@ impl PyErr {
     ///
     /// # Examples
     /// ```rust
-    /// use pyforge::{prelude::*, exceptions::PyTypeError, types::PyType};
+    /// use clarax::{prelude::*, exceptions::PyTypeError, types::PyType};
     ///
     /// Python::attach(|py| {
     ///     let err: PyErr = PyTypeError::new_err(("some type error",));
@@ -220,7 +220,7 @@ impl PyErr {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::{exceptions::PyTypeError, PyErr, Python};
+    /// use clarax::{exceptions::PyTypeError, PyErr, Python};
     ///
     /// Python::attach(|py| {
     ///     let err: PyErr = PyTypeError::new_err(("some type error",));
@@ -251,7 +251,7 @@ impl PyErr {
     ///
     /// # Examples
     /// ```rust
-    /// use pyforge::{exceptions::PyTypeError, Python};
+    /// use clarax::{exceptions::PyTypeError, Python};
     ///
     /// Python::attach(|py| {
     ///     let err = PyTypeError::new_err(("some type error",));
@@ -301,7 +301,7 @@ impl PyErr {
             .map(|py_str| py_str.to_string_lossy().into())
             .unwrap_or_else(|_| String::from("Unwrapped panic from Python code"));
 
-        eprintln!("--- PyForge is resuming a panic after fetching a PanicException from Python. ---");
+        eprintln!("--- ClaraX is resuming a panic after fetching a PanicException from Python. ---");
         eprintln!("Python stack trace below:");
 
         PyErrState::normalized(state).restore(py);
@@ -462,8 +462,8 @@ impl PyErr {
     ///
     /// Example:
     /// ```rust
-    /// # use pyforge::prelude::*;
-    /// # use pyforge::exceptions::PyRuntimeError;
+    /// # use clarax::prelude::*;
+    /// # use clarax::exceptions::PyRuntimeError;
     /// # fn failing_function() -> PyResult<()> { Err(PyRuntimeError::new_err("foo")) }
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| {
@@ -487,16 +487,16 @@ impl PyErr {
     /// Equivalent to `warnings.warn()` in Python.
     ///
     /// The `category` should be one of the `Warning` classes available in
-    /// [`pyforge::exceptions`](crate::exceptions), or a subclass.  The Python
+    /// [`clarax::exceptions`](crate::exceptions), or a subclass.  The Python
     /// object can be retrieved using [`Python::get_type()`].
     ///
     /// Example:
     /// ```rust
-    /// # use pyforge::prelude::*;
-    /// # use pyforge::ffi::c_str;
+    /// # use clarax::prelude::*;
+    /// # use clarax::ffi::c_str;
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| {
-    ///     let user_warning = py.get_type::<pyforge::exceptions::PyUserWarning>();
+    ///     let user_warning = py.get_type::<clarax::exceptions::PyUserWarning>();
     ///     PyErr::warn(py, &user_warning, c"I am warning you", 0)?;
     ///     Ok(())
     /// })
@@ -524,7 +524,7 @@ impl PyErr {
     /// Equivalent to `warnings.warn_explicit()` in Python.
     ///
     /// The `category` should be one of the `Warning` classes available in
-    /// [`pyforge::exceptions`](crate::exceptions), or a subclass.
+    /// [`clarax::exceptions`](crate::exceptions), or a subclass.
     pub fn warn_explicit<'py>(
         py: Python<'py>,
         category: &Bound<'py, PyAny>,
@@ -558,7 +558,7 @@ impl PyErr {
     ///
     /// # Examples
     /// ```rust
-    /// use pyforge::{exceptions::PyTypeError, PyErr, Python, prelude::PyAnyMethods};
+    /// use clarax::{exceptions::PyTypeError, PyErr, Python, prelude::PyAnyMethods};
     /// Python::attach(|py| {
     ///     let err: PyErr = PyTypeError::new_err(("some type error",));
     ///     let err_clone = err.clone_ref(py);

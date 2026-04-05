@@ -1,6 +1,6 @@
 //! With abi3, we cannot inherit native types.
-use pyforge::prelude::*;
-use pyforge::types::PyDict;
+use clarax::prelude::*;
+use clarax::types::PyDict;
 
 #[pyclass(extends=PyDict)]
 struct TestClass {}

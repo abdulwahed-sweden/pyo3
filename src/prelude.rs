@@ -1,11 +1,11 @@
-//! PyForge's prelude.
+//! ClaraX's prelude.
 //!
-//! The purpose of this module is to alleviate imports of many commonly used items of the PyForge crate
+//! The purpose of this module is to alleviate imports of many commonly used items of the ClaraX crate
 //! by adding a glob import to the top of pyo3 heavy modules:
 //!
 //! ```
 //! # #![allow(unused_imports)]
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //! ```
 
 pub use crate::conversion::{FromPyObject, FromPyObjectOwned, IntoPyObject};
@@ -17,7 +17,7 @@ pub use crate::pyclass_init::PyClassInitializer;
 pub use crate::types::{PyAny, PyModule};
 
 #[cfg(feature = "macros")]
-pub use pyforge_macros::{
+pub use clarax_macros::{
     pyclass, pyfunction, pymethods, pymodule, FromPyObject, IntoPyObject, IntoPyObjectRef,
 };
 

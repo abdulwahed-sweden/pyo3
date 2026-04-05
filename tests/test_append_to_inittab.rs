@@ -1,6 +1,6 @@
 #![cfg(all(feature = "macros", not(PyPy)))]
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyfunction]
 fn foo() -> usize {
@@ -22,7 +22,7 @@ mod module_mod_with_functions {
 
 #[test]
 fn test_module_append_to_inittab() {
-    use pyforge::append_to_inittab;
+    use clarax::append_to_inittab;
 
     append_to_inittab!(module_fn_with_functions);
 

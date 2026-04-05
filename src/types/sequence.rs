@@ -12,7 +12,7 @@ use crate::{ffi, Borrowed, BoundObject, IntoPyObject, IntoPyObjectExt, Py, Pytho
 
 /// Represents a reference to a Python object supporting the sequence protocol.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PySequence>`][crate::Py] or [`Bound<'py, PySequence>`][Bound].
 ///
 /// For APIs available on sequence objects, see the [`PySequenceMethods`] trait which is implemented for

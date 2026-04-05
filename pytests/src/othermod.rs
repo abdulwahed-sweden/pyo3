@@ -1,12 +1,12 @@
-//! <https://github.com/PyForge/pyo3/issues/233>
+//! <https://github.com/ClaraX/pyo3/issues/233>
 //!
 //! The code below just tries to use the most important code generation paths
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 pub mod othermod {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     #[pyclass]
     pub struct ModClass {

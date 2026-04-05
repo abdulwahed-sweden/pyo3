@@ -1,12 +1,12 @@
 [package]
-name = "pyforge-examples"
+name = "clarax-examples"
 version = "0.0.0"
 publish = false
 edition = "2021"
 rust-version = "1.83"
 
 [dev-dependencies]
-pyforge = { path = "..", features = ["auto-initialize"] }
+clarax = { path = "..", features = ["auto-initialize"] }
 
 [[example]]
 name = "decorator"

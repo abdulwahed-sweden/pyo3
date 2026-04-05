@@ -1,5 +1,5 @@
-use pyforge::basic::CompareOp;
-use pyforge::prelude::*;
+use clarax::basic::CompareOp;
+use clarax::prelude::*;
 use std::fmt;
 
 #[pyclass(frozen)]

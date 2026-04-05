@@ -13,8 +13,8 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"jiff-02\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of jiff and PyForge.
-//! The required jiff version may vary based on the version of PyForge.
+//! Note that you must use compatible versions of jiff and ClaraX.
+//! The required jiff version may vary based on the version of ClaraX.
 //!
 //! # Example: Convert a `datetime.datetime` to jiff `Zoned`
 //!
@@ -22,7 +22,7 @@
 //! # #![cfg_attr(windows, allow(unused_imports))]
 //! # use jiff_02 as jiff;
 //! use jiff::{Zoned, SignedDuration, ToSpan};
-//! use pyforge::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
+//! use clarax::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
 //!
 //! # #[cfg(windows)]
 //! # fn main() -> () {}

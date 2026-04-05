@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
-use pyforge::py_run;
-use pyforge::types::PyString;
+use clarax::prelude::*;
+use clarax::py_run;
+use clarax::types::PyString;
 
 mod test_utils;
 
@@ -25,7 +25,7 @@ fn test_enum_class_attr() {
 #[test]
 fn test_enum_intopyobject() {
     // Variant of the above that goes via `.into_pyobject()`
-    // - regression test for https://github.com/PyForge/pyo3/issues/5927
+    // - regression test for https://github.com/ClaraX/pyo3/issues/5927
     //
     #[pyclass(eq, eq_int, from_py_object)]
     #[derive(Debug, PartialEq, Eq, Clone)]
@@ -293,7 +293,7 @@ enum SimpleEnumWithHash {
 #[test]
 fn test_simple_enum_with_hash() {
     Python::attach(|py| {
-        use pyforge::types::IntoPyDict;
+        use clarax::types::IntoPyDict;
         let class = SimpleEnumWithHash::A;
         let hash = {
             use std::hash::{Hash, Hasher};
@@ -323,7 +323,7 @@ enum ComplexEnumWithHash {
 #[test]
 fn test_complex_enum_with_hash() {
     Python::attach(|py| {
-        use pyforge::types::IntoPyDict;
+        use clarax::types::IntoPyDict;
         let class = ComplexEnumWithHash::B {
             msg: String::from("Hello"),
         };

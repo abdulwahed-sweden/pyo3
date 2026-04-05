@@ -10,7 +10,7 @@ This method's signature must look like `__call__(<self>, ...) -> object` - here,
 The following pyclass is a basic decorator - its constructor takes a Python object as argument and calls that object when called.
 An equivalent Python implementation is linked at the end.
 
-An example crate containing this pyclass can be found [in the PyForge GitHub repository](https://github.com/abdulwahed-sweden/pyforge/tree/main/examples/decorator)
+An example crate containing this pyclass can be found [in the ClaraX GitHub repository](https://github.com/abdulwahed-sweden/clarax/tree/main/examples/decorator)
 
 ```rust,ignore
 {{#include ../../../examples/decorator/src/lib.rs}}
@@ -69,7 +69,7 @@ def Counter(wraps):
 A [previous implementation] used a normal `u64`, which meant it required a `&mut self` receiver to update the count:
 
 ```rust,ignore
-#[pyforge(signature = (*args, **kwargs))]
+#[clarax(signature = (*args, **kwargs))]
 fn __call__(
     &mut self,
     py: Python<'_>,
@@ -90,9 +90,9 @@ fn __call__(
 }
 ```
 
-The problem with this is that the `&mut self` receiver means PyForge has to borrow it exclusively, and hold this borrow across the `self.wraps.call(py, args, kwargs)` call.
+The problem with this is that the `&mut self` receiver means ClaraX has to borrow it exclusively, and hold this borrow across the `self.wraps.call(py, args, kwargs)` call.
 This call returns control to the user's Python code which is free to call arbitrary things, *including* the decorated function.
-If that happens PyForge is unable to create a second unique borrow and will be forced to raise an exception.
+If that happens ClaraX is unable to create a second unique borrow and will be forced to raise an exception.
 
 As a result, something innocent like this will raise an exception:
 
@@ -113,7 +113,7 @@ This shows the dangers of running arbitrary Python code - note that "running arb
 
 - Python's asynchronous executor may park the current thread in the middle of Python code, even in Python code that *you* control, and let other Python code run.
 - Dropping arbitrary Python objects may invoke destructors defined in Python (`__del__` methods).
-- Calling Python's C-api (most PyForge apis call C-api functions internally) may raise exceptions, which may allow Python code in signal handlers to run.
+- Calling Python's C-api (most ClaraX apis call C-api functions internally) may raise exceptions, which may allow Python code in signal handlers to run.
 - On the free-threaded build, users might use Python's `threading` module to work with your types simultaneously from multiple OS threads.
 
 This is especially important if you are writing unsafe code; Python code must never be able to cause undefined behavior.
@@ -121,6 +121,6 @@ You must ensure that your Rust code is in a consistent state before doing any of
 
 <!-- rumdl-disable MD057 -->
 <!-- TODO: investigate why this lint is being triggered -->
-[previous implementation]: <https://github.com/abdulwahed-sweden/pyforge/discussions/2598> "Thread Safe Decorator <Help Wanted> · Discussion #2598 · PyForge/pyforge"
+[previous implementation]: <https://github.com/abdulwahed-sweden/clarax/discussions/2598> "Thread Safe Decorator <Help Wanted> · Discussion #2598 · ClaraX/clarax"
 [`AtomicU64`]: <https://doc.rust-lang.org/std/sync/atomic/struct.AtomicU64.html> "AtomicU64 in std::sync::atomic - Rust"
 <!-- rumdl-enable MD057 -->

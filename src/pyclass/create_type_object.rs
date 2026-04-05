@@ -216,7 +216,7 @@ impl PyTypeBuilder {
     }
 
     fn finalize_methods_and_properties(&mut self) -> Vec<GetSetDefType> {
-        let method_defs: Vec<pyforge_ffi::PyMethodDef> = std::mem::take(&mut self.method_defs);
+        let method_defs: Vec<clarax_ffi::PyMethodDef> = std::mem::take(&mut self.method_defs);
         // Safety: Py_tp_methods expects a raw vec of PyMethodDef
         unsafe { self.push_raw_vec_slot(ffi::Py_tp_methods, method_defs) };
 
@@ -260,7 +260,7 @@ impl PyTypeBuilder {
                     unsafe {
                         trampoline(|_| {
                             let dict_offset = closure as ffi::Py_ssize_t;
-                            // we don't support negative dict_offset here; PyForge doesn't set it negative
+                            // we don't support negative dict_offset here; ClaraX doesn't set it negative
                             assert!(dict_offset > 0);
                             let dict_ptr =
                                 object.byte_offset(dict_offset).cast::<*mut ffi::PyObject>();
@@ -686,7 +686,7 @@ impl GetSetDefType {
                         closure: *mut c_void,
                     ) -> *mut ffi::PyObject {
                         let slf = unsafe { NonNull::new_unchecked(slf) };
-                        // Safety: PyForge sets the closure when constructing the ffi getter so this cast should always be valid
+                        // Safety: ClaraX sets the closure when constructing the ffi getter so this cast should always be valid
                         let getter: Getter = unsafe { std::mem::transmute(closure) };
                         unsafe { trampoline(|py| getter(py, slf)) }
                     }
@@ -699,7 +699,7 @@ impl GetSetDefType {
                         closure: *mut c_void,
                     ) -> c_int {
                         let slf = unsafe { NonNull::new_unchecked(slf) };
-                        // Safety: PyForge sets the closure when constructing the ffi setter so this cast should always be valid
+                        // Safety: ClaraX sets the closure when constructing the ffi setter so this cast should always be valid
                         let setter: Setter = unsafe { std::mem::transmute(closure) };
                         unsafe {
                             trampoline(|py| {

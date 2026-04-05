@@ -1,10 +1,10 @@
 # Author: Abdulwahed Mansour
 """
-Validation benchmark: PyForge Rust backend vs pure Python field validation.
+Validation benchmark: ClaraX Rust backend vs pure Python field validation.
 
 Compares wall-clock time of validating Django-like field values through:
   1. Pure Python validation (simulates Django's field.clean() path)
-  2. PyForge's Rust-accelerated validate_field_batch
+  2. ClaraX's Rust-accelerated validate_field_batch
 
 Run:
     python benchmarks/bench_validator_comparison.py
@@ -125,10 +125,10 @@ def format_time(seconds: float) -> str:
 
 def main():
     print("\n" + "=" * 78)
-    print("PyForge Validation Benchmark — CharField / DecimalField / SlugField")
+    print("ClaraX Validation Benchmark — CharField / DecimalField / SlugField")
     print("=" * 78)
     print()
-    print(f"{'Benchmark':<42} | {'Pure Python':<12} | {'PyForge':<12} | {'Speedup':<8}")
+    print(f"{'Benchmark':<42} | {'Pure Python':<12} | {'ClaraX':<12} | {'Speedup':<8}")
     print("-" * 42 + "-|-" + "-" * 12 + "-|-" + "-" * 12 + "-|-" + "-" * 8)
 
     scenarios = [
@@ -151,7 +151,7 @@ def main():
         padded_label = f"{label:<42}"
 
         try:
-            from pyforge_django import validate_fields as _rust_validate
+            from clarax_django import validate_fields as _rust_validate
 
             descriptors = [{"name": e["name"], "type": e["type"], "nullable": e["nullable"],
                            "has_default": e.get("has_default", False), "max_length": e.get("max_length")}
@@ -169,7 +169,7 @@ def main():
             print(f"{padded_label} | {format_time(python_time):<12} | {'N/A':<12} | (not installed)")
 
     print()
-    print("Note: For batches >= 64 entries, PyForge uses Rayon parallel validation.")
+    print("Note: For batches >= 64 entries, ClaraX uses Rayon parallel validation.")
     print("Small batches may show less speedup due to Python→Rust bridge overhead.")
     print()
 

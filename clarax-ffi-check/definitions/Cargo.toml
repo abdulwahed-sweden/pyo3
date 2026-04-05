@@ -1,0 +1,12 @@
+[package]
+name = "clarax-ffi-check-definitions"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+clarax-ffi = { path = "../../clarax-ffi" }
+
+[build-dependencies]
+bindgen = "0.72"
+clarax-build-config = { path = "../../clarax-build-config" }

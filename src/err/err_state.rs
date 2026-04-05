@@ -49,7 +49,7 @@ impl PyErrState {
         // This state is already normalized, by completing the Once immediately we avoid
         // reaching the `py.detach` in `make_normalized` which is less efficient
         // and introduces a GIL switch which could deadlock.
-        // See https://github.com/PyForge/pyo3/issues/4764
+        // See https://github.com/ClaraX/pyo3/issues/4764
         state.normalized.call_once(|| {});
         state
     }

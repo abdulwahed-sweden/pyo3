@@ -27,13 +27,13 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"eyre\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of eyre and PyForge.
-//! The required eyre version may vary based on the version of PyForge.
+//! Note that you must use compatible versions of eyre and ClaraX.
+//! The required eyre version may vary based on the version of ClaraX.
 //!
 //! # Example: Propagating a `PyErr` into [`eyre::Report`]
 //!
 //! ```rust
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //! use std::path::PathBuf;
 //!
 //! // A wrapper around a Rust function.
@@ -61,8 +61,8 @@
 //! it can already convert anything that implements [`Error`](std::error::Error):
 //!
 //! ```rust
-//! use pyforge::prelude::*;
-//! use pyforge::types::PyBytes;
+//! use clarax::prelude::*;
+//! use clarax::types::PyBytes;
 //!
 //! // An example function that must handle multiple error types.
 //! //

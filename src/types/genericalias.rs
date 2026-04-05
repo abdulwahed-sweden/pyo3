@@ -5,12 +5,12 @@ use crate::{ffi, Bound, PyAny, Python};
 
 /// Represents a Python [`types.GenericAlias`](https://docs.python.org/3/library/types.html#types.GenericAlias) object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyGenericAlias>`][crate::Py] or [`Bound<'py, PyGenericAlias>`][Bound].
 ///
 /// This type is particularly convenient for users implementing
 /// [`__class_getitem__`](https://docs.python.org/3/reference/datamodel.html#object.__class_getitem__)
-/// for PyForge classes to allow runtime parameterization.
+/// for ClaraX classes to allow runtime parameterization.
 #[repr(transparent)]
 pub struct PyGenericAlias(PyAny);
 

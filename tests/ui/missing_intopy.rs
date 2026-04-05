@@ -1,6 +1,6 @@
 struct Blah;
 
-#[pyforge::pyfunction]
+#[clarax::pyfunction]
 fn blah() -> Blah {
     Blah
 }

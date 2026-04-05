@@ -47,16 +47,16 @@ macro_rules! impl_exception_boilerplate {
 ///
 /// # Examples
 /// ```
-/// use pyforge::import_exception;
-/// use pyforge::types::IntoPyDict;
-/// use pyforge::Python;
+/// use clarax::import_exception;
+/// use clarax::types::IntoPyDict;
+/// use clarax::Python;
 ///
 /// import_exception!(socket, gaierror);
 ///
-/// # fn main() -> pyforge::PyResult<()> {
+/// # fn main() -> clarax::PyResult<()> {
 /// Python::attach(|py| {
 ///     let ctx = [("gaierror", py.get_type::<gaierror>())].into_py_dict(py)?;
-///     pyforge::py_run!(py, *ctx, "import socket; assert gaierror is socket.gaierror");
+///     clarax::py_run!(py, *ctx, "import socket; assert gaierror is socket.gaierror");
 /// #   Ok(())
 /// })
 /// # }
@@ -67,10 +67,10 @@ macro_rules! import_exception {
     ($module: expr, $name: ident) => {
         /// A Rust type representing an exception defined in Python code.
         ///
-        /// This type was created by the [`pyforge::import_exception!`] macro - see its documentation
+        /// This type was created by the [`clarax::import_exception!`] macro - see its documentation
         /// for more information.
         ///
-        /// [`pyforge::import_exception!`]: https://docs.rs/pyo3/latest/pyo3/macro.import_exception.html "import_exception in pyo3"
+        /// [`clarax::import_exception!`]: https://docs.rs/pyo3/latest/pyo3/macro.import_exception.html "import_exception in pyo3"
         #[repr(transparent)]
         #[allow(non_camel_case_types, reason = "matches imported exception name, e.g. `socket.herror`")]
         pub struct $name($crate::PyAny);
@@ -119,9 +119,9 @@ macro_rules! import_exception_bound {
 /// # Examples
 ///
 /// ```
-/// use pyforge::prelude::*;
-/// use pyforge::create_exception;
-/// use pyforge::exceptions::PyException;
+/// use clarax::prelude::*;
+/// use clarax::create_exception;
+/// use clarax::exceptions::PyException;
 ///
 /// create_exception!(my_module, MyError, PyException, "Some description.");
 ///
@@ -140,7 +140,7 @@ macro_rules! import_exception_bound {
 /// # fn main() -> PyResult<()> {
 /// #     Python::attach(|py| -> PyResult<()> {
 /// #         let fun = wrap_pyfunction!(raise_myerror, py)?;
-/// #         let locals = pyforge::types::PyDict::new(py);
+/// #         let locals = clarax::types::PyDict::new(py);
 /// #         locals.set_item("MyError", py.get_type::<MyError>())?;
 /// #         locals.set_item("raise_myerror", fun)?;
 /// #
@@ -312,8 +312,8 @@ Represents Python's [`", $name, "`](https://docs.python.org/3/library/exceptions
 This exception can be sent to Python code by converting it into a
 [`PyErr`](crate::PyErr), where Python code can then catch it.
 ```
-use pyforge::prelude::*;
-use pyforge::exceptions::Py", $name, ";
+use clarax::prelude::*;
+use clarax::exceptions::Py", $name, ";
 
 #[pyfunction]
 fn always_throws() -> PyResult<()> {
@@ -322,7 +322,7 @@ fn always_throws() -> PyResult<()> {
 }
 #
 # Python::attach(|py| {
-#     let fun = pyforge::wrap_pyfunction!(always_throws, py).unwrap();
+#     let fun = clarax::wrap_pyfunction!(always_throws, py).unwrap();
 #     let err = fun.call0().expect_err(\"called a function that should always return an error but the return value was Ok\");
 #     assert!(err.is_instance_of::<Py", $name, ">(py))
 # });
@@ -341,9 +341,9 @@ except ", $name, " as e:
 # Example: Catching ", $name, " in Rust
 
 ```
-use pyforge::prelude::*;
-use pyforge::exceptions::Py", $name, ";
-use pyforge::ffi::c_str;
+use clarax::prelude::*;
+use clarax::exceptions::Py", $name, ";
+use clarax::ffi::c_str;
 
 Python::attach(|py| {
     let result: PyResult<()> = py.run(c_str!(\"raise ", $name, "\"), None, None);
@@ -728,8 +728,8 @@ impl PyUnicodeDecodeError {
     /// # Examples
     ///
     /// ```
-    /// use pyforge::prelude::*;
-    /// use pyforge::exceptions::PyUnicodeDecodeError;
+    /// use clarax::prelude::*;
+    /// use clarax::exceptions::PyUnicodeDecodeError;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| {
@@ -762,8 +762,8 @@ impl PyUnicodeDecodeError {
     /// # Example
     ///
     /// ```
-    /// use pyforge::prelude::*;
-    /// use pyforge::exceptions::PyUnicodeDecodeError;
+    /// use clarax::prelude::*;
+    /// use clarax::exceptions::PyUnicodeDecodeError;
     ///
     /// Python::attach(|py| {
     ///     let invalid_utf8 = b"fo\xd8o";

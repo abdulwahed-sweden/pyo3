@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug in PyForge
+description: Report a bug in ClaraX
 labels: ["bug"]
 body:
   - type: markdown
@@ -8,9 +8,9 @@ body:
         Thank you for reporting a bug. Please fill in the details below.
 
   - type: input
-    id: pyforge-version
+    id: clarax-version
     attributes:
-      label: PyForge version
+      label: ClaraX version
       placeholder: "0.1.0"
     validations:
       required: true

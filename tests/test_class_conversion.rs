@@ -1,6 +1,6 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[macro_use]
 mod test_utils;

@@ -11,7 +11,7 @@ use std::str;
 ///
 /// This type is immutable.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyBytes>`][crate::Py] or [`Bound<'py, PyBytes>`][Bound].
 ///
 /// For APIs available on `bytes` objects, see the [`PyBytesMethods`] trait which is implemented for
@@ -28,8 +28,8 @@ use std::str;
 /// additional overhead of a Python method call.
 ///
 /// ```rust
-/// # use pyforge::prelude::*;
-/// use pyforge::types::PyBytes;
+/// # use clarax::prelude::*;
+/// use clarax::types::PyBytes;
 ///
 /// # Python::attach(|py| {
 /// let py_bytes = PyBytes::new(py, b"foo".as_slice());
@@ -76,7 +76,7 @@ impl PyBytes {
     /// # Examples
     ///
     /// ```
-    /// use pyforge::{prelude::*, types::PyBytes};
+    /// use clarax::{prelude::*, types::PyBytes};
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -122,7 +122,7 @@ impl PyBytes {
     /// # Example
     ///
     /// ```
-    /// use pyforge::{prelude::*, types::PyBytes};
+    /// use clarax::{prelude::*, types::PyBytes};
     /// use std::io::Write;
     ///
     /// # fn main() -> PyResult<()> {

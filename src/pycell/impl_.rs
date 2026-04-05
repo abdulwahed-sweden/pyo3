@@ -483,7 +483,7 @@ impl<T: PyClass<Layout = Self>> PyVariableClassObject<T> {
     unsafe fn get_contents_of_obj(
         obj: *mut ffi::PyObject,
     ) -> *mut MaybeUninit<PyClassObjectContents<T>> {
-        // TODO: it would be nice to eventually avoid coupling to the PyForge statics here, maybe using
+        // TODO: it would be nice to eventually avoid coupling to the ClaraX statics here, maybe using
         // 3.14's PyType_GetBaseByToken, to support PEP 587 / multiple interpreters better
         // SAFETY: caller guarantees attached to the interpreter
         let type_obj = T::type_object_raw(unsafe { Python::assume_attached() });

@@ -1,9 +1,9 @@
 # Frequently Asked Questions and troubleshooting
 
-Sorry that you're having trouble using PyForge.
-If you can't find the answer to your problem in the list below, you can also reach out for help on [GitHub Discussions](https://github.com/abdulwahed-sweden/pyforge/discussions) and on [Discord](https://discord.gg/33kcChzH7f).
+Sorry that you're having trouble using ClaraX.
+If you can't find the answer to your problem in the list below, you can also reach out for help on [GitHub Discussions](https://github.com/abdulwahed-sweden/clarax/discussions) and on [Discord](https://discord.gg/33kcChzH7f).
 
-## I'm experiencing deadlocks using PyForge with `std::sync::OnceLock`, `std::sync::LazyLock`, `lazy_static`, and `once_cell`
+## I'm experiencing deadlocks using ClaraX with `std::sync::OnceLock`, `std::sync::LazyLock`, `lazy_static`, and `once_cell`
 
 `OnceLock`, `LazyLock`, and their thirdparty predecessors use blocking to ensure only one thread ever initializes them.
 Because the Python interpreter can introduce additional locks (the Python GIL and GC can both require all other threads to pause) this can lead to deadlocks in the following way:
@@ -15,14 +15,14 @@ Because the Python interpreter can introduce additional locks (the Python GIL an
 5. On GIL-enabled Python, thread A is now also blocked, because it waits to re-attach to the interpreter (by taking the GIL which thread B still holds).
 6. Deadlock.
 
-PyForge provides a struct [`PyOnceLock`] which implements a single-initialization API based on these types that avoids deadlocks.
+ClaraX provides a struct [`PyOnceLock`] which implements a single-initialization API based on these types that avoids deadlocks.
 You can also make use of the [`OnceExt`] and [`OnceLockExt`] extension traits that enable using the standard library types for this purpose by providing new methods for these types that avoid the risk of deadlocking with the Python interpreter.
 This means they can be used in place of other choices when you are experiencing the deadlock described above.
 See the documentation for [`PyOnceLock`] and [`OnceExt`] for further details and an example how to use them.
 
-[`PyOnceLock`]: {{#PYO3_DOCS_URL}}/pyforge/sync/struct.PyOnceLock.html
-[`OnceExt`]: {{#PYO3_DOCS_URL}}/pyforge/sync/trait.OnceExt.html
-[`OnceLockExt`]: {{#PYO3_DOCS_URL}}/pyforge/sync/trait.OnceLockExt.html
+[`PyOnceLock`]: {{#PYO3_DOCS_URL}}/clarax/sync/struct.PyOnceLock.html
+[`OnceExt`]: {{#PYO3_DOCS_URL}}/clarax/sync/trait.OnceExt.html
+[`OnceLockExt`]: {{#PYO3_DOCS_URL}}/clarax/sync/trait.OnceLockExt.html
 
 ## I can't run `cargo test`; or I can't build in a Cargo workspace: I'm having linker issues like "Symbol not found" or "Undefined reference to _PyExc_SystemError"
 
@@ -37,7 +37,7 @@ If building manually, see the [`PYO3_BUILD_EXTENSION_MODULE` environment variabl
 
 The Rust book suggests to [put integration tests inside a `tests/` directory](https://doc.rust-lang.org/book/ch11-03-test-organization.html#integration-tests).
 
-For a PyForge project where the `crate-type` is set to `"cdylib"` in your `Cargo.toml`, the compiler won't be able to find your crate and will display errors such as `E0432` or `E0463`:
+For a ClaraX project where the `crate-type` is set to `"cdylib"` in your `Cargo.toml`, the compiler won't be able to find your crate and will display errors such as `E0432` or `E0463`:
 
 ```text
 error[E0432]: unresolved import `my_crate`
@@ -63,19 +63,19 @@ This flag isn't checked while Rust code called from Python is executing, only on
 You can give the Python interpreter a chance to process the signal properly by calling `Python::check_signals`.
 It's good practice to call this function regularly if you have a long-running Rust function so that your users can cancel it.
 
-## `#[pyforge(get)]` clones my field
+## `#[clarax(get)]` clones my field
 
 You may have a nested struct similar to this:
 
 ```rust,no_run
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass(from_py_object)]
 #[derive(Clone)]
 struct Inner {/* fields omitted */}
 
 #[pyclass]
 struct Outer {
-    #[pyforge(get)]
+    #[clarax(get)]
     inner: Inner,
 }
 
@@ -88,7 +88,7 @@ impl Outer {
 }
 ```
 
-When Python code accesses `Outer`'s field, PyForge will return a new object on every access (note that their addresses are different):
+When Python code accesses `Outer`'s field, ClaraX will return a new object on every access (note that their addresses are different):
 
 ```python
 outer = Outer()
@@ -105,13 +105,13 @@ b: <builtins.Inner object at 0x00000238FFB9C830>
 ```
 
 This can be especially confusing if the field is mutable, as getting the field and then mutating it won't persist - you'll just get a fresh clone of the original on the next access.
-Unfortunately Python and Rust don't agree about ownership - if PyForge gave out references to (possibly) temporary Rust objects to Python code, Python code could then keep that reference alive indefinitely.
+Unfortunately Python and Rust don't agree about ownership - if ClaraX gave out references to (possibly) temporary Rust objects to Python code, Python code could then keep that reference alive indefinitely.
 Therefore returning Rust objects requires cloning.
 
-If you don't want that cloning to happen, a workaround is to allocate the field on the Python heap and store a reference to that, by using [`Py<...>`]({{#PYO3_DOCS_URL}}/pyforge/struct.Py.html):
+If you don't want that cloning to happen, a workaround is to allocate the field on the Python heap and store a reference to that, by using [`Py<...>`]({{#PYO3_DOCS_URL}}/clarax/struct.Py.html):
 
 ```rust,no_run
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass]
 struct Inner {/* fields omitted */}
 
@@ -155,20 +155,20 @@ b: <builtins.Inner object at 0x0000020044FCC670>
 
 The downside to this approach is that any Rust code working on the `Outer` struct potentially has to attach to the Python interpreter to do anything with the `inner` field. (If `Inner` is `#[pyclass(frozen)]` and implements `Sync`, then `Py::get` may be used to access the `Inner` contents from `Py<Inner>` without needing to attach to the interpreter.)
 
-## I want to use the `pyforge` crate re-exported from dependency but the proc-macros fail
+## I want to use the `clarax` crate re-exported from dependency but the proc-macros fail
 
-All PyForge proc-macros (`#[pyclass]`, `#[pyfunction]`, `#[derive(FromPyObject)]` and so on) expect the `pyforge` crate to be available under that name in your crate root, which is the normal situation when `pyforge` is a direct dependency of your crate.
+All ClaraX proc-macros (`#[pyclass]`, `#[pyfunction]`, `#[derive(FromPyObject)]` and so on) expect the `clarax` crate to be available under that name in your crate root, which is the normal situation when `clarax` is a direct dependency of your crate.
 
-However, when the dependency is renamed, or your crate only indirectly depends on `pyforge`, you need to let the macro code know where to find the crate.
+However, when the dependency is renamed, or your crate only indirectly depends on `clarax`, you need to let the macro code know where to find the crate.
 This is done with the `crate` attribute:
 
 ```rust,no_run
-# use pyforge::prelude::*;
-# pub extern crate pyforge;
-# mod reexported { pub use ::pyforge; }
+# use clarax::prelude::*;
+# pub extern crate clarax;
+# mod reexported { pub use ::clarax; }
 # #[allow(dead_code)]
 #[pyclass]
-#[pyforge(crate = "reexported::pyforge")]
+#[clarax(crate = "reexported::clarax")]
 struct MyClass;
 ```
 
@@ -178,7 +178,7 @@ This happens on Windows when linking to the python DLL fails or the wrong one is
 The Python DLL on Windows will usually be called something like:
 
 - `python3X.dll` for Python 3.X, e.g. `python310.dll` for Python 3.10
-- `python3.dll` when using PyForge's `abi3` feature
+- `python3.dll` when using ClaraX's `abi3` feature
 
 The DLL needs to be locatable using the [Windows DLL search order](https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-search-order#standard-search-order-for-unpackaged-apps).
 Some ways to achieve this are:

@@ -4,7 +4,7 @@ You can create a module using `#[pymodule]`:
 
 ```rust,no_run
 # mod declarative_module_basic_test {
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyfunction]
 fn double(x: usize) -> usize {
@@ -14,7 +14,7 @@ fn double(x: usize) -> usize {
 /// This module is implemented in Rust.
 #[pymodule]
 mod my_extension {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     #[pymodule_export]
     use super::double; // The double function is made available from Python, works also with classes
@@ -30,11 +30,11 @@ mod my_extension {
 The `#[pymodule]` procedural macro takes care of creating the initialization function of your module and exposing it to Python.
 
 The module's name defaults to the name of the Rust module.
-You can override the module name by using `#[pyforge(name = "custom_name")]`:
+You can override the module name by using `#[clarax(name = "custom_name")]`:
 
 ```rust,no_run
 # mod declarative_module_custom_name_test {
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyfunction]
 fn double(x: usize) -> usize {
@@ -76,7 +76,7 @@ You can create a module hierarchy within a single extension module by just `use`
 For example, you could define the modules `parent_module` and `parent_module.child_module`:
 
 ```rust
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 mod parent_module {
@@ -97,8 +97,8 @@ fn func() -> String {
 #
 # fn main() {
 #   Python::attach(|py| {
-#       use pyforge::wrap_pymodule;
-#       use pyforge::types::IntoPyDict;
+#       use clarax::wrap_pymodule;
+#       use clarax::types::IntoPyDict;
 #       let parent_module = wrap_pymodule!(parent_module)(py);
 #       let ctx = [("parent_module", parent_module)].into_py_dict(py).unwrap();
 #
@@ -108,7 +108,7 @@ fn func() -> String {
 ```
 
 Note that this does not define a package, so this won’t allow Python code to directly import submodules by using `from parent_module import child_module`.
-For more information, see [#759](https://github.com/abdulwahed-sweden/pyforge/issues/759) and [#1517](https://github.com/abdulwahed-sweden/pyforge/issues/1517#issuecomment-808664021).
+For more information, see [#759](https://github.com/abdulwahed-sweden/clarax/issues/759) and [#1517](https://github.com/abdulwahed-sweden/clarax/issues/1517#issuecomment-808664021).
 
 You can provide the `submodule` argument to `#[pymodule()]` for modules that are not top-level modules in order for them to properly generate the `#[pyclass]` `module` attribute automatically.
 
@@ -120,9 +120,9 @@ For example:
 
 ```rust,no_run
 # mod declarative_module_test {
-#[pyforge::pymodule]
+#[clarax::pymodule]
 mod my_extension {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     #[pymodule_export]
     const PI: f64 = std::f64::consts::PI; // Exports PI constant as part of the module
@@ -138,7 +138,7 @@ mod my_extension {
     #[pymodule]
     mod submodule {
         // This is a submodule
-        use pyforge::prelude::*;
+        use clarax::prelude::*;
 
         #[pyclass]
         struct Nested;
@@ -153,13 +153,13 @@ In the previous example, the `Nested` class will have for `module` `my_extension
 
 ## Procedural initialization
 
-If the macros provided by PyForge are not enough, it is possible to run code at the module initialization:
+If the macros provided by ClaraX are not enough, it is possible to run code at the module initialization:
 
 ```rust,no_run
 # mod procedural_module_test {
-#[pyforge::pymodule]
+#[clarax::pymodule]
 mod my_extension {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     #[pyfunction]
     fn double(x: usize) -> usize {

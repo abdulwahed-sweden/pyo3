@@ -1,7 +1,7 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
-use pyforge::types::PyBytes;
+use clarax::prelude::*;
+use clarax::types::PyBytes;
 
 mod test_utils;
 
@@ -41,8 +41,8 @@ fn test_bytearray_vec_conversion() {
 
 #[test]
 fn test_py_as_bytes() {
-    let pyobj: pyforge::Py<pyforge::types::PyBytes> =
-        Python::attach(|py| pyforge::types::PyBytes::new(py, b"abc").unbind());
+    let pyobj: clarax::Py<clarax::types::PyBytes> =
+        Python::attach(|py| clarax::types::PyBytes::new(py, b"abc").unbind());
 
     let data = Python::attach(|py| pyobj.as_bytes(py));
 

@@ -92,8 +92,8 @@ jobs:
           ref: ${{ github.event.merge_group.head_ref }}
           filters: |
             changed:
-              - 'pyforge-ffi/**'
-              - 'pyforge-ffi-check/**'
+              - 'clarax-ffi/**'
+              - 'clarax-ffi-check/**'
               - '.github/workflows/ci.yml'
               - '.github/workflows/build.yml'
 
@@ -125,11 +125,11 @@ jobs:
         # needs investigation why llvm-cov fails on windows-11-arm
         continue-on-error: ${{ inputs.os == 'windows-11-arm' }}
         run: cargo llvm-cov
-          --package=pyforge
-          --package=pyforge-build-config
-          --package=pyforge-macros-backend
-          --package=pyforge-macros
-          --package=pyforge-ffi
+          --package=clarax
+          --package=clarax-build-config
+          --package=clarax-macros-backend
+          --package=clarax-macros
+          --package=clarax-ffi
           report --codecov --output-path coverage.json
 
       - name: Upload coverage report

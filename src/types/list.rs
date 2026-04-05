@@ -11,7 +11,7 @@ use std::num::NonZero;
 
 /// Represents a Python `list`.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyList>`][crate::Py] or [`Bound<'py, PyList>`][Bound].
 ///
 /// For APIs available on `list` objects, see the [`PyListMethods`] trait which is implemented for
@@ -42,8 +42,8 @@ impl PyList {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::PyList;
+    /// use clarax::prelude::*;
+    /// use clarax::types::PyList;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| {
@@ -123,7 +123,7 @@ pub trait PyListMethods<'py>: crate::sealed::Sealed {
     /// Gets the list item at the specified index.
     /// # Example
     /// ```
-    /// use pyforge::{prelude::*, types::PyList};
+    /// use clarax::{prelude::*, types::PyList};
     /// Python::attach(|py| {
     ///     let list = PyList::new(py, [2, 3, 5, 7]).unwrap();
     ///     let obj = list.get_item(0);
@@ -259,7 +259,7 @@ impl<'py> PyListMethods<'py> for Bound<'py, PyList> {
     /// Gets the list item at the specified index.
     /// # Example
     /// ```
-    /// use pyforge::{prelude::*, types::PyList};
+    /// use clarax::{prelude::*, types::PyList};
     /// Python::attach(|py| {
     ///     let list = PyList::new(py, [2, 3, 5, 7]).unwrap();
     ///     let obj = list.get_item(0);
@@ -1489,7 +1489,7 @@ mod tests {
     use std::ops::Range;
 
     // An iterator that lies about its `size_hint` implementation.
-    // See https://github.com/PyForge/pyo3/issues/2118
+    // See https://github.com/ClaraX/pyo3/issues/2118
     struct FaultyIter(Range<usize>, usize);
 
     impl Iterator for FaultyIter {

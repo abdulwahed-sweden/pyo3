@@ -21,8 +21,8 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"indexmap\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of indexmap and PyForge.
-//! The required indexmap version may vary based on the version of PyForge.
+//! Note that you must use compatible versions of indexmap and ClaraX.
+//! The required indexmap version may vary based on the version of ClaraX.
 //!
 //! # Examples
 //!
@@ -31,7 +31,7 @@
 //! always print the same result, matching users' expectations about Python's dict.
 //! ```rust
 //! use indexmap::{indexmap, IndexMap};
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //!
 //! fn median(data: &Vec<i32>) -> f32 {
 //!     let sorted_data = data.clone().sort();

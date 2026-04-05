@@ -1,6 +1,6 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyclass]
 struct CfgClass {
@@ -41,7 +41,7 @@ fn test_cfg() {
 fn test_cfg_simple_enum() {
     Python::attach(|py| {
         let simple = py.get_type::<CfgSimpleEnum>();
-        pyforge::py_run!(
+        clarax::py_run!(
             py,
             simple,
             r#"

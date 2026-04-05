@@ -1,11 +1,11 @@
 # Author: Abdulwahed Mansour
 """
-Serialization benchmark: PyForge Rust backend vs pure Python equivalent.
+Serialization benchmark: ClaraX Rust backend vs pure Python equivalent.
 
 Compares the wall-clock time of serializing Django-like RentalApplication
 records through:
   1. Pure Python dict construction with manual type formatting
-  2. PyForge's Rust-accelerated serialize_model_fields
+  2. ClaraX's Rust-accelerated serialize_model_fields
 
 Run:
     python benchmarks/bench_serializer_comparison.py
@@ -88,10 +88,10 @@ def main():
     batch_sizes = [1, 10, 100, 1_000, 10_000]
 
     print("\n" + "=" * 78)
-    print("PyForge Serialization Benchmark — RentalApplication Model")
+    print("ClaraX Serialization Benchmark — RentalApplication Model")
     print("=" * 78)
     print()
-    print(f"{'Benchmark':<42} | {'Pure Python':<12} | {'PyForge':<12} | {'Speedup':<8}")
+    print(f"{'Benchmark':<42} | {'Pure Python':<12} | {'ClaraX':<12} | {'Speedup':<8}")
     print("-" * 42 + "-|-" + "-" * 12 + "-|-" + "-" * 12 + "-|-" + "-" * 8)
 
     for size in batch_sizes:
@@ -105,11 +105,11 @@ def main():
             iterations=iters,
         )
 
-        # PyForge benchmark — we measure only the Rust serialization,
+        # ClaraX benchmark — we measure only the Rust serialization,
         # not the Python→Rust conversion overhead (which is GIL-bound).
         # This mirrors the real-world case where data is already extracted.
         try:
-            from pyforge_django import serialize_fields as _rust_serialize
+            from clarax_django import serialize_fields as _rust_serialize
 
             descriptors = [
                 {"name": "applicant_name", "type": "CharField", "nullable": False, "has_default": False, "max_length": 120},
@@ -145,11 +145,11 @@ def main():
                 f"serialize_{size}_records{' ' * (42 - len(f'serialize_{size}_records'))} "
                 f"| {format_time(python_time):<12} "
                 f"| {'N/A':<12} "
-                f"| (pyforge_django not installed)"
+                f"| (clarax_django not installed)"
             )
 
     print()
-    print("Note: PyForge times include Python→Rust conversion overhead (GIL-bound).")
+    print("Note: ClaraX times include Python→Rust conversion overhead (GIL-bound).")
     print("Pure Rust serialization (measured by criterion) is 3-10x faster than shown above.")
     print()
 

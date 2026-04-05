@@ -4,8 +4,8 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "pyforge-core/**"
-      - "pyforge-django/**"
+      - "clarax-core/**"
+      - "clarax-django/**"
   workflow_dispatch:
 
 env:
@@ -23,7 +23,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Run benchmarks
-        run: cargo bench -p pyforge-core -p pyforge-django 2>&1 | tee bench-output.txt
+        run: cargo bench -p clarax-core -p clarax-django 2>&1 | tee bench-output.txt
 
       - name: Check for regressions
         run: |

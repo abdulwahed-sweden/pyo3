@@ -4,9 +4,9 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug Rust tests (pyforge-core)",
+            "name": "Debug Rust tests (clarax-core)",
             "cargo": {
-                "args": ["test", "-p", "pyforge-core", "--no-run"],
+                "args": ["test", "-p", "clarax-core", "--no-run"],
                 "filter": {
                     "kind": "lib"
                 }
@@ -16,9 +16,9 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug Rust tests (pyforge-django)",
+            "name": "Debug Rust tests (clarax-django)",
             "cargo": {
-                "args": ["test", "-p", "pyforge-django", "--no-run"],
+                "args": ["test", "-p", "clarax-django", "--no-run"],
                 "filter": {
                     "kind": "lib"
                 }

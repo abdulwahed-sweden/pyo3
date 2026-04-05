@@ -1,9 +1,9 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 pub mod sequence {
-    use pyforge::prelude::*;
-    use pyforge::types::PyString;
+    use clarax::prelude::*;
+    use clarax::types::PyString;
 
     #[pyfunction]
     fn vec_to_vec_i32(vec: Vec<i32>) -> Vec<i32> {

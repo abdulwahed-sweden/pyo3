@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
-use pyforge::py_run;
-use pyforge::types::IntoPyDict;
+use clarax::prelude::*;
+use clarax::py_run;
+use clarax::types::IntoPyDict;
 
 mod test_utils;
 
@@ -176,11 +176,11 @@ except Exception as e:
 #[cfg(any(not(Py_LIMITED_API), Py_3_12))]
 mod inheriting_native_type {
     use super::*;
-    use pyforge::exceptions::PyException;
+    use clarax::exceptions::PyException;
 
     
     use {
-        pyforge::types::{PyCapsule, PyDict},
+        clarax::types::{PyCapsule, PyDict},
         std::sync::{
             atomic::{AtomicBool, Ordering},
             Arc,
@@ -190,7 +190,7 @@ mod inheriting_native_type {
     
     #[test]
     fn inherit_set() {
-        use pyforge::types::PySet;
+        use clarax::types::PySet;
 
         #[pyclass(extends=PySet)]
         #[derive(Debug)]
@@ -208,7 +208,7 @@ mod inheriting_native_type {
         }
 
         Python::attach(|py| {
-            let set_sub = pyforge::Py::new(py, SetWithName::new()).unwrap();
+            let set_sub = clarax::Py::new(py, SetWithName::new()).unwrap();
             py_run!(
                 py,
                 set_sub,
@@ -238,7 +238,7 @@ mod inheriting_native_type {
     #[test]
     fn inherit_dict() {
         Python::attach(|py| {
-            let dict_sub = pyforge::Py::new(py, DictWithName::new()).unwrap();
+            let dict_sub = clarax::Py::new(py, DictWithName::new()).unwrap();
             py_run!(
                 py,
                 dict_sub,
@@ -261,7 +261,7 @@ mod inheriting_native_type {
             )
             .unwrap();
 
-            let dict_sub = pyforge::Py::new(py, DictWithName::new()).unwrap();
+            let dict_sub = clarax::Py::new(py, DictWithName::new()).unwrap();
             dict_sub.bind(py).set_item("foo", &item).unwrap();
             drop(item);
             assert!(!dropped.load(Ordering::Relaxed));
@@ -316,7 +316,7 @@ mod inheriting_native_type {
     #[test]
     #[cfg(Py_3_12)]
     fn inherit_list() {
-        #[pyclass(extends=pyforge::types::PyList, subclass)]
+        #[pyclass(extends=clarax::types::PyList, subclass)]
         struct ListWithName {
             #[pyo3(get)]
             name: &'static str,
@@ -347,8 +347,8 @@ mod inheriting_native_type {
         }
 
         Python::attach(|py| {
-            let list_with_name = pyforge::Bound::new(py, ListWithName::new()).unwrap();
-            let sub_list_with_name = pyforge::Bound::new(py, SubListWithName::new()).unwrap();
+            let list_with_name = clarax::Bound::new(py, ListWithName::new()).unwrap();
+            let sub_list_with_name = clarax::Bound::new(py, SubListWithName::new()).unwrap();
             py_run!(
                 py,
                 list_with_name sub_list_with_name,

@@ -1,6 +1,6 @@
-use pyforge::prelude::*;
-use pyforge::types::PyDict;
-use pyforge::wrap_pymodule;
+use clarax::prelude::*;
+use clarax::types::PyDict;
+use clarax::wrap_pymodule;
 
 mod submodule;
 
@@ -18,7 +18,7 @@ impl ExampleClass {
     }
 }
 
-/// An example module implemented in Rust using PyForge.
+/// An example module implemented in Rust using ClaraX.
 #[pymodule]
 fn maturin_starter(py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<ExampleClass>()?;

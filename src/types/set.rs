@@ -10,7 +10,7 @@ use std::ptr;
 
 /// Represents a Python `set`.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PySet>`][crate::Py] or [`Bound<'py, PySet>`][Bound].
 ///
 /// For APIs available on `set` objects, see the [`PySetMethods`] trait which is implemented for
@@ -104,7 +104,7 @@ pub trait PySetMethods<'py>: crate::sealed::Sealed {
     ///
     /// # Panics
     ///
-    /// If PyForge detects that the set is mutated during iteration, it will panic.
+    /// If ClaraX detects that the set is mutated during iteration, it will panic.
     fn iter(&self) -> BoundSetIterator<'py>;
 }
 
@@ -194,7 +194,7 @@ impl<'py> IntoIterator for Bound<'py, PySet> {
     ///
     /// # Panics
     ///
-    /// If PyForge detects that the set is mutated during iteration, it will panic.
+    /// If ClaraX detects that the set is mutated during iteration, it will panic.
     fn into_iter(self) -> Self::IntoIter {
         BoundSetIterator::new(self)
     }
@@ -208,13 +208,13 @@ impl<'py> IntoIterator for &Bound<'py, PySet> {
     ///
     /// # Panics
     ///
-    /// If PyForge detects that the set is mutated during iteration, it will panic.
+    /// If ClaraX detects that the set is mutated during iteration, it will panic.
     fn into_iter(self) -> Self::IntoIter {
         self.iter()
     }
 }
 
-/// PyForge implementation of an iterator for a Python `set` object.
+/// ClaraX implementation of an iterator for a Python `set` object.
 pub struct BoundSetIterator<'py>(Bound<'py, PyIterator>);
 
 impl<'py> BoundSetIterator<'py> {

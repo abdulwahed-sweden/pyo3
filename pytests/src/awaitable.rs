@@ -5,12 +5,12 @@
 //! when awaited, see guide examples related to pyo3-async-runtimes for ways
 //! to suspend tasks and await results.
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 pub mod awaitable {
-    use pyforge::exceptions::PyStopIteration;
-    use pyforge::prelude::*;
+    use clarax::exceptions::PyStopIteration;
+    use clarax::prelude::*;
 
     #[pyclass]
     #[derive(Debug)]

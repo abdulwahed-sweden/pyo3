@@ -10,11 +10,11 @@ To enable full parallelism in your application, consider also using [free-thread
 
 ## Parallelism under the Python GIL
 
-Let's take a look at our [word-count](https://github.com/abdulwahed-sweden/pyforge/blob/main/examples/word-count/src/lib.rs) example, where we have a `search` function that utilizes the [`rayon`] crate to count words in parallel.
+Let's take a look at our [word-count](https://github.com/abdulwahed-sweden/clarax/blob/main/examples/word-count/src/lib.rs) example, where we have a `search` function that utilizes the [`rayon`] crate to count words in parallel.
 
 ```rust,no_run
 # #![allow(dead_code)]
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 // These traits let us use `par_lines` and `map`.
 use rayon::str::ParallelString;
@@ -65,7 +65,7 @@ We then have a function exposed to the Python runtime which calls `search_sequen
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #
 # fn count_line(line: &str, needle: &str) -> usize {
 #     let mut total = 0;
@@ -106,7 +106,7 @@ result_2 = future_2.result()
 
 ## Benchmark
 
-Let's benchmark the `word-count` example to verify that we really did unlock parallelism with PyForge.
+Let's benchmark the `word-count` example to verify that we really did unlock parallelism with ClaraX.
 
 We are using `pytest-benchmark` to benchmark four word count functions:
 
@@ -115,7 +115,7 @@ We are using `pytest-benchmark` to benchmark four word count functions:
 3. Rust sequential version
 4. Rust sequential version executed twice with two Python threads
 
-The benchmark script can be found [in the PyForge GitHub repository](https://github.com/abdulwahed-sweden/pyforge/blob/main/examples/word-count/tests/test_word_count.py), and we can run `nox` in the `word-count` folder to benchmark these functions.
+The benchmark script can be found [in the ClaraX GitHub repository](https://github.com/abdulwahed-sweden/clarax/blob/main/examples/word-count/tests/test_word_count.py), and we can run `nox` in the `word-count` folder to benchmark these functions.
 
 While the results of the benchmark of course depend on your machine, the relative results should be similar to this (mid 2020):
 
@@ -148,7 +148,7 @@ However, care must be taken to avoid writing code that deadlocks with the GIL in
 In the example below, we share a `Vec` of User ID objects defined using the `pyclass` macro and spawn threads to process the collection of data into a `Vec` of booleans based on a predicate using a `rayon` parallel iterator:
 
 ```rust,no_run
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 // These traits let us use int_par_iter and map
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
@@ -179,5 +179,5 @@ If this example didn't use `detach`, a `rayon` worker thread would block on acqu
 Calling `detach` allows the GIL to be released in the thread collecting the results from the worker threads.
 You should always call `detach` in situations that spawn worker threads, but especially so in cases where worker threads need to acquire the GIL, to prevent deadlocks.
 
-[`Python::detach`]: {{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html#method.detach
+[`Python::detach`]: {{#PYO3_DOCS_URL}}/clarax/marker/struct.Python.html#method.detach
 [`rayon`]: https://github.com/rayon-rs/rayon

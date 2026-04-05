@@ -13,12 +13,12 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"time\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of time and PyForge.
-//! The required time version may vary based on the version of PyForge.
+//! Note that you must use compatible versions of time and ClaraX.
+//! The required time version may vary based on the version of ClaraX.
 //!
 //! ```rust
 //! use time::{Duration, OffsetDateTime, PrimitiveDateTime, Date, Time, Month};
-//! use pyforge::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
+//! use clarax::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
 //!
 //! fn main() -> PyResult<()> {
 //!     Python::initialize();

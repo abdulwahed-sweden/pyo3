@@ -1,10 +1,10 @@
 #![cfg(feature = "macros")]
 
-use pyforge::exceptions::PyIndexError;
-use pyforge::prelude::*;
-use pyforge::types::IntoPyDict;
+use clarax::exceptions::PyIndexError;
+use clarax::prelude::*;
+use clarax::types::IntoPyDict;
 
-use pyforge::py_run;
+use clarax::py_run;
 
 mod test_utils;
 
@@ -36,7 +36,7 @@ impl Count5 {
 }
 
 /// Return a dict with `s = Count5()`.
-fn test_dict(py: Python<'_>) -> Bound<'_, pyforge::types::PyDict> {
+fn test_dict(py: Python<'_>) -> Bound<'_, clarax::types::PyDict> {
     let d = [("Count5", py.get_type::<Count5>())]
         .into_py_dict(py)
         .unwrap();

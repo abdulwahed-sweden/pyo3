@@ -1,7 +1,7 @@
 use std::env;
 
-use pyforge_build_config::pyo3_build_script_impl::{cargo_env_var, errors::Result};
-use pyforge_build_config::{
+use clarax_build_config::pyo3_build_script_impl::{cargo_env_var, errors::Result};
+use clarax_build_config::{
     add_python_framework_link_args, bail, print_feature_cfgs, InterpreterConfig,
 };
 
@@ -14,26 +14,26 @@ fn ensure_auto_initialize_ok(interpreter_config: &InterpreterConfig) -> Result<(
             with the Python shared library.\n\
             \n\
             Embedding the Python interpreter statically does not yet have first-class support in \
-            PyForge. If you are sure you intend to do this, disable the `auto-initialize` feature.\n\
+            ClaraX. If you are sure you intend to do this, disable the `auto-initialize` feature.\n\
             \n\
             For more information, see \
-            https://github.com/abdulwahed-sweden/pyforge/v{pyforge_version}/\
+            https://github.com/abdulwahed-sweden/clarax/v{clarax_version}/\
                 building-and-distribution.html#embedding-python-in-rust",
-            pyforge_version = env::var("CARGO_PKG_VERSION").unwrap()
+            clarax_version = env::var("CARGO_PKG_VERSION").unwrap()
         );
     }
     Ok(())
 }
 
-/// Prepares the PyForge crate for compilation.
+/// Prepares the ClaraX crate for compilation.
 ///
 /// This loads the config from pyo3-build-config and then makes some additional checks to improve UX
 /// for users.
 ///
 /// Emits the cargo configuration based on this config as well as a few checks of the Rust compiler
 /// version to enable features which aren't supported on MSRV.
-fn configure_pyforge() -> Result<()> {
-    let interpreter_config = pyforge_build_config::get();
+fn configure_clarax() -> Result<()> {
+    let interpreter_config = clarax_build_config::get();
 
     ensure_auto_initialize_ok(interpreter_config)?;
 
@@ -50,8 +50,8 @@ fn configure_pyforge() -> Result<()> {
 }
 
 fn main() {
-    pyforge_build_config::print_expected_cfgs();
-    if let Err(e) = configure_pyforge() {
+    clarax_build_config::print_expected_cfgs();
+    if let Err(e) = configure_clarax() {
         eprintln!("error: {}", e.report());
         std::process::exit(1)
     }

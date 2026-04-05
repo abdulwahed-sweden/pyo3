@@ -1,8 +1,8 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 pub mod objstore {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     #[pyclass]
     #[derive(Default)]

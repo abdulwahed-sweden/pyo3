@@ -1,5 +1,5 @@
-use pyforge::prelude::*;
-use pyforge::types::PyDict;
+use clarax::prelude::*;
+use clarax::types::PyDict;
 
 mod awaitable;
 mod buf_and_str;

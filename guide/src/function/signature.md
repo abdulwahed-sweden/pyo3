@@ -5,24 +5,24 @@ Just like in Python, arguments can be positional-only, keyword-only, or accept e
 `*args` lists and `**kwargs` dicts can also be accepted.
 These parameters also work for `#[pymethods]` which will be introduced in the [Python Classes](../class.md) section of the guide.
 
-Like Python, by default PyForge accepts all arguments as either positional or keyword arguments.
+Like Python, by default ClaraX accepts all arguments as either positional or keyword arguments.
 All arguments are required by default.
-This behaviour can be configured by the `#[pyforge(signature = (...))]` option which allows writing a signature in Python syntax.
+This behaviour can be configured by the `#[clarax(signature = (...))]` option which allows writing a signature in Python syntax.
 
-This section of the guide goes into detail about use of the `#[pyforge(signature = (...))]` option and its related option `#[pyforge(text_signature = "...")]`
+This section of the guide goes into detail about use of the `#[clarax(signature = (...))]` option and its related option `#[clarax(text_signature = "...")]`
 
-## Using `#[pyforge(signature = (...))]`
+## Using `#[clarax(signature = (...))]`
 
 For example, below is a function that accepts arbitrary keyword arguments (`**kwargs` in Python syntax) and returns the number that was passed:
 
 ```rust,no_run
-#[pyforge::pymodule]
+#[clarax::pymodule]
 mod module_with_functions {
-    use pyforge::prelude::*;
-    use pyforge::types::PyDict;
+    use clarax::prelude::*;
+    use clarax::types::PyDict;
 
     #[pyfunction]
-    #[pyforge(signature = (**kwds))]
+    #[clarax(signature = (**kwds))]
     fn num_kwds(kwds: Option<&Bound<'_, PyDict>>) -> usize {
         kwds.map_or(0, |dict| dict.len())
     }
@@ -39,13 +39,13 @@ Just like in Python, the following constructs can be part of the signature::
   The type of the `kwargs` parameter has to be `Option<&Bound<'_, PyDict>>`.
 - `arg=Value`: arguments with default value.
   If the `arg` argument is defined after var arguments, it is treated as a keyword-only argument.
-  Note that `Value` has to be valid rust code, PyForge just inserts it into the generated code unmodified.
+  Note that `Value` has to be valid rust code, ClaraX just inserts it into the generated code unmodified.
 
 Example:
 
 ```rust,no_run
-# use pyforge::prelude::*;
-use pyforge::types::{PyDict, PyTuple};
+# use clarax::prelude::*;
+use clarax::types::{PyDict, PyTuple};
 #
 # #[pyclass]
 # struct MyClass {
@@ -54,12 +54,12 @@ use pyforge::types::{PyDict, PyTuple};
 #[pymethods]
 impl MyClass {
     #[new]
-    #[pyforge(signature = (num=-1))]
+    #[clarax(signature = (num=-1))]
     fn new(num: i32) -> Self {
         MyClass { num }
     }
 
-    #[pyforge(signature = (num=10, *py_args, name="Hello", **py_kwargs))]
+    #[clarax(signature = (num=10, *py_args, name="Hello", **py_kwargs))]
     fn method(
         &mut self,
         num: i32,
@@ -86,9 +86,9 @@ Arguments of type `Python` must not be part of the signature:
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyfunction]
-#[pyforge(signature = (lambda))]
+#[clarax(signature = (lambda))]
 pub fn simple_python_bound_function(py: Python<'_>, lambda: Py<PyAny>) -> PyResult<()> {
     Ok(())
 }
@@ -119,7 +119,7 @@ num=44
 >
 > ```rust,no_run
 > # #![allow(dead_code)]
-> # use pyforge::prelude::*;
+> # use clarax::prelude::*;
 > #[pyfunction(signature = (r#struct = "foo"))]
 > fn function_with_keyword(r#struct: &str) {
 > #     let _ = r#struct;
@@ -130,28 +130,28 @@ num=44
 ## Making the function signature available to Python
 
 The function signature is exposed to Python via the `__text_signature__` attribute.
-PyForge automatically generates this for every `#[pyfunction]` and all `#[pymethods]` directly from the Rust function, taking into account any override done with the `#[pyforge(signature = (...))]` option.
+ClaraX automatically generates this for every `#[pyfunction]` and all `#[pymethods]` directly from the Rust function, taking into account any override done with the `#[clarax(signature = (...))]` option.
 
 This automatic generation can only display the value of default arguments for strings, integers, boolean types, and `None`.
 Any other default arguments will be displayed as `...`. (`.pyi` type stub files commonly also use `...` for default arguments in the same way.)
 
-In cases where the automatically-generated signature needs adjusting, it can [be overridden](#overriding-the-generated-signature) using the `#[pyforge(text_signature)]` option.)
+In cases where the automatically-generated signature needs adjusting, it can [be overridden](#overriding-the-generated-signature) using the `#[clarax(text_signature)]` option.)
 
 The example below creates a function `add` which accepts two positional-only arguments `a` and `b`, where `b` has a default value of zero.
 
 ```rust
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 /// This function adds two unsigned 64-bit integers.
 #[pyfunction]
-#[pyforge(signature = (a, b=0, /))]
+#[clarax(signature = (a, b=0, /))]
 fn add(a: u64, b: u64) -> u64 {
     a + b
 }
 #
 # fn main() -> PyResult<()> {
 #     Python::attach(|py| {
-#         let fun = pyforge::wrap_pyfunction!(add, py)?;
+#         let fun = clarax::wrap_pyfunction!(add, py)?;
 #
 #         let doc: String = fun.getattr("__doc__")?.extract()?;
 #         assert_eq!(doc, "This function adds two unsigned 64-bit integers.");
@@ -182,23 +182,23 @@ Type:      builtin_function_or_method
 
 ### Overriding the generated signature
 
-The `#[pyforge(text_signature = "(<some signature>)")]` attribute can be used to override the default generated signature.
+The `#[clarax(text_signature = "(<some signature>)")]` attribute can be used to override the default generated signature.
 
 In the snippet below, the text signature attribute is used to include the default value of `0` for the argument `b`, instead of the automatically-generated default value of `...`:
 
 ```rust
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 /// This function adds two unsigned 64-bit integers.
 #[pyfunction]
-#[pyforge(signature = (a, b=0, /), text_signature = "(a, b=0, /)")]
+#[clarax(signature = (a, b=0, /), text_signature = "(a, b=0, /)")]
 fn add(a: u64, b: u64) -> u64 {
     a + b
 }
 #
 # fn main() -> PyResult<()> {
 #     Python::attach(|py| {
-#         let fun = pyforge::wrap_pyfunction!(add, py)?;
+#         let fun = clarax::wrap_pyfunction!(add, py)?;
 #
 #         let doc: String = fun.getattr("__doc__")?.extract()?;
 #         assert_eq!(doc, "This function adds two unsigned 64-bit integers.");
@@ -215,7 +215,7 @@ fn add(a: u64, b: u64) -> u64 {
 # }
 ```
 
-PyForge will include the contents of the annotation unmodified as the `__text_signature__`.
+ClaraX will include the contents of the annotation unmodified as the `__text_signature__`.
 Below shows how IPython will now present this (see the default value of 0 for b):
 
 ```text
@@ -227,22 +227,22 @@ Docstring: This function adds two unsigned 64-bit integers.
 Type:      builtin_function_or_method
 ```
 
-If no signature is wanted at all, `#[pyforge(text_signature = None)]` will disable the built-in signature.
+If no signature is wanted at all, `#[clarax(text_signature = None)]` will disable the built-in signature.
 The snippet below demonstrates use of this:
 
 ```rust
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 /// This function adds two unsigned 64-bit integers.
 #[pyfunction]
-#[pyforge(signature = (a, b=0, /), text_signature = None)]
+#[clarax(signature = (a, b=0, /), text_signature = None)]
 fn add(a: u64, b: u64) -> u64 {
     a + b
 }
 #
 # fn main() -> PyResult<()> {
 #     Python::attach(|py| {
-#         let fun = pyforge::wrap_pyfunction!(add, py)?;
+#         let fun = clarax::wrap_pyfunction!(add, py)?;
 #
 #         let doc: String = fun.getattr("__doc__")?.extract()?;
 #         assert_eq!(doc, "This function adds two unsigned 64-bit integers.");
@@ -269,14 +269,14 @@ When the `experimental-inspect` Cargo feature is enabled, the `signature` attrib
 
 ```rust
 # #[cfg(feature = "experimental-inspect")] {
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 pub mod example {
-   use pyforge::prelude::*;
+   use clarax::prelude::*;
 
    #[pyfunction]
-   #[pyforge(signature = (arg: "list[int]") -> "list[int]")]
+   #[clarax(signature = (arg: "list[int]") -> "list[int]")]
    fn list_of_int_identity(arg: Bound<'_, PyAny>) -> Bound<'_, PyAny> {
       arg
    }
@@ -284,7 +284,7 @@ pub mod example {
 # }
 ```
 
-It enables the [work-in-progress capacity of PyForge to autogenerate type stubs](../type-stub.md) to generate a file with the correct type hints:
+It enables the [work-in-progress capacity of ClaraX to autogenerate type stubs](../type-stub.md) to generate a file with the correct type hints:
 
 ```python
 def list_of_int_identity(arg: list[int]) -> list[int]: ...

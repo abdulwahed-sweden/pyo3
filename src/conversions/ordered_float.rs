@@ -23,7 +23,7 @@
 //!
 //! ```rust,no_run
 //! use ordered_float::{NotNan, OrderedFloat};
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //!
 //! #[pyfunction]
 //! fn add_not_nans(a: NotNan<f64>, b: NotNan<f64>) -> NotNan<f64> {

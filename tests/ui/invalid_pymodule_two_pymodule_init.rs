@@ -1,8 +1,8 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 mod module {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     #[pymodule_init]
     fn init(_m: &Bound<'_, PyModule>) -> PyResult<()> {

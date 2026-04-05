@@ -8,7 +8,7 @@ use crate::{ffi, BoundObject, IntoPyObject, IntoPyObjectExt, Python};
 
 /// Represents a Python `dict`.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyDict>`][crate::Py] or [`Bound<'py, PyDict>`][Bound].
 ///
 /// For APIs available on `dict` objects, see the [`PyDictMethods`] trait which is implemented for
@@ -159,7 +159,7 @@ pub trait PyDictMethods<'py>: crate::sealed::Sealed {
     ///
     /// # Panics
     ///
-    /// If PyForge detects that the dictionary is mutated during iteration, it will panic.
+    /// If ClaraX detects that the dictionary is mutated during iteration, it will panic.
     /// It is allowed to modify values as you iterate over the dictionary, but only
     /// so long as the set of keys does not change.
     fn iter(&self) -> BoundDictIterator<'py>;
@@ -402,7 +402,7 @@ fn dict_len(dict: &Bound<'_, PyDict>) -> Py_ssize_t {
     }
 }
 
-/// PyForge implementation of an iterator for a Python `dict` object.
+/// ClaraX implementation of an iterator for a Python `dict` object.
 pub struct BoundDictIterator<'py> {
     dict: Bound<'py, PyDict>,
     inner: DictIterImpl,

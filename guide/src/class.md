@@ -1,6 +1,6 @@
 # Python classes
 
-PyForge exposes a group of attributes powered by Rust's proc macro system for defining Python classes as Rust structs.
+ClaraX exposes a group of attributes powered by Rust's proc macro system for defining Python classes as Rust structs.
 
 The main attribute is `#[pyclass]`, which is placed upon a Rust `struct` or `enum` to generate a Python type for it.
 They will usually also have *one* `#[pymethods]`-annotated `impl` block for the struct, which is used to define Python methods and constants for the generated Python type. (If the [`multiple-pymethods`] feature is enabled, each `#[pyclass]` is allowed to have multiple `#[pymethods]` blocks.) `#[pymethods]` may also have implementations for Python magic methods such as `__str__`.
@@ -9,7 +9,7 @@ This chapter will discuss the functionality and configuration these attributes o
 Below is a list of links to the relevant section of this chapter for each:
 
 - [`#[pyclass]`](#defining-a-new-class)
-  - [`#[pyforge(get, set)]`](#object-properties-using-pyforgeget-set)
+  - [`#[clarax(get, set)]`](#object-properties-using-claraxget-set)
 - [`#[pymethods]`](#instance-methods)
   - [`#[new]`](#constructor)
   - [`#[getter]`](#object-properties-using-getter-and-setter)
@@ -28,7 +28,7 @@ To define a custom Python class, add the `#[pyclass]` attribute to a Rust struct
 
 ```rust
 # #![allow(dead_code)]
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyclass]
 struct MyClass {
@@ -39,16 +39,16 @@ struct MyClass {
 #[pyclass]
 struct Number(i32);
 
-// PyForge supports unit-only enums (which contain only unit variants)
+// ClaraX supports unit-only enums (which contain only unit variants)
 // These simple enums behave similarly to Python's enumerations (enum.Enum)
 #[pyclass(eq, eq_int)]
 #[derive(PartialEq)]
 enum MyEnum {
     Variant,
-    OtherVariant = 30, // PyForge supports custom discriminants.
+    OtherVariant = 30, // ClaraX supports custom discriminants.
 }
 
-// PyForge supports custom discriminants in unit-only enums
+// ClaraX supports custom discriminants in unit-only enums
 #[pyclass(eq, eq_int)]
 #[derive(PartialEq)]
 enum HttpResponse {
@@ -58,7 +58,7 @@ enum HttpResponse {
     // ...
 }
 
-// PyForge also supports enums with Struct and Tuple variants
+// ClaraX also supports enums with Struct and Tuple variants
 // These complex enums have slightly different behavior from the simple enums above
 // They are meant to work with instance checks and match statement patterns
 // The variants can be mixed and matched
@@ -78,7 +78,7 @@ To see these generated implementations, refer to the [implementation details](#i
 
 ### Restrictions
 
-To integrate Rust types with Python, PyForge needs to place some restrictions on the types which can be annotated with `#[pyclass]`.
+To integrate Rust types with Python, ClaraX needs to place some restrictions on the types which can be annotated with `#[pyclass]`.
 In particular, they must have no lifetime parameters, no generic parameters, and must be thread-safe.
 The reason for each of these is explained below.
 
@@ -103,7 +103,7 @@ Currently, the best alternative is to write a macro which expands to a new `#[py
 
 ```rust
 # #![allow(dead_code)]
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 struct GenericClass<T> {
     data: T,
@@ -150,7 +150,7 @@ A constructor is accessible as Python's `__new__` method.
 
 ```rust
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 # #[pyclass]
 # struct Number(i32);
 #
@@ -167,8 +167,8 @@ Alternatively, if your `new` method may fail you can return `PyResult<Self>`.
 
 ```rust
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
-# use pyforge::exceptions::PyValueError;
+# use clarax::prelude::*;
+# use clarax::exceptions::PyValueError;
 # #[pyclass]
 # struct Nonzero(i32);
 #
@@ -185,7 +185,7 @@ impl Nonzero {
 }
 ```
 
-If you want to return an existing object (for example, because your `new` method caches the values it returns), `new` can return `pyforge::Py<Self>`.
+If you want to return an existing object (for example, because your `new` method caches the values it returns), `new` can return `clarax::Py<Self>`.
 
 As you can see, the Rust method name is not important here; this way you can still, use `new()` for a Rust-level constructor.
 
@@ -210,11 +210,11 @@ It can either return `()` or `PyResult<()>`.
 
 ```rust
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 # #[cfg(not(any(Py_LIMITED_API, GraalPy)))]
-use pyforge::types::{PyDict, PyTuple, PySuper};
+use clarax::types::{PyDict, PyTuple, PySuper};
 # #[cfg(not(any(Py_LIMITED_API, GraalPy)))]
-use crate::pyforge::PyTypeInfo;
+use crate::clarax::PyTypeInfo;
 
 # #[cfg(not(any(Py_LIMITED_API, GraalPy)))]
 #[pyclass(extends = PyDict)]
@@ -225,7 +225,7 @@ struct MyDict;
 impl MyDict {
 #   #[allow(unused_variables)]
     #[new]
-    #[pyforge(signature = (*args, **kwargs))]
+    #[clarax(signature = (*args, **kwargs))]
     fn __new__(
         args: &Bound<'_, PyTuple>,
         kwargs: Option<&Bound<'_, PyDict>>,
@@ -233,7 +233,7 @@ impl MyDict {
         Ok(Self)
     }
 
-    #[pyforge(signature = (*args, **kwargs))]
+    #[clarax(signature = (*args, **kwargs))]
     fn __init__(
         slf: &Bound<'_, Self>,
         args: &Bound<'_, PyTuple>,
@@ -269,7 +269,7 @@ The next step is to create the Python module and add our class to it:
 
 ```rust
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 # fn main() {}
 # #[pyclass]
 # struct Number(i32);
@@ -284,14 +284,14 @@ mod my_module {
 ## `Bound<T>` and interior mutability { #bound-and-interior-mutability }
 
 It is often useful to turn a `#[pyclass]` type `T` into a Python object and access it from Rust code.
-The [`Py<T>`] and [`Bound<'py, T>`] smart pointers are the ways to represent a Python object in PyForge's API.
-More detail can be found about them [in the Python objects](./types.md#pyforges-smart-pointers) section of the guide.
+The [`Py<T>`] and [`Bound<'py, T>`] smart pointers are the ways to represent a Python object in ClaraX's API.
+More detail can be found about them [in the Python objects](./types.md#claraxs-smart-pointers) section of the guide.
 
 Most Python objects do not offer exclusive (`&mut`) access (see the [section on Python's memory model](./python-from-rust.md#pythons-memory-model)).
 However, Rust structs wrapped as Python objects (called `pyclass` types) often *do* need `&mut` access.
 However, the Rust borrow checker cannot reason about `&mut` references once an object's ownership has been passed to the Python interpreter.
 
-To solve this, PyForge does borrow checking at runtime using a scheme very similar to `std::cell::RefCell<T>`.
+To solve this, ClaraX does borrow checking at runtime using a scheme very similar to `std::cell::RefCell<T>`.
 This is known as [interior mutability](https://doc.rust-lang.org/book/ch15-05-interior-mutability.html).
 
 Users who are familiar with `RefCell<T>` can use `Py<T>` and `Bound<'py, T>` just like `RefCell<T>`.
@@ -304,10 +304,10 @@ For users who are not very familiar with `RefCell<T>`, here is a reminder of Rus
 `Py<T>` and `Bound<'py, T>`, like `RefCell<T>`, ensure these borrowing rules by tracking references at runtime.
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass]
 struct MyClass {
-    #[pyforge(get)]
+    #[clarax(get)]
     num: i32,
 }
 Python::attach(|py| {
@@ -327,7 +327,7 @@ Python::attach(|py| {
     }
 
     // You can convert `Bound` to a Python object
-    pyforge::py_run!(py, obj, "assert obj.num == 5");
+    clarax::py_run!(py, obj, "assert obj.num == 5");
 });
 ```
 
@@ -336,7 +336,7 @@ To make the object longer lived (for example, to store it in a struct on the Rus
 `Py<T>` needs a `Python<'_>` token to allow access:
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass]
 struct MyClass {
     num: i32,
@@ -359,13 +359,13 @@ Python::attach(move |py| {
 
 As detailed above, runtime borrow checking is currently enabled by default.
 But a class can opt of out it by declaring itself `frozen`.
-It can still use interior mutability via standard Rust types like `RefCell` or `Mutex`, but it is not bound to the implementation provided by PyForge and can choose the most appropriate strategy on field-by-field basis.
+It can still use interior mutability via standard Rust types like `RefCell` or `Mutex`, but it is not bound to the implementation provided by ClaraX and can choose the most appropriate strategy on field-by-field basis.
 
 Classes which are `frozen` and also `Sync`, e.g. they do use `Mutex` but not `RefCell`, can be accessed without needing a `Python` token via the `Bound::get` and `Py::get` methods:
 
 ```rust
 use std::sync::atomic::{AtomicUsize, Ordering};
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 
 #[pyclass(frozen)]
 struct FrozenCounter {
@@ -385,8 +385,8 @@ py_counter.get().value.fetch_add(1, Ordering::Relaxed);
 Python::attach(move |_py| drop(py_counter));
 ```
 
-Frozen classes are likely to become the default thereby guiding the PyForge ecosystem towards a more deliberate application of interior mutability.
-Eventually, this should enable further optimizations of PyForge's internals and avoid downstream code paying the cost of interior mutability when it is not actually required.
+Frozen classes are likely to become the default thereby guiding the ClaraX ecosystem towards a more deliberate application of interior mutability.
+Eventually, this should enable further optimizations of ClaraX's internals and avoid downstream code paying the cost of interior mutability when it is not actually required.
 
 ## Customizing the class
 
@@ -411,7 +411,7 @@ Consult the table below to determine which type your constructor should return:
 
 By default, `object`, i.e. `PyAny` is used as the base class.
 To override this default, use the `extends` parameter for `pyclass` with the full path to the base class.
-Currently, only classes defined in Rust and builtins provided by PyForge can be inherited from; inheriting from other classes defined in Python is not yet supported ([#991](https://github.com/abdulwahed-sweden/pyforge/issues/991)).
+Currently, only classes defined in Rust and builtins provided by ClaraX can be inherited from; inheriting from other classes defined in Python is not yet supported ([#991](https://github.com/abdulwahed-sweden/clarax/issues/991)).
 
 For convenience, `(T, U)` implements `Into<PyClassInitializer<T>>` where `U` is the base class of `T`.
 But for a more deeply nested inheritance, you have to return `PyClassInitializer<T>` explicitly.
@@ -421,7 +421,7 @@ Then you can access a parent class by `self_.as_super()` as `&PyRef<Self::BaseCl
 For convenience, `self_.as_ref()` can also be used to get `&Self::BaseClass` directly; however, this approach does not let you access base classes higher in the inheritance hierarchy, for which you would need to chain multiple `as_super` or `into_super` calls.
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 
 #[pyclass(subclass)]
 struct BaseClass {
@@ -506,32 +506,32 @@ impl SubSubClass {
     }
 }
 # Python::attach(|py| {
-#     let subsub = pyforge::Py::new(py, SubSubClass::new()).unwrap();
-#     pyforge::py_run!(py, subsub, "assert subsub.method1() == 10");
-#     pyforge::py_run!(py, subsub, "assert subsub.method2() == 150");
-#     pyforge::py_run!(py, subsub, "assert subsub.method3() == 200");
-#     pyforge::py_run!(py, subsub, "assert subsub.method4() == 3000");
-#     pyforge::py_run!(py, subsub, "assert subsub.get_values() == (10, 15, 20)");
-#     pyforge::py_run!(py, subsub, "assert subsub.double_values() == None");
-#     pyforge::py_run!(py, subsub, "assert subsub.get_values() == (20, 30, 40)");
+#     let subsub = clarax::Py::new(py, SubSubClass::new()).unwrap();
+#     clarax::py_run!(py, subsub, "assert subsub.method1() == 10");
+#     clarax::py_run!(py, subsub, "assert subsub.method2() == 150");
+#     clarax::py_run!(py, subsub, "assert subsub.method3() == 200");
+#     clarax::py_run!(py, subsub, "assert subsub.method4() == 3000");
+#     clarax::py_run!(py, subsub, "assert subsub.get_values() == (10, 15, 20)");
+#     clarax::py_run!(py, subsub, "assert subsub.double_values() == None");
+#     clarax::py_run!(py, subsub, "assert subsub.get_values() == (20, 30, 40)");
 #     let subsub = SubSubClass::factory_method(py, 2).unwrap();
 #     let subsubsub = SubSubClass::factory_method(py, 3).unwrap();
 #     let cls = py.get_type::<SubSubClass>();
-#     pyforge::py_run!(py, subsub cls, "assert not isinstance(subsub, cls)");
-#     pyforge::py_run!(py, subsubsub cls, "assert isinstance(subsubsub, cls)");
+#     clarax::py_run!(py, subsub cls, "assert not isinstance(subsub, cls)");
+#     clarax::py_run!(py, subsubsub cls, "assert isinstance(subsubsub, cls)");
 # });
 ```
 
-You can inherit native types such as `PyDict`, if they implement [`PySizedLayout`]({{#PYO3_DOCS_URL}}/pyforge/type_object/trait.PySizedLayout.html).
-This is not supported when building for the Python limited API (aka the `abi3` feature of PyForge).
+You can inherit native types such as `PyDict`, if they implement [`PySizedLayout`]({{#PYO3_DOCS_URL}}/clarax/type_object/trait.PySizedLayout.html).
+This is not supported when building for the Python limited API (aka the `abi3` feature of ClaraX).
 
 To convert between the Rust type and its native base class, you can take `slf` as a Python object.
 To access the Rust fields use `slf.borrow()` or `slf.borrow_mut()`, and to access the base class use `slf.cast::<BaseClass>()`.
 
 ```rust
 # #[cfg(any(not(Py_LIMITED_API), Py_3_12))] {
-# use pyforge::prelude::*;
-use pyforge::types::PyDict;
+# use clarax::prelude::*;
+use clarax::types::PyDict;
 use std::collections::HashMap;
 
 #[pyclass(extends=PyDict)]
@@ -554,8 +554,8 @@ impl DictWithCounter {
     }
 }
 # Python::attach(|py| {
-#     let cnt = pyforge::Py::new(py, DictWithCounter::new()).unwrap();
-#     pyforge::py_run!(py, cnt, "cnt.set('abc', 10); assert cnt['abc'] == 10")
+#     let cnt = clarax::Py::new(py, DictWithCounter::new()).unwrap();
+#     clarax::py_run!(py, cnt, "cnt.set('abc', 10); assert cnt['abc'] == 10")
 # });
 # }
 ```
@@ -563,7 +563,7 @@ impl DictWithCounter {
 If `SubClass` does not provide a base class initialization, the compilation fails.
 
 ```rust,compile_fail
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 
 #[pyclass]
 struct BaseClass {
@@ -590,8 +590,8 @@ Be sure to accept arguments in the `#[new]` method that you want the base class 
 ```rust
 # #[allow(dead_code)]
 # #[cfg(any(not(Py_LIMITED_API), Py_3_12))] {
-# use pyforge::prelude::*;
-use pyforge::types::PyDict;
+# use clarax::prelude::*;
+use clarax::types::PyDict;
 
 #[pyclass(extends=PyDict)]
 struct MyDict {
@@ -601,7 +601,7 @@ struct MyDict {
 #[pymethods]
 impl MyDict {
     #[new]
-    #[pyforge(signature = (*args, **kwargs))]
+    #[clarax(signature = (*args, **kwargs))]
     fn new(args: &Bound<'_, PyAny>, kwargs: Option<&Bound<'_, PyAny>>) -> Self {
         Self { private: 0 }
     }
@@ -610,7 +610,7 @@ impl MyDict {
 }
 # Python::attach(|py| {
 #     let cls = py.get_type::<MyDict>();
-#     pyforge::py_run!(py, cls, "cls(a=1, b=2)")
+#     clarax::py_run!(py, cls, "cls(a=1, b=2)")
 # });
 # }
 ```
@@ -619,31 +619,31 @@ Here, the `args` and `kwargs` allow creating instances of the subclass passing i
 
 ## Object properties
 
-PyForge supports two ways to add properties to your `#[pyclass]`:
+ClaraX supports two ways to add properties to your `#[pyclass]`:
 
-- For simple struct fields with no side effects, a `#[pyforge(get, set)]` attribute can be added directly to the field definition in the `#[pyclass]`.
+- For simple struct fields with no side effects, a `#[clarax(get, set)]` attribute can be added directly to the field definition in the `#[pyclass]`.
 - For properties which require computation you can define `#[getter]`, `#[setter]` and `#[deleter]` functions in the [`#[pymethods]`](#instance-methods) block.
 
 We'll cover each of these in the following sections.
 
-### Object properties using `#[pyforge(get, set)]`
+### Object properties using `#[clarax(get, set)]`
 
-For simple cases where a member variable is just read and written with no side effects, you can declare getters and setters in your `#[pyclass]` field definition using the `pyforge` attribute, like in the example below:
+For simple cases where a member variable is just read and written with no side effects, you can declare getters and setters in your `#[pyclass]` field definition using the `clarax` attribute, like in the example below:
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 # #[allow(dead_code)]
 #[pyclass]
 struct MyClass {
-    #[pyforge(get, set)]
+    #[clarax(get, set)]
     num: i32,
 }
 ```
 
 The above would make the `num` field available for reading and writing as a `self.num` Python property.
-To expose the property with a different name to the field, specify this alongside the rest of the options, e.g. `#[pyforge(get, set, name = "custom_name")]`.
+To expose the property with a different name to the field, specify this alongside the rest of the options, e.g. `#[clarax(get, set, name = "custom_name")]`.
 
-Properties can be readonly or writeonly by using just `#[pyforge(get)]` or `#[pyforge(set)]` respectively.
+Properties can be readonly or writeonly by using just `#[clarax(get)]` or `#[clarax(set)]` respectively.
 
 To use these annotations, your field type must implement some conversion traits:
 
@@ -651,16 +651,16 @@ To use these annotations, your field type must implement some conversion traits:
 - For `set` the field type must implement `FromPyObject`.
 
 For example, implementations of those traits are provided for the `Cell` type, if the inner type also implements the trait.
-This means you can use `#[pyforge(get, set)]` on fields wrapped in a `Cell`.
+This means you can use `#[clarax(get, set)]` on fields wrapped in a `Cell`.
 
 ### Object properties using `#[getter]` and `#[setter]`
 
-For cases which don't satisfy the `#[pyforge(get, set)]` trait requirements, or need side effects, descriptor methods can be defined in a `#[pymethods]` `impl` block.
+For cases which don't satisfy the `#[clarax(get, set)]` trait requirements, or need side effects, descriptor methods can be defined in a `#[pymethods]` `impl` block.
 
 This is done using the `#[getter]` and `#[setter]` attributes, like in the example below:
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass]
 struct MyClass {
     num: i32,
@@ -684,8 +684,8 @@ The `#[deleter]` attribute is also available to delete the property.
 This corresponds to the `del my_object.my_property` python operation.
 
 ```rust
-# use pyforge::prelude::*;
-# use pyforge::exceptions::PyAttributeError;
+# use clarax::prelude::*;
+# use clarax::exceptions::PyAttributeError;
 #[pyclass]
 struct MyClass {
     num: Option<i32>,
@@ -712,7 +712,7 @@ If a function name starts with `get_`, `set_` or `delete_` for getter, setter or
 This is also useful in case of Rust keywords like `type` ([raw identifiers](https://doc.rust-lang.org/edition-guide/rust-2018/module-system/raw-identifiers.html) can be used since Rust 2018).
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 # #[pyclass]
 # struct MyClass {
 #     num: i32,
@@ -738,7 +738,7 @@ The `#[getter]`, `#[setter]` and `#[deleter]` attributes accept one parameter.
 If this parameter is specified, it is used as the property name, i.e.
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 # #[pyclass]
 # struct MyClass {
 #    num: i32,
@@ -763,13 +763,13 @@ In this case, the property `number` is defined and available from Python code as
 ## Instance methods
 
 To define a Python compatible method, an `impl` block for your struct has to be annotated with the `#[pymethods]` attribute.
-PyForge generates Python compatible wrappers for all functions in this block with some variations, like descriptors, class method static methods, etc.
+ClaraX generates Python compatible wrappers for all functions in this block with some variations, like descriptors, class method static methods, etc.
 
 Since Rust allows any number of `impl` blocks, you can easily split methods between those accessible to Python (and Rust) and those accessible only to Rust.
-However to have multiple `#[pymethods]`-annotated `impl` blocks for the same struct you must enable the [`multiple-pymethods`] feature of PyForge.
+However to have multiple `#[pymethods]`-annotated `impl` blocks for the same struct you must enable the [`multiple-pymethods`] feature of ClaraX.
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 # #[pyclass]
 # struct MyClass {
 #     num: i32,
@@ -794,7 +794,7 @@ The return type must be `PyResult<T>` or `T` for some `T` that implements `IntoP
 A `Python` parameter can be specified as part of method signature, in this case the `py` argument gets injected by the method wrapper, e.g.
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 # #[pyclass]
 # struct MyClass {
 # #[allow(dead_code)]
@@ -816,8 +816,8 @@ To create a class method for a custom class, the method needs to be annotated wi
 This is the equivalent of the Python decorator `@classmethod`.
 
 ```rust
-# use pyforge::prelude::*;
-# use pyforge::types::PyType;
+# use clarax::prelude::*;
+# use clarax::types::PyType;
 # #[pyclass]
 # struct MyClass {
 #     #[allow(dead_code)]
@@ -846,8 +846,8 @@ To create a constructor which takes a positional class argument, you can combine
 
 ```rust
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
-# use pyforge::types::PyType;
+# use clarax::prelude::*;
+# use clarax::types::PyType;
 # #[pyclass]
 # struct BaseClass(Py<PyAny>);
 #
@@ -869,7 +869,7 @@ To create a static method for a custom class, the method needs to be annotated w
 The return type must be `T` or `PyResult<T>` for some `T` that implements `IntoPyObject`.
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 # #[pyclass]
 # struct MyClass {
 #     #[allow(dead_code)]
@@ -889,7 +889,7 @@ impl MyClass {
 To create a class attribute (also called [class variable][classattr]), an associated constant can be annotated with the `#[classattr]` attribute.
 
 ```rust,no_run
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 # #[pyclass]
 # struct MyClass {}
 #[pymethods]
@@ -900,7 +900,7 @@ impl MyClass {
 #
 # Python::attach(|py| {
 #    let my_class = py.get_type::<MyClass>();
-#    pyforge::py_run!(py, my_class, "assert my_class.MY_ATTRIBUTE == 'foobar'")
+#    clarax::py_run!(py, my_class, "assert my_class.MY_ATTRIBUTE == 'foobar'")
 # });
 ```
 
@@ -910,7 +910,7 @@ If `const` code is too limiting, a method without any arguments can be annotated
 > Here too, the class attribute value is computed once during the class creation and not each time the attribute is accessed.
 
 ```rust,no_run
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 # #[pyclass]
 # struct MyClass {}
 #[pymethods]
@@ -923,16 +923,16 @@ impl MyClass {
 #
 # Python::attach(|py| {
 #    let my_class = py.get_type::<MyClass>();
-#    pyforge::py_run!(py, my_class, "assert my_class.my_attribute == 'hello'")
+#    clarax::py_run!(py, my_class, "assert my_class.my_attribute == 'hello'")
 # });
 ```
 
 > [!NOTE]
-> If the method has a `Result` return type and returns an `Err`, PyForge will panic during
+> If the method has a `Result` return type and returns an `Err`, ClaraX will panic during
 class creation.
 
 > [!NOTE]
-> `#[classattr]` does not work with [`#[pyforge(warn(...))]`](./function.md#warn) attribute.
+> `#[classattr]` does not work with [`#[clarax(warn(...))]`](./function.md#warn) attribute.
 
 ## Classes as function arguments
 
@@ -946,7 +946,7 @@ Examples of each of these below:
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass]
 struct MyClass {
     my_field: i32,
@@ -986,7 +986,7 @@ Classes can also be passed by value if they can be cloned, i.e. they automatical
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass(from_py_object)]
 #[derive(Clone)]
 struct MyClass {
@@ -1004,15 +1004,15 @@ Note that `#[derive(FromPyObject)]` on a class is usually not useful as it tries
 
 ## Method arguments
 
-Similar to `#[pyfunction]`, the `#[pyforge(signature = (...))]` attribute can be used to specify the way that `#[pymethods]` accept arguments.
+Similar to `#[pyfunction]`, the `#[clarax(signature = (...))]` attribute can be used to specify the way that `#[pymethods]` accept arguments.
 Consult the documentation for [`function signatures`](./function/signature.md) to see the parameters this attribute accepts.
 
 The following example defines a class `MyClass` with a method `method`.
 This method has a signature that sets default values for `num` and `name`, and indicates that `py_args` should collect all extra positional arguments and `py_kwargs` all extra keyword arguments:
 
 ```rust,no_run
-# use pyforge::prelude::*;
-use pyforge::types::{PyDict, PyTuple};
+# use clarax::prelude::*;
+use clarax::types::{PyDict, PyTuple};
 #
 # #[pyclass]
 # struct MyClass {
@@ -1021,12 +1021,12 @@ use pyforge::types::{PyDict, PyTuple};
 #[pymethods]
 impl MyClass {
     #[new]
-    #[pyforge(signature = (num=-1))]
+    #[clarax(signature = (num=-1))]
     fn new(num: i32) -> Self {
         MyClass { num }
     }
 
-    #[pyforge(signature = (num=10, *py_args, name="Hello", **py_kwargs))]
+    #[clarax(signature = (num=10, *py_args, name="Hello", **py_kwargs))]
     fn method(
         &mut self,
         num: i32,
@@ -1055,12 +1055,12 @@ py_args=('World', 666), py_kwargs=Some({'x': 44, 'y': 55}), name=Hello, num=44, 
 py_args=(), py_kwargs=None, name=World, num=-1, num_before=44
 ```
 
-The [`#[pyforge(text_signature = "...")`](./function/signature.md#overriding-the-generated-signature) option for `#[pyfunction]` also works for `#[pymethods]`.
+The [`#[clarax(text_signature = "...")`](./function/signature.md#overriding-the-generated-signature) option for `#[pyfunction]` also works for `#[pymethods]`.
 
 ```rust
 # #![allow(dead_code)]
-use pyforge::prelude::*;
-use pyforge::types::PyType;
+use clarax::prelude::*;
+use clarax::types::PyType;
 
 #[pyclass]
 struct MyClass {}
@@ -1068,23 +1068,23 @@ struct MyClass {}
 #[pymethods]
 impl MyClass {
     #[new]
-    #[pyforge(text_signature = "(c, d)")]
+    #[clarax(text_signature = "(c, d)")]
     fn new(c: i32, d: &str) -> Self {
         Self {}
     }
     // the self argument should be written $self
-    #[pyforge(text_signature = "($self, e, f)")]
+    #[clarax(text_signature = "($self, e, f)")]
     fn my_method(&self, e: i32, f: i32) -> i32 {
         e + f
     }
     // similarly for classmethod arguments, use $cls
     #[classmethod]
-    #[pyforge(text_signature = "($cls, e, f)")]
+    #[clarax(text_signature = "($cls, e, f)")]
     fn my_class_method(cls: &Bound<'_, PyType>, e: i32, f: i32) -> i32 {
         e + f
     }
     #[staticmethod]
-    #[pyforge(text_signature = "(e, f)")]
+    #[clarax(text_signature = "(e, f)")]
     fn my_static_method(e: i32, f: i32) -> i32 {
         e + f
     }
@@ -1158,11 +1158,11 @@ Note that `text_signature` on `#[new]` is not compatible with compilation in `ab
 
 ### Method receivers and lifetime elision
 
-PyForge supports writing instance methods using the normal method receivers for shared `&self` and unique `&mut self` references.
+ClaraX supports writing instance methods using the normal method receivers for shared `&self` and unique `&mut self` references.
 This interacts with [lifetime elision][lifetime-elision] insofar as the lifetime of a such a receiver is assigned to all elided output lifetime parameters.
 
 This is a good default for general Rust code where return values are more likely to borrow from the receiver than from the other arguments, if they contain any lifetimes at all.
-However, when returning bound references `Bound<'py, T>` in PyForge-based code, the Python lifetime `'py` should usually be derived from a `py: Python<'py>` token passed as an argument instead of the receiver.
+However, when returning bound references `Bound<'py, T>` in ClaraX-based code, the Python lifetime `'py` should usually be derived from a `py: Python<'py>` token passed as an argument instead of the receiver.
 
 Specifically, signatures like
 
@@ -1198,18 +1198,18 @@ will yield compiler error [E0106 "missing lifetime specifier"][compiler-error-e0
 
 ## `#[pyclass]` enums
 
-Enum support in PyForge comes in two flavors, depending on what kind of variants the enum has: simple and complex.
+Enum support in ClaraX comes in two flavors, depending on what kind of variants the enum has: simple and complex.
 
 ### Simple enums
 
 A simple enum (a.k.a.
 C-like enum) has only unit variants.
 
-PyForge adds a class attribute for each variant, so you can access them in Python without defining `#[new]`.
-PyForge also provides default implementations of `__richcmp__` and `__int__`, so they can be compared using `==`:
+ClaraX adds a class attribute for each variant, so you can access them in Python without defining `#[new]`.
+ClaraX also provides default implementations of `__richcmp__` and `__int__`, so they can be compared using `==`:
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass(eq, eq_int)]
 #[derive(PartialEq)]
 enum MyEnum {
@@ -1221,7 +1221,7 @@ Python::attach(|py| {
     let x = Py::new(py, MyEnum::Variant).unwrap();
     let y = Py::new(py, MyEnum::OtherVariant).unwrap();
     let cls = py.get_type::<MyEnum>();
-    pyforge::py_run!(py, x y cls, r#"
+    clarax::py_run!(py, x y cls, r#"
         assert x == cls.Variant
         assert y == cls.OtherVariant
         assert x != y
@@ -1232,7 +1232,7 @@ Python::attach(|py| {
 You can also convert your simple enums into `int`:
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass(eq, eq_int)]
 #[derive(PartialEq)]
 enum MyEnum {
@@ -1243,17 +1243,17 @@ enum MyEnum {
 Python::attach(|py| {
     let cls = py.get_type::<MyEnum>();
     let x = MyEnum::Variant as i32; // The exact value is assigned by the compiler.
-    pyforge::py_run!(py, cls x, r#"
+    clarax::py_run!(py, cls x, r#"
         assert int(cls.Variant) == x
         assert int(cls.OtherVariant) == 10
     "#)
 })
 ```
 
-PyForge also provides `__repr__` for enums:
+ClaraX also provides `__repr__` for enums:
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass(eq, eq_int)]
 #[derive(PartialEq)]
 enum MyEnum{
@@ -1264,18 +1264,18 @@ enum MyEnum{
 Python::attach(|py| {
     let cls = py.get_type::<MyEnum>();
     let x = Py::new(py, MyEnum::Variant).unwrap();
-    pyforge::py_run!(py, cls x, r#"
+    clarax::py_run!(py, cls x, r#"
         assert repr(x) == 'MyEnum.Variant'
         assert repr(cls.OtherVariant) == 'MyEnum.OtherVariant'
     "#)
 })
 ```
 
-All methods defined by PyForge can be overridden.
+All methods defined by ClaraX can be overridden.
 For example here's how you override `__repr__`:
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass(eq, eq_int)]
 #[derive(PartialEq)]
 enum MyEnum {
@@ -1291,37 +1291,37 @@ impl MyEnum {
 
 Python::attach(|py| {
     let cls = py.get_type::<MyEnum>();
-    pyforge::py_run!(py, cls, "assert repr(cls.Answer) == '42'")
+    clarax::py_run!(py, cls, "assert repr(cls.Answer) == '42'")
 })
 ```
 
-Enums and their variants can also be renamed using `#[pyforge(name)]`.
+Enums and their variants can also be renamed using `#[clarax(name)]`.
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass(eq, eq_int, name = "RenamedEnum")]
 #[derive(PartialEq)]
 enum MyEnum {
-    #[pyforge(name = "UPPERCASE")]
+    #[clarax(name = "UPPERCASE")]
     Variant,
 }
 
 Python::attach(|py| {
     let x = Py::new(py, MyEnum::Variant).unwrap();
     let cls = py.get_type::<MyEnum>();
-    pyforge::py_run!(py, x cls, r#"
+    clarax::py_run!(py, x cls, r#"
         assert repr(x) == 'RenamedEnum.UPPERCASE'
         assert x == cls.UPPERCASE
     "#)
 })
 ```
 
-Ordering of enum variants is optionally added using `#[pyforge(ord)]`.
+Ordering of enum variants is optionally added using `#[clarax(ord)]`.
 *Note: Implementation of the `PartialOrd` trait is required when passing the `ord` argument.*
 *If not implemented, a compile time error is raised.*
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass(eq, ord)]
 #[derive(PartialEq, PartialOrd)]
 enum MyEnum{
@@ -1335,7 +1335,7 @@ Python::attach(|py| {
     let a = Py::new(py, MyEnum::A).unwrap();
     let b = Py::new(py, MyEnum::B).unwrap();
     let c = Py::new(py, MyEnum::C).unwrap();
-    pyforge::py_run!(py, cls a b c, r#"
+    clarax::py_run!(py, cls a b c, r#"
         assert (a < b) == True
         assert (c <= b) == False
         assert (c > a) == True
@@ -1346,7 +1346,7 @@ Python::attach(|py| {
 You may not use enums as a base class or let enums inherit from other classes.
 
 ```rust,compile_fail
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass(subclass)]
 enum BadBase {
     Var1,
@@ -1354,7 +1354,7 @@ enum BadBase {
 ```
 
 ```rust,compile_fail
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 
 #[pyclass(subclass)]
 struct Base;
@@ -1371,14 +1371,14 @@ enum BadSubclass {
 
 An enum is complex if it has any non-unit (struct or tuple) variants.
 
-PyForge supports only struct and tuple variants in a complex enum.
+ClaraX supports only struct and tuple variants in a complex enum.
 Unit variants aren't supported at present (the recommendation is to use an empty tuple enum instead).
 
-PyForge adds a class attribute for each variant, which may be used to construct values and in match patterns.
-PyForge also provides getter methods for all fields of each variant.
+ClaraX adds a class attribute for each variant, which may be used to construct values and in match patterns.
+ClaraX also provides getter methods for all fields of each variant.
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass]
 enum Shape {
     Circle { radius: f64 },
@@ -1392,7 +1392,7 @@ Python::attach(|py| {
     let circle = Shape::Circle { radius: 10.0 }.into_pyobject(py)?;
     let square = Shape::RegularPolygon(4, 10.0).into_pyobject(py)?;
     let cls = py.get_type::<Shape>();
-    pyforge::py_run!(py, circle square cls, r#"
+    clarax::py_run!(py, circle square cls, r#"
         assert isinstance(circle, cls)
         assert isinstance(circle, cls.Circle)
         assert circle.radius == 10.0
@@ -1426,7 +1426,7 @@ Note how the constructed value is *not* an instance of the specific variant.
 For this reason, constructing values is only recommended using `.into_pyobject`.
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass]
 enum MyEnum {
     Variant { i: i32 },
@@ -1435,26 +1435,26 @@ enum MyEnum {
 Python::attach(|py| {
     let x = Py::new(py, MyEnum::Variant { i: 42 }).unwrap();
     let cls = py.get_type::<MyEnum>();
-    pyforge::py_run!(py, x cls, r#"
+    clarax::py_run!(py, x cls, r#"
         assert isinstance(x, cls)
         assert not isinstance(x, cls.Variant)
     "#)
 })
 ```
 
-The constructor of each generated class can be customized using the `#[pyforge(constructor = (...))]` attribute.
-This uses the same syntax as the [`#[pyforge(signature = (...))]`](function/signature.md) attribute on function and methods and supports the same options.
+The constructor of each generated class can be customized using the `#[clarax(constructor = (...))]` attribute.
+This uses the same syntax as the [`#[clarax(signature = (...))]`](function/signature.md) attribute on function and methods and supports the same options.
 To apply this attribute simply place it on top of a variant in a `#[pyclass]` complex enum as shown below:
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #[pyclass]
 enum Shape {
-    #[pyforge(constructor = (radius=1.0))]
+    #[clarax(constructor = (radius=1.0))]
     Circle { radius: f64 },
-    #[pyforge(constructor = (*, width, height))]
+    #[clarax(constructor = (*, width, height))]
     Rectangle { width: f64, height: f64 },
-    #[pyforge(constructor = (side_count, radius=1.0))]
+    #[clarax(constructor = (side_count, radius=1.0))]
     RegularPolygon { side_count: u32, radius: f64 },
     Nothing { },
 }
@@ -1462,7 +1462,7 @@ enum Shape {
 # #[cfg(Py_3_10)]
 Python::attach(|py| {
     let cls = py.get_type::<Shape>();
-    pyforge::py_run!(py, cls, r#"
+    clarax::py_run!(py, cls, r#"
         circle = cls.Circle()
         assert isinstance(circle, cls)
         assert isinstance(circle, cls.Circle)
@@ -1496,11 +1496,11 @@ This collects `impl`s at library load time, but isn't supported on all platforms
 See [inventory: how it works](https://github.com/dtolnay/inventory#how-it-works) for more details.
 
 The `#[pyclass]` macro expands to roughly the code seen below.
-The `PyClassImplCollector` is the type used internally by PyForge for dtolnay specialization:
+The `PyClassImplCollector` is the type used internally by ClaraX for dtolnay specialization:
 
 ```rust
 # #[cfg(not(feature = "multiple-pymethods"))] {
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 // Note: the implementation differs slightly with the `multiple-pymethods` feature enabled.
 # #[allow(dead_code)]
 struct MyClass {
@@ -1508,56 +1508,56 @@ struct MyClass {
     num: i32,
 }
 
-impl pyforge::types::DerefToPyAny for MyClass {}
+impl clarax::types::DerefToPyAny for MyClass {}
 
-unsafe impl pyforge::type_object::PyTypeInfo for MyClass {
+unsafe impl clarax::type_object::PyTypeInfo for MyClass {
     const NAME: &'static str = "MyClass";
     const MODULE: ::std::option::Option<&'static str> = ::std::option::Option::None;
 
     #[inline]
-    fn type_object_raw(py: pyforge::Python<'_>) -> *mut pyforge::ffi::PyTypeObject {
-        <Self as pyforge::impl_::pyclass::PyClassImpl>::lazy_type_object()
+    fn type_object_raw(py: clarax::Python<'_>) -> *mut clarax::ffi::PyTypeObject {
+        <Self as clarax::impl_::pyclass::PyClassImpl>::lazy_type_object()
             .get_or_try_init(py)
-            .unwrap_or_else(|e| pyforge::impl_::pyclass::type_object_init_failed(
+            .unwrap_or_else(|e| clarax::impl_::pyclass::type_object_init_failed(
                 py,
                 e,
-                <Self as pyforge::PyClass>::NAME
+                <Self as clarax::PyClass>::NAME
             ))
             .as_type_ptr()
     }
 }
 
-impl pyforge::PyClass for MyClass {
+impl clarax::PyClass for MyClass {
     const NAME: &str = "MyClass";
-    type Frozen = pyforge::pyclass::boolean_struct::False;
+    type Frozen = clarax::pyclass::boolean_struct::False;
 }
 
-impl pyforge::impl_::pyclass::PyClassImpl for MyClass {
+impl clarax::impl_::pyclass::PyClassImpl for MyClass {
     const MODULE: Option<&str> = None;
     const IS_BASETYPE: bool = false;
     const IS_SUBCLASS: bool = false;
     const IS_MAPPING: bool = false;
     const IS_SEQUENCE: bool = false;
-    type Layout = <Self::BaseNativeType as pyforge::impl_::pyclass::PyClassBaseType>::Layout<Self>;
+    type Layout = <Self::BaseNativeType as clarax::impl_::pyclass::PyClassBaseType>::Layout<Self>;
     type BaseType = PyAny;
-    type ThreadChecker = pyforge::impl_::pyclass::NoopThreadChecker;
-    type PyClassMutability = <<pyforge::PyAny as pyforge::impl_::pyclass::PyClassBaseType>::PyClassMutability as pyforge::impl_::pycell::PyClassMutability>::MutableChild;
-    type Dict = pyforge::impl_::pyclass::PyClassDummySlot;
-    type WeakRef = pyforge::impl_::pyclass::PyClassDummySlot;
-    type BaseNativeType = pyforge::PyAny;
+    type ThreadChecker = clarax::impl_::pyclass::NoopThreadChecker;
+    type PyClassMutability = <<clarax::PyAny as clarax::impl_::pyclass::PyClassBaseType>::PyClassMutability as clarax::impl_::pycell::PyClassMutability>::MutableChild;
+    type Dict = clarax::impl_::pyclass::PyClassDummySlot;
+    type WeakRef = clarax::impl_::pyclass::PyClassDummySlot;
+    type BaseNativeType = clarax::PyAny;
 
     const RAW_DOC: &'static std::ffi::CStr = c"...";
     const DOC: &'static std::ffi::CStr = c"...";
 
-    fn items_iter() -> pyforge::impl_::pyclass::PyClassItemsIter {
-        use pyforge::impl_::pyclass::*;
+    fn items_iter() -> clarax::impl_::pyclass::PyClassItemsIter {
+        use clarax::impl_::pyclass::*;
         let collector = PyClassImplCollector::<MyClass>::new();
         static INTRINSIC_ITEMS: PyClassItems = PyClassItems { slots: &[], methods: &[] };
         PyClassItemsIter::new(&INTRINSIC_ITEMS, collector.py_methods())
     }
 
-    fn lazy_type_object() -> &'static pyforge::impl_::pyclass::LazyTypeObject<MyClass> {
-        use pyforge::impl_::pyclass::LazyTypeObject;
+    fn lazy_type_object() -> &'static clarax::impl_::pyclass::LazyTypeObject<MyClass> {
+        use clarax::impl_::pyclass::LazyTypeObject;
         static TYPE_OBJECT: LazyTypeObject<MyClass> = LazyTypeObject::new();
         &TYPE_OBJECT
     }
@@ -1565,19 +1565,19 @@ impl pyforge::impl_::pyclass::PyClassImpl for MyClass {
 
 # Python::attach(|py| {
 #     let cls = py.get_type::<MyClass>();
-#     pyforge::py_run!(py, cls, "assert cls.__name__ == 'MyClass'")
+#     clarax::py_run!(py, cls, "assert cls.__name__ == 'MyClass'")
 # });
 # }
 ```
 
-[`PyTypeInfo`]: {{#PYO3_DOCS_URL}}/pyforge/type_object/trait.PyTypeInfo.html
+[`PyTypeInfo`]: {{#PYO3_DOCS_URL}}/clarax/type_object/trait.PyTypeInfo.html
 
-[`Py<T>`]: {{#PYO3_DOCS_URL}}/pyforge/struct.Py.html
-[`Bound<'py, T>`]: {{#PYO3_DOCS_URL}}/pyforge/struct.Bound.html
-[`PyClass`]: {{#PYO3_DOCS_URL}}/pyforge/pyclass/trait.PyClass.html
-[`PyRef`]: {{#PYO3_DOCS_URL}}/pyforge/pycell/struct.PyRef.html
-[`PyRefMut`]: {{#PYO3_DOCS_URL}}/pyforge/pycell/struct.PyRefMut.html
-[`PyClassInitializer<T>`]: {{#PYO3_DOCS_URL}}/pyforge/pyclass_init/struct.PyClassInitializer.html
+[`Py<T>`]: {{#PYO3_DOCS_URL}}/clarax/struct.Py.html
+[`Bound<'py, T>`]: {{#PYO3_DOCS_URL}}/clarax/struct.Bound.html
+[`PyClass`]: {{#PYO3_DOCS_URL}}/clarax/pyclass/trait.PyClass.html
+[`PyRef`]: {{#PYO3_DOCS_URL}}/clarax/pycell/struct.PyRef.html
+[`PyRefMut`]: {{#PYO3_DOCS_URL}}/clarax/pycell/struct.PyRefMut.html
+[`PyClassInitializer<T>`]: {{#PYO3_DOCS_URL}}/clarax/pyclass_init/struct.PyClassInitializer.html
 
 [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
 

@@ -1,23 +1,23 @@
 # Installation
 
-To get started using PyForge you will need three things: a Rust toolchain, a Python environment, and a way to build.
+To get started using ClaraX you will need three things: a Rust toolchain, a Python environment, and a way to build.
 We'll cover each of these below.
 
 > [!TIP]
-> If you'd like to chat to the PyForge maintainers and other PyForge users, consider joining the [PyForge Discord server](https://discord.gg/33kcChzH7f). We're keen to hear about your experience getting started, so we can make PyForge as accessible as possible for everyone!
+> If you'd like to chat to the ClaraX maintainers and other ClaraX users, consider joining the [ClaraX Discord server](https://discord.gg/33kcChzH7f). We're keen to hear about your experience getting started, so we can make ClaraX as accessible as possible for everyone!
 
 ## Rust
 
 First, make sure you have Rust installed on your system.
 If you haven't already done so, try following the instructions [on the Rust website](https://www.rust-lang.org/tools/install).
-PyForge runs on both the `stable` and `nightly` versions so you can choose whichever one fits you best.
+ClaraX runs on both the `stable` and `nightly` versions so you can choose whichever one fits you best.
 The minimum required Rust version is 1.83.
 
 If you can run `rustc --version` and the version is new enough you're good to go!
 
 ## Python
 
-To use PyForge, you need at least Python 3.8.
+To use ClaraX, you need at least Python 3.8.
 While you can simply use the default Python interpreter on your system, it is recommended to use a virtual environment.
 
 ## Virtualenvs
@@ -39,7 +39,7 @@ pyenv install 3.12 --keep
 
 There are a number of build and Python package management systems such as [`setuptools-rust`](https://github.com/PyO3/setuptools-rust) or [manually](./building-and-distribution.md#manual-builds).
 We recommend the use of `maturin`, which you can install [as per the `maturin` documentation](https://maturin.rs/installation.html).
-It is developed to work with PyForge and provides the most "batteries included" experience, especially if you are aiming to publish to PyPI.
+It is developed to work with ClaraX and provides the most "batteries included" experience, especially if you are aiming to publish to PyPI.
 `maturin` is just a Python package, so you can add it in the same way you already install Python packages.
 
 System Python:
@@ -57,7 +57,7 @@ pipx install maturin
 pyenv:
 
 ```bash
-pyenv activate pyforge
+pyenv activate clarax
 pip install maturin
 ```
 
@@ -75,10 +75,10 @@ First you should create the folder and virtual environment that are going to con
 Here we will use the recommended `pyenv`:
 
 ```bash
-mkdir pyforge-example
-cd pyforge-example
-pyenv virtualenv pyforge
-pyenv local pyforge
+mkdir clarax-example
+cd clarax-example
+pyenv virtualenv clarax
+pyenv local clarax
 ```
 
 After this, you should install your build manager.
@@ -98,10 +98,10 @@ maturin init
 If `maturin` is already installed, you can create a new project using that directly as well:
 
 ```bash
-maturin new -b pyforge pyforge-example
-cd pyforge-example
-pyenv virtualenv pyforge
-pyenv local pyforge
+maturin new -b clarax clarax-example
+cd clarax-example
+pyenv virtualenv clarax
+pyenv local clarax
 ```
 
 ## Adding to an existing project
@@ -117,7 +117,7 @@ If you opt for the second option, here are the things you need to pay attention 
 
 Make sure that the Rust crate you want to be able to access from Python is compiled into a library.
 You can have a binary output as well, but the code you want to access from Python has to be in the library part.
-Also, make sure that the crate type is `cdylib` and add PyForge as a dependency as so:
+Also, make sure that the crate type is `cdylib` and add ClaraX as a dependency as so:
 
 ```toml
 # If you already have [package] information in `Cargo.toml`, you can ignore
@@ -139,7 +139,7 @@ name = "pyo3_example"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyforge = { {{#PYO3_CRATE_VERSION}} }
+clarax = { {{#PYO3_CRATE_VERSION}} }
 ```
 
 ## pyproject.toml
@@ -169,9 +169,9 @@ After this you can setup Rust code to be available in Python as below; for examp
 /// A Python module implemented in Rust. The name of this function must match
 /// the `lib.name` setting in the `Cargo.toml`, else Python will not be able to
 /// import the module.
-#[pyforge::pymodule]
+#[clarax::pymodule]
 mod pyo3_example {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     /// Formats the sum of two numbers as string.
     #[pyfunction]

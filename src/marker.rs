@@ -2,7 +2,7 @@
 //!
 //! The Python interpreter is not thread-safe. To protect the Python interpreter in multithreaded
 //! scenarios there is a global lock, the *global interpreter lock* (hereafter referred to as *GIL*)
-//! that must be held to safely interact with Python objects. This is why in PyForge when you acquire
+//! that must be held to safely interact with Python objects. This is why in ClaraX when you acquire
 //! the GIL you get a [`Python`] marker token that carries the *lifetime* of holding the GIL and all
 //! borrowed references to Python objects carry this lifetime as well. This will statically ensure
 //! that you can never use Python objects after dropping the lock - if you mess this up it will be
@@ -40,7 +40,7 @@
 //! ```rust, compile_fail
 //! # #[cfg(feature = "nightly")]
 //! # compile_error!("this actually works on nightly")
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //! use std::rc::Rc;
 //!
 //! fn main() {
@@ -68,8 +68,8 @@
 //! doing anything with threads:
 //!
 //! ```rust, no_run
-//! use pyforge::prelude::*;
-//! use pyforge::types::PyString;
+//! use clarax::prelude::*;
+//! use clarax::types::PyString;
 //! use send_wrapper::SendWrapper;
 //!
 //! Python::attach(|py| {
@@ -92,7 +92,7 @@
 //!
 //! # A proper implementation using an auto trait
 //!
-//! However on nightly Rust and when PyForge's `nightly` feature is
+//! However on nightly Rust and when ClaraX's `nightly` feature is
 //! enabled, `Ungil` is defined as the following:
 //!
 //! ```rust,no_run
@@ -145,7 +145,7 @@ use std::sync::LazyLock;
 /// For example, an `Rc` smart pointer should be usable without the GIL, but we currently prevent that:
 ///
 /// ```compile_fail
-/// # use pyforge::prelude::*;
+/// # use clarax::prelude::*;
 /// use std::rc::Rc;
 ///
 /// Python::attach(|py| {
@@ -161,8 +161,8 @@ use std::sync::LazyLock;
 /// one can circumvent this protection using the [`send_wrapper`](https://docs.rs/send_wrapper/) crate:
 ///
 /// ```no_run
-/// # use pyforge::prelude::*;
-/// # use pyforge::types::PyString;
+/// # use clarax::prelude::*;
+/// # use clarax::types::PyString;
 /// use send_wrapper::SendWrapper;
 ///
 /// Python::attach(|py| {
@@ -179,7 +179,7 @@ use std::sync::LazyLock;
 /// ```
 ///
 /// Fixing this loophole on stable Rust has significant ergonomic issues, but it is fixed when using
-/// nightly Rust and the `nightly` feature, c.f. [#2141](https://github.com/PyForge/pyo3/issues/2141).
+/// nightly Rust and the `nightly` feature, c.f. [#2141](https://github.com/ClaraX/pyo3/issues/2141).
 #[cfg_attr(docsrs, doc(cfg(all())))] // Hide the cfg flag
 #[cfg(not(feature = "nightly"))]
 pub unsafe trait Ungil {}
@@ -209,8 +209,8 @@ mod nightly {
         /// Types which are `Ungil` cannot be used in contexts where the GIL was released, e.g.
         ///
         /// ```compile_fail
-        /// # use pyforge::prelude::*;
-        /// # use pyforge::types::PyString;
+        /// # use clarax::prelude::*;
+        /// # use clarax::types::PyString;
         /// Python::attach(|py| {
         ///     let string = PyString::new(py, "foo");
         ///
@@ -223,7 +223,7 @@ mod nightly {
         /// This applies to the [`Python`] token itself as well, e.g.
         ///
         /// ```compile_fail
-        /// # use pyforge::prelude::*;
+        /// # use clarax::prelude::*;
         /// Python::attach(|py| {
         ///     py.detach(|| {
         ///         drop(py);
@@ -235,8 +235,8 @@ mod nightly {
         /// to prevent incorrectly circumventing it using e.g. the [`send_wrapper`](https://docs.rs/send_wrapper/) crate:
         ///
         /// ```compile_fail
-        /// # use pyforge::prelude::*;
-        /// # use pyforge::types::PyString;
+        /// # use clarax::prelude::*;
+        /// # use clarax::types::PyString;
         /// use send_wrapper::SendWrapper;
         ///
         /// Python::attach(|py| {
@@ -256,7 +256,7 @@ mod nightly {
         /// at least if they are not also bound to the GIL:
         ///
         /// ```rust
-        /// # use pyforge::prelude::*;
+        /// # use clarax::prelude::*;
         /// use std::rc::Rc;
         ///
         /// Python::attach(|py| {
@@ -315,7 +315,7 @@ pub use nightly::Ungil;
 /// - If you already have something with a lifetime bound to the GIL, such as [`Bound<'py, PyAny>`], you can
 ///   use its `.py()` method to get a token.
 /// - In a function or method annotated with [`#[pyfunction]`](crate::pyfunction) or [`#[pymethods]`](crate::pymethods) you can declare it
-///   as a parameter, and PyForge will pass in the token when Python code calls it.
+///   as a parameter, and ClaraX will pass in the token when Python code calls it.
 /// - When you need to acquire the GIL yourself, such as when calling Python code from Rust, you
 ///   should call [`Python::attach`] to do that and pass your code as a closure to it.
 ///
@@ -362,7 +362,7 @@ impl Python<'_> {
     /// provided closure `F` will be executed with the acquired `Python` marker token.
     ///
     /// If implementing [`#[pymethods]`](crate::pymethods) or [`#[pyfunction]`](crate::pyfunction),
-    /// declare `py: Python` as an argument. PyForge will pass in the token to grant access to the GIL
+    /// declare `py: Python` as an argument. ClaraX will pass in the token to grant access to the GIL
     /// context in which the function is running, avoiding the need to call `attach`.
     ///
     /// If the [`auto-initialize`] feature is enabled and the Python runtime is not already
@@ -388,8 +388,8 @@ impl Python<'_> {
     /// # Examples
     ///
     /// ```
-    /// use pyforge::prelude::*;
-    /// use pyforge::ffi::c_str;
+    /// use clarax::prelude::*;
+    /// use clarax::ffi::c_str;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -400,7 +400,7 @@ impl Python<'_> {
     /// # }
     /// ```
     ///
-    /// [`auto-initialize`]: https://github.com/abdulwahed-sweden/pyforge/main/features.html#auto-initialize
+    /// [`auto-initialize`]: https://github.com/abdulwahed-sweden/clarax/main/features.html#auto-initialize
     /// [shutting down]: https://docs.python.org/3/glossary.html#term-interpreter-shutdown
     #[inline]
     #[track_caller]
@@ -430,7 +430,7 @@ impl Python<'_> {
     /// possible behaviour and should transparently change to an optimal implementation
     /// once such APIs are available.
     ///
-    /// [`auto-initialize`]: https://github.com/abdulwahed-sweden/pyforge/main/features.html#auto-initialize
+    /// [`auto-initialize`]: https://github.com/abdulwahed-sweden/clarax/main/features.html#auto-initialize
     /// [shutting down]: https://docs.python.org/3/glossary.html#term-interpreter-shutdown
     #[inline]
     #[track_caller]
@@ -457,7 +457,7 @@ impl Python<'_> {
     ///
     /// # Examples
     /// ```rust
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::initialize();
@@ -470,7 +470,7 @@ impl Python<'_> {
 
     /// Like [`Python::attach`] except Python interpreter state checking is skipped.
     ///
-    /// Normally when attaching to the Python interpreter, PyForge checks that it is in
+    /// Normally when attaching to the Python interpreter, ClaraX checks that it is in
     /// an appropriate state (e.g. it is fully initialized). This function skips
     /// those checks.
     ///
@@ -507,7 +507,7 @@ impl<'py> Python<'py> {
     /// # Example: Releasing the GIL while running a computation in Rust-only code
     ///
     /// ```
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pyfunction]
     /// fn sum_numbers(py: Python<'_>, numbers: Vec<u32>) -> PyResult<u32> {
@@ -522,7 +522,7 @@ impl<'py> Python<'py> {
     /// #
     /// # fn main() -> PyResult<()> {
     /// #     Python::attach(|py| -> PyResult<()> {
-    /// #         let fun = pyforge::wrap_pyfunction!(sum_numbers, py)?;
+    /// #         let fun = clarax::wrap_pyfunction!(sum_numbers, py)?;
     /// #         let res = fun.call1((vec![1_u32, 2, 3],))?;
     /// #         assert_eq!(res.extract::<u32>()?, 6_u32);
     /// #         Ok(())
@@ -536,8 +536,8 @@ impl<'py> Python<'py> {
     /// # Example: Passing borrowed Python references into the closure is not allowed
     ///
     /// ```compile_fail
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::PyString;
+    /// use clarax::prelude::*;
+    /// use clarax::types::PyString;
     ///
     /// fn parallel_print(py: Python<'_>) {
     ///     let s = PyString::new(py, "This object cannot be accessed without holding the GIL >_<");
@@ -550,7 +550,7 @@ impl<'py> Python<'py> {
     /// [`Py`]: crate::Py
     /// [`PyString`]: crate::types::PyString
     /// [auto-traits]: https://doc.rust-lang.org/nightly/unstable-book/language-features/auto-traits.html
-    /// [Parallelism]: https://github.com/abdulwahed-sweden/pyforge/main/parallelism.html
+    /// [Parallelism]: https://github.com/abdulwahed-sweden/clarax/main/parallelism.html
     pub fn detach<T, F>(self, f: F) -> T
     where
         F: Ungil + FnOnce() -> T,
@@ -575,8 +575,8 @@ impl<'py> Python<'py> {
     /// # Examples
     ///
     /// ```
-    /// # use pyforge::prelude::*;
-    /// # use pyforge::ffi::c_str;
+    /// # use clarax::prelude::*;
+    /// # use clarax::ffi::c_str;
     /// # Python::attach(|py| {
     /// let result = py.eval(c"[i * 10 for i in range(5)]", None, None).unwrap();
     /// let res: Vec<i64> = result.extract().unwrap();
@@ -603,7 +603,7 @@ impl<'py> Python<'py> {
     ///
     /// # Examples
     /// ```
-    /// use pyforge::{
+    /// use clarax::{
     ///     prelude::*,
     ///     types::{PyBytes, PyDict},
     ///     ffi::c_str,
@@ -687,7 +687,7 @@ impl<'py> Python<'py> {
     ///
     /// # Examples
     /// ```rust
-    /// # use pyforge::Python;
+    /// # use clarax::Python;
     /// assert!(Python::version_str().starts_with("3."));
     /// ```
     pub fn version_str() -> &'static str {
@@ -705,9 +705,9 @@ impl<'py> Python<'py> {
     ///
     /// # Examples
     /// ```rust
-    /// # use pyforge::Python;
+    /// # use clarax::Python;
     /// Python::attach(|py| {
-    ///     // PyForge supports Python 3.8 and up.
+    ///     // ClaraX supports Python 3.8 and up.
     ///     assert!(py.version_info() >= (3, 8));
     ///     assert!(py.version_info() >= (3, 8, 0));
     /// });
@@ -735,7 +735,7 @@ impl<'py> Python<'py> {
     ///
     /// ```rust,no_run
     /// # #![allow(dead_code)] // this example is quite impractical to test
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// # fn main() {
     /// #[pyfunction]
@@ -772,7 +772,7 @@ impl<'py> Python<'py> {
 impl<'unbound> Python<'unbound> {
     /// Unsafely creates a Python token with an unbounded lifetime.
     ///
-    /// Many of PyForge APIs use [`Python<'_>`] as proof that the calling thread is attached to the
+    /// Many of ClaraX APIs use [`Python<'_>`] as proof that the calling thread is attached to the
     /// interpreter, but this function can be used to call them unsafely.
     ///
     /// # Safety

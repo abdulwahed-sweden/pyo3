@@ -51,16 +51,16 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Install maturin
         run: pip install maturin
-      - name: Build pyforge-django
-        run: maturin develop -m pyforge-django/Cargo.toml --release
+      - name: Build clarax-django
+        run: maturin develop -m clarax-django/Cargo.toml --release
       - name: Install test dependencies
         run: pip install django pytest pytest-django
       - name: Run Django tests
         run: |
-          cd pyforge-django
+          cd clarax-django
           python -m pytest tests/ -v 2>&1 | tee test-output.txt
       - name: Report test count
-        run: grep -E "passed|failed|error" pyforge-django/test-output.txt || true
+        run: grep -E "passed|failed|error" clarax-django/test-output.txt || true
 
   test-windows:
     needs: [test-rust]
@@ -76,7 +76,7 @@ jobs:
         run: cargo check --workspace
       - name: Install maturin
         run: pip install maturin
-      - name: Build pyforge-django
-        run: maturin develop -m pyforge-django/Cargo.toml --release
+      - name: Build clarax-django
+        run: maturin develop -m clarax-django/Cargo.toml --release
       - name: Confirm build
-        run: python -c "import pyforge_django; print('pyforge_django loaded successfully')"
+        run: python -c "import clarax_django; print('clarax_django loaded successfully')"

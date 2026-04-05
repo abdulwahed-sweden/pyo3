@@ -1,4 +1,4 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyfunction]
 #[pyo3(signature = (a) -> "int")]

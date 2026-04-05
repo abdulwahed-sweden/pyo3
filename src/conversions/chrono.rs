@@ -13,14 +13,14 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"chrono\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of chrono and PyForge.
-//! The required chrono version may vary based on the version of PyForge.
+//! Note that you must use compatible versions of chrono and ClaraX.
+//! The required chrono version may vary based on the version of ClaraX.
 //!
 //! # Example: Convert a `datetime.datetime` to chrono's `DateTime<Utc>`
 //!
 //! ```rust
 //! use chrono::{DateTime, Duration, TimeZone, Utc};
-//! use pyforge::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
+//! use clarax::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
 //!
 //! fn main() -> PyResult<()> {
 //!     Python::initialize();

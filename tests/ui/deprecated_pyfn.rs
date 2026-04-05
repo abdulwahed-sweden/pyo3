@@ -1,6 +1,6 @@
 #![deny(deprecated)]
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 fn module_with_pyfn(m: &Bound<'_, PyModule>) -> PyResult<()> {

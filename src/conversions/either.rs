@@ -19,14 +19,14 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"either\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of either and PyForge.
-//! The required either version may vary based on the version of PyForge.
+//! Note that you must use compatible versions of either and ClaraX.
+//! The required either version may vary based on the version of ClaraX.
 //!
 //! # Example: Convert a `int | str` to `Either<i32, String>`.
 //!
 //! ```rust
 //! use either::Either;
-//! use pyforge::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
+//! use clarax::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
 //!
 //! fn main() -> PyResult<()> {
 //!     Python::initialize();

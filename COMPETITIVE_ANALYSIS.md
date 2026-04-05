@@ -1,8 +1,8 @@
-# Competitive Analysis: PyForge vs Alternatives
+# Competitive Analysis: ClaraX vs Alternatives
 
 Author: Abdulwahed Mansour
 
-Honest assessment of PyForge's position relative to existing Rust-accelerated
+Honest assessment of ClaraX's position relative to existing Rust-accelerated
 Python libraries. For internal strategy — not marketing.
 
 ---
@@ -14,10 +14,10 @@ Python libraries. For internal strategy — not marketing.
 - They handle `datetime`, `date`, `time`, `uuid`, `Decimal`, `numpy`, `dataclass` natively at the C level, without going through Python's `__str__()` method.
 - They support `OPT_SORT_KEYS`, `OPT_INDENT_2`, `OPT_NON_STR_KEYS` — output formatting options we don't offer.
 
-**Where PyForge is better:**
-- PyForge understands Django's field constraints (max_length, max_digits, decimal_places) and validates while serializing. orjson is a pure serializer — it doesn't validate.
-- PyForge's `serialize_queryset_rows` batches entire querysets in one call. orjson serializes one object at a time.
-- PyForge preserves Decimal precision by default (string output). orjson requires `OPT_SERIALIZE_NUMPY` flag for similar behavior.
+**Where ClaraX is better:**
+- ClaraX understands Django's field constraints (max_length, max_digits, decimal_places) and validates while serializing. orjson is a pure serializer — it doesn't validate.
+- ClaraX's `serialize_queryset_rows` batches entire querysets in one call. orjson serializes one object at a time.
+- ClaraX preserves Decimal precision by default (string output). orjson requires `OPT_SERIALIZE_NUMPY` flag for similar behavior.
 
 **Where we're behind:**
 - orjson is 2-3x faster than us on raw JSON serialization because they skip the intermediate `serde_json::Value` tree. We allocate a `Map<String, Value>` then convert to Python — they go directly to bytes.
@@ -37,10 +37,10 @@ Python libraries. For internal strategy — not marketing.
 - Their error reporting is richer: each error carries a "location" path for nested structures (e.g., `["addresses", 0, "zip_code"]`).
 - They have a "strict" vs "lax" mode for type coercion.
 
-**Where PyForge is better:**
-- PyForge is Django-native. pydantic-core requires defining separate Pydantic models that mirror your Django models — duplication. PyForge reads Django's `_meta` directly.
-- PyForge's Rayon parallelism scales validation across CPU cores for large batches. pydantic-core validates sequentially.
-- PyForge integrates with DRF serializers via a mixin — zero changes to existing code. pydantic requires rewriting your serializers.
+**Where ClaraX is better:**
+- ClaraX is Django-native. pydantic-core requires defining separate Pydantic models that mirror your Django models — duplication. ClaraX reads Django's `_meta` directly.
+- ClaraX's Rayon parallelism scales validation across CPU cores for large batches. pydantic-core validates sequentially.
+- ClaraX integrates with DRF serializers via a mixin — zero changes to existing code. pydantic requires rewriting your serializers.
 
 **Where we're behind:**
 - pydantic-core's compiled validator is fundamentally faster on a per-field basis because it eliminates dynamic dispatch. Our `match` on `DjangoFieldType` is slower.
@@ -60,10 +60,10 @@ Python libraries. For internal strategy — not marketing.
 - They generate OpenAPI schemas from Pydantic type hints automatically.
 - They use `orjson` for JSON encoding by default.
 
-**Where PyForge is better:**
-- PyForge works WITH existing DRF codebases. django-ninja requires rewriting your API layer.
-- PyForge's mixin approach means adoption is incremental — you can accelerate one serializer at a time.
-- For projects already on DRF (the vast majority of Django APIs), PyForge is the only option that doesn't require a rewrite.
+**Where ClaraX is better:**
+- ClaraX works WITH existing DRF codebases. django-ninja requires rewriting your API layer.
+- ClaraX's mixin approach means adoption is incremental — you can accelerate one serializer at a time.
+- For projects already on DRF (the vast majority of Django APIs), ClaraX is the only option that doesn't require a rewrite.
 
 **Where we're behind:**
 - django-ninja's type-hint-driven approach provides better IDE support and auto-documentation.
@@ -75,10 +75,10 @@ Python libraries. For internal strategy — not marketing.
 
 ---
 
-## 4. Where PyForge Is Strictly Superior
+## 4. Where ClaraX Is Strictly Superior
 
 **For Django projects that:**
-1. Already use DRF and can't afford a rewrite → PyForge is the only option
+1. Already use DRF and can't afford a rewrite → ClaraX is the only option
 2. Serve large list views (100+ records per response) → 4-8x speedup from Rust serialization
 3. Process bulk form submissions → Rayon parallel validation scales linearly with cores
 4. Use `DecimalField` heavily (finance, e-commerce) → guaranteed precision preservation

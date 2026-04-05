@@ -1,9 +1,9 @@
 #![deny(unused_imports)]
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 mod probe_no_fields {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
     #[pyclass]
     pub struct Probe {}
     
@@ -18,7 +18,7 @@ mod probe_no_fields {
 
 #[pymodule]
 mod probe_with_fields {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
     #[pyclass(get_all)]
     pub struct Probe {
         field: u8,

@@ -5,7 +5,7 @@ use crate::{ffi, types::any::PyAnyMethods, Borrowed, Bound, PyAny, PyTypeInfo, P
 
 /// Represents the Python `None` object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyNone>`][crate::Py] or [`Bound<'py, PyNone>`][Bound].
 #[repr(transparent)]
 pub struct PyNone(PyAny);

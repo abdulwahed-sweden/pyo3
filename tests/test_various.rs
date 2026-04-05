@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
-use pyforge::py_run;
-use pyforge::types::PyTuple;
+use clarax::prelude::*;
+use clarax::py_run;
+use clarax::types::PyTuple;
 
 use std::fmt;
 
@@ -116,7 +116,7 @@ fn pytuple_pyclass_iter() {
 #[test]
 #[cfg(any(Py_3_9, not(Py_LIMITED_API)))]
 fn test_pickle() {
-    use pyforge::types::PyDict;
+    use clarax::types::PyDict;
 
     #[pyclass(dict, module = "test_module")]
     struct PickleSupport {}
@@ -169,7 +169,7 @@ fn test_pickle() {
     });
 }
 
-/// Testing https://github.com/PyForge/pyo3/issues/1106. A result type that
+/// Testing https://github.com/ClaraX/pyo3/issues/1106. A result type that
 /// implements `From<MyError> for PyErr` should be automatically converted
 /// when using `#[pyfunction]`.
 ///
@@ -188,8 +188,8 @@ impl fmt::Display for MyError {
 
 /// Important for the automatic conversion to `PyErr`.
 impl From<MyError> for PyErr {
-    fn from(err: MyError) -> pyforge::PyErr {
-        pyforge::exceptions::PyOSError::new_err(err.to_string())
+    fn from(err: MyError) -> clarax::PyErr {
+        clarax::exceptions::PyOSError::new_err(err.to_string())
     }
 }
 

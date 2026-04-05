@@ -120,7 +120,7 @@ impl<'a> PyStringData<'a> {
 
 /// Represents a Python `string` (a Unicode string object).
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyString>`][crate::Py] or [`Bound<'py, PyString>`][Bound].
 ///
 /// For APIs available on `str` objects, see the [`PyStringMethods`] trait which is implemented for
@@ -137,8 +137,8 @@ impl<'a> PyStringData<'a> {
 /// cost of the additional overhead of a Python method call.
 ///
 /// ```rust
-/// # use pyforge::prelude::*;
-/// use pyforge::types::PyString;
+/// # use clarax::prelude::*;
+/// use clarax::types::PyString;
 ///
 /// # Python::attach(|py| {
 /// let py_string = PyString::new(py, "foo");
@@ -300,7 +300,7 @@ pub trait PyStringMethods<'py>: crate::sealed::Sealed {
     ///
     /// This function implementation relies on manually decoding a C bitfield. In practice, this
     /// works well on common little-endian architectures such as x86_64, where the bitfield has a
-    /// common representation (even if it is not part of the C spec). The PyForge CI tests this API on
+    /// common representation (even if it is not part of the C spec). The ClaraX CI tests this API on
     /// x86_64 platforms.
     ///
     /// By using this API, you accept responsibility for testing that PyStringData behaves as

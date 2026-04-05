@@ -1,7 +1,7 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 use std::fmt::{Display, Formatter};
 
-#[pyclass(extend=pyforge::types::PyDict)]
+#[pyclass(extend=clarax::types::PyDict)]
 struct TypoIntheKey {}
 
 #[pyclass(extends = "PyDict")]
@@ -44,7 +44,7 @@ impl EqOptAndManualRichCmp {
         &self,
         _py: Python,
         _other: Bound<'_, PyAny>,
-        _op: pyforge::pyclass::CompareOp,
+        _op: clarax::pyclass::CompareOp,
     ) -> PyResult<Py<PyAny>> {
         todo!()
     }

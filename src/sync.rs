@@ -38,8 +38,8 @@ pub(crate) struct GILOnceCell<T> {
     ///
     /// ```compile_error,E0597
     /// #![allow(deprecated)]
-    /// use pyforge::Python;
-    /// use pyforge::sync::GILOnceCell;
+    /// use clarax::Python;
+    /// use clarax::sync::GILOnceCell;
     ///
     /// struct A<'a>(#[allow(dead_code)] &'a str);
     ///
@@ -165,8 +165,8 @@ impl<T> Drop for GILOnceCell<T> {
 /// # Example: Using `intern!` to avoid needlessly recreating the same Python string
 ///
 /// ```
-/// use pyforge::intern;
-/// # use pyforge::{prelude::*, types::PyDict};
+/// use clarax::intern;
+/// # use clarax::{prelude::*, types::PyDict};
 ///
 /// #[pyfunction]
 /// fn create_dict(py: Python<'_>) -> PyResult<Bound<'_, PyDict>> {

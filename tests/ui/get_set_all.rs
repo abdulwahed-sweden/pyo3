@@ -1,4 +1,4 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyclass(set_all)]
 struct Foo;

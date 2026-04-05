@@ -23,16 +23,16 @@
             "problemMatcher": ["$rustc"]
         },
         {
-            "label": "cargo test pyforge-core",
+            "label": "cargo test clarax-core",
             "type": "shell",
-            "command": "cargo test -p pyforge-core",
+            "command": "cargo test -p clarax-core",
             "group": "test",
             "problemMatcher": ["$rustc"]
         },
         {
-            "label": "cargo test pyforge-django",
+            "label": "cargo test clarax-django",
             "type": "shell",
-            "command": "cargo test -p pyforge-django",
+            "command": "cargo test -p clarax-django",
             "group": "test",
             "problemMatcher": ["$rustc"]
         },

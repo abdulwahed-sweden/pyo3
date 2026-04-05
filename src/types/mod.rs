@@ -57,9 +57,9 @@ pub use self::weakref::{PyWeakref, PyWeakrefMethods, PyWeakrefProxy, PyWeakrefRe
 /// # Examples
 ///
 /// ```rust
-/// use pyforge::prelude::*;
-/// use pyforge::types::PyDict;
-/// use pyforge::ffi::c_str;
+/// use clarax::prelude::*;
+/// use clarax::types::PyDict;
+/// use clarax::ffi::c_str;
 ///
 /// # pub fn main() -> PyResult<()> {
 /// Python::attach(|py| {
@@ -74,7 +74,7 @@ pub use self::weakref::{PyWeakref, PyWeakrefMethods, PyWeakrefProxy, PyWeakrefRe
 /// # }
 ///  ```
 ///
-/// If PyForge detects that the collection is mutated during iteration, it will panic.
+/// If ClaraX detects that the collection is mutated during iteration, it will panic.
 ///
 /// These iterators use Python's C-API directly. However in certain cases, like when compiling for
 /// the Limited API and PyPy, the underlying structures are opaque and that may not be possible.

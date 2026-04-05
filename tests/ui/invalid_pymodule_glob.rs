@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyfunction]
 fn foo() -> usize {

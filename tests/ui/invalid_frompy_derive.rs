@@ -1,4 +1,4 @@
-use pyforge::FromPyObject;
+use clarax::FromPyObject;
 
 #[derive(FromPyObject)]
 struct Foo();

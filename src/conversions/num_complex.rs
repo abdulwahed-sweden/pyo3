@@ -3,7 +3,7 @@
 //!  Conversions to and from [num-complex](https://docs.rs/num-complex)’
 //! [`Complex`]`<`[`f32`]`>` and [`Complex`]`<`[`f64`]`>`.
 //!
-//! num-complex’ [`Complex`] supports more operations than PyForge's [`PyComplex`]
+//! num-complex’ [`Complex`] supports more operations than ClaraX's [`PyComplex`]
 //! and can be used with the rest of the Rust ecosystem.
 //!
 //! # Setup
@@ -17,8 +17,8 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"num-complex\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of num-complex and PyForge.
-//! The required num-complex version may vary based on the version of PyForge.
+//! Note that you must use compatible versions of num-complex and ClaraX.
+//! The required num-complex version may vary based on the version of ClaraX.
 //!
 //! # Examples
 //!
@@ -29,7 +29,7 @@
 //! # // please file an issue if it breaks!
 //! use nalgebra::base::{dimension::Const, Matrix};
 //! use num_complex::Complex;
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //!
 //! type T = Complex<f64>;
 //!
@@ -51,7 +51,7 @@
 //! # // test
 //! # use assert_approx_eq::assert_approx_eq;
 //! # use nalgebra::ComplexField;
-//! # use pyforge::types::PyComplex;
+//! # use clarax::types::PyComplex;
 //! #
 //! # fn main() -> PyResult<()> {
 //! #     Python::attach(|py| -> PyResult<()> {

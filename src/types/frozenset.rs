@@ -51,7 +51,7 @@ impl<'py> PyFrozenSetBuilder<'py> {
 
 /// Represents a  Python `frozenset`.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyFrozenSet>`][crate::Py] or [`Bound<'py, PyFrozenSet>`][Bound].
 ///
 /// For APIs available on `frozenset` objects, see the [`PyFrozenSetMethods`] trait which is implemented for
@@ -179,7 +179,7 @@ impl<'py> IntoIterator for &Bound<'py, PyFrozenSet> {
     }
 }
 
-/// PyForge implementation of an iterator for a Python `frozenset` object.
+/// ClaraX implementation of an iterator for a Python `frozenset` object.
 pub struct BoundFrozenSetIterator<'py>(Bound<'py, PyIterator>);
 
 impl<'py> BoundFrozenSetIterator<'py> {

@@ -1,5 +1,5 @@
-use pyforge::prelude::*;
-use pyforge::types::{
+use clarax::prelude::*;
+use clarax::types::{
     PyDate, PyDateAccess, PyDateTime, PyDelta, PyDeltaAccess, PyTime, PyTimeAccess, PyTuple,
     PyTzInfo, PyTzInfoAccess,
 };

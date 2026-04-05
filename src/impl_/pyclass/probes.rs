@@ -18,7 +18,7 @@ pub trait Probe: probe::Sealed {
     const VALUE: bool = false;
 }
 
-/// Seals `Probe` so that types outside PyForge cannot implement it.
+/// Seals `Probe` so that types outside ClaraX cannot implement it.
 mod probe {
     pub trait Sealed {}
 }

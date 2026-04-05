@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: Abdulwahed Mansour
-# Publishes all PyForge crates to crates.io in dependency order.
+# Publishes all ClaraX crates to crates.io in dependency order.
 #
 # Usage:
 #   ./publish.sh              # publish all crates
@@ -17,8 +17,8 @@ elif [ "$1" = "--from" ] && [ -n "$2" ]; then
     START_FROM="$2"
 fi
 
-CRATE_NAMES=("pyforge-build-config" "pyforge-ffi" "pyforge-macros-backend" "pyforge-macros" "pyforge" "pyforge-django")
-CRATE_DIRS=("pyforge-build-config" "pyforge-ffi" "pyforge-macros-backend" "pyforge-macros" "." "pyforge-django")
+CRATE_NAMES=("clarax-build-config" "clarax-ffi" "clarax-macros-backend" "clarax-macros" "clarax" "clarax-django")
+CRATE_DIRS=("clarax-build-config" "clarax-ffi" "clarax-macros-backend" "clarax-macros" "." "clarax-django")
 
 publish_crate() {
     local name=$1
@@ -43,14 +43,14 @@ publish_crate() {
     exit 1
 }
 
-echo "PyForge v0.1.0 — crates.io publish"
+echo "ClaraX v0.1.0 — crates.io publish"
 echo ""
 
 if [ -n "$DRY" ]; then
     echo "=== DRY RUN ==="
     cargo check --workspace
     echo ""
-    cargo package -p pyforge-build-config
+    cargo package -p clarax-build-config
     echo ""
     echo "Metadata check:"
     for i in "${!CRATE_NAMES[@]}"; do

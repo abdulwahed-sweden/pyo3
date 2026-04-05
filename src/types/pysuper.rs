@@ -6,7 +6,7 @@ use crate::{PyAny, PyResult};
 
 /// Represents a Python `super` object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PySuper>`][crate::Py] or [`Bound<'py, PySuper>`][Bound].
 #[repr(transparent)]
 pub struct PySuper(PyAny);
@@ -39,7 +39,7 @@ impl PySuper {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pyclass(subclass)]
     /// struct BaseClass {

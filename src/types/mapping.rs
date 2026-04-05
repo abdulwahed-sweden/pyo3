@@ -13,7 +13,7 @@ use crate::{ffi, Py, Python};
 
 /// Represents a reference to a Python object supporting the mapping protocol.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyMapping>`][crate::Py] or [`Bound<'py, PyMapping>`][Bound].
 ///
 /// For APIs available on mapping objects, see the [`PyMappingMethods`] trait which is implemented for

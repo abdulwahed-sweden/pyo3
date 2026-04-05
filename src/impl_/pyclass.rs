@@ -153,7 +153,7 @@ unsafe impl Sync for PyClassItems {}
 
 /// Implements the underlying functionality of `#[pyclass]`, assembled by various proc macros.
 ///
-/// Users are discouraged from implementing this trait manually; it is a PyForge implementation detail
+/// Users are discouraged from implementing this trait manually; it is a ClaraX implementation detail
 /// and may be changed at any time.
 pub trait PyClassImpl: Sized + 'static {
     /// Module which the class will be associated with.
@@ -1066,7 +1066,7 @@ impl<T> PyClassThreadChecker<T> for ThreadCheckerImpl {
         message = "pyclass `{Self}` cannot be subclassed",
         label = "required for `#[pyclass(extends={Self})]`",
         note = "`{Self}` must have `#[pyclass(subclass)]` to be eligible for subclassing",
-        note = "with the `abi3` feature enabled, PyForge does not support subclassing native types",
+        note = "with the `abi3` feature enabled, ClaraX does not support subclassing native types",
     )
 )]
 #[cfg_attr(
@@ -1282,8 +1282,8 @@ where
     label = "required by `#[pyo3(get)]` to create a readable property from a field of type `{Self}`",
     note = "implement `IntoPyObject` for `&{Self}` or `IntoPyObject + Clone` for `{Self}` to define the conversion"
 )]
-pub trait PyForgeGetField<'py>: IntoPyObject<'py> + Clone {}
-impl<'py, T> PyForgeGetField<'py> for T where T: IntoPyObject<'py> + Clone {}
+pub trait ClaraXGetField<'py>: IntoPyObject<'py> + Clone {}
+impl<'py, T> ClaraXGetField<'py> for T where T: IntoPyObject<'py> + Clone {}
 
 /// Base case attempts to use IntoPyObject + Clone
 impl<ClassT: PyClass, FieldT, const OFFSET: usize, const IMPLEMENTS_INTOPYOBJECT: bool>
@@ -1293,7 +1293,7 @@ impl<ClassT: PyClass, FieldT, const OFFSET: usize, const IMPLEMENTS_INTOPYOBJECT
     // The bound goes here rather than on the block so that this impl is always available
     // if no specialization is used instead
     where
-        for<'py> FieldT: PyForgeGetField<'py>,
+        for<'py> FieldT: ClaraXGetField<'py>,
     {
         PyMethodDefType::Getter(PyGetterDef {
             name,
@@ -1412,7 +1412,7 @@ impl<const IMPLEMENTS_INTOPYOBJECT: bool> ConvertField<false, IMPLEMENTS_INTOPYO
     #[inline]
     pub fn convert_field<'py, T>(obj: &T, py: Python<'py>) -> PyResult<Py<PyAny>>
     where
-        T: PyForgeGetField<'py>,
+        T: ClaraXGetField<'py>,
     {
         obj.clone().into_py_any(py)
     }

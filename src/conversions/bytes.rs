@@ -23,14 +23,14 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"bytes\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of bytes and PyForge.
+//! Note that you must use compatible versions of bytes and ClaraX.
 //!
 //! # Example
 //!
 //! Rust code to create functions which return `Bytes` or take `Bytes` as arguments:
 //!
 //! ```rust,no_run
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //! use bytes::Bytes;
 //!
 //! #[pyfunction]

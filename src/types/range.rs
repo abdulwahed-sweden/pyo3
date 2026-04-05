@@ -4,7 +4,7 @@ use crate::{ffi, Bound, PyAny, PyResult, PyTypeInfo, Python};
 
 /// Represents a Python `range`.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyRange>`][crate::Py] or [`Bound<'py, PyRange>`][Bound].
 ///
 /// For APIs available on `range` objects, see the [`PyRangeMethods`] trait which is implemented for

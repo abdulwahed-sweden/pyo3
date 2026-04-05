@@ -1,8 +1,8 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 pub mod path {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
     use std::path::{Path, PathBuf};
 
     #[pyfunction]

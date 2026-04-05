@@ -1,4 +1,4 @@
-use pyforge::{IntoPyObject, IntoPyObjectRef};
+use clarax::{IntoPyObject, IntoPyObjectRef};
 
 #[derive(IntoPyObject, IntoPyObjectRef)]
 struct InvalidIntoPyWithFn {
@@ -6,7 +6,7 @@ struct InvalidIntoPyWithFn {
     inner: String,
 }
 
-fn into(_a: String, _py: pyforge::Python<'_>) -> pyforge::PyResult<pyforge::Bound<'_, pyforge::PyAny>> {
+fn into(_a: String, _py: clarax::Python<'_>) -> clarax::PyResult<clarax::Bound<'_, clarax::PyAny>> {
     todo!()
 }
 

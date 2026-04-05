@@ -65,7 +65,7 @@ impl ModuleDef {
         doc: &'static CStr,
         slots: &'static PyModuleSlots,
     ) -> Self {
-        // This is only used in PyForge for append_to_inittab on Python 3.15 and newer.
+        // This is only used in ClaraX for append_to_inittab on Python 3.15 and newer.
         // There could also be other tools that need the legacy init hook.
         // Opaque PyObject builds won't be able to use this.
         #[allow(clippy::declare_interior_mutable_const)]
@@ -134,7 +134,7 @@ impl ModuleDef {
                 ) {
                     if initialized_interpreter != current_interpreter {
                         return Err(PyImportError::new_err(
-                            "PyForge modules do not yet support subinterpreters, see https://github.com/PyForge/pyo3/issues/576",
+                            "ClaraX modules do not yet support subinterpreters, see https://github.com/ClaraX/pyo3/issues/576",
                         ));
                     }
                 }
@@ -145,7 +145,7 @@ impl ModuleDef {
                 // done to guard against subinterpreters is fail if the module is initialized twice
                 if self.module.get(py).is_some() {
                     return Err(PyImportError::new_err(
-                        "PyForge modules compiled for CPython 3.8 or older may only be initialized once per interpreter process"
+                        "ClaraX modules compiled for CPython 3.8 or older may only be initialized once per interpreter process"
                     ));
                 }
             }

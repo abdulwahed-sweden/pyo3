@@ -1,7 +1,7 @@
 // This is a very fake example of how to check __getitem__ parameter and handle appropriately
-use pyforge::exceptions::PyTypeError;
-use pyforge::prelude::*;
-use pyforge::types::PySlice;
+use clarax::exceptions::PyTypeError;
+use clarax::prelude::*;
+use clarax::types::PySlice;
 
 #[derive(FromPyObject)]
 enum IntOrSlice<'py> {
@@ -77,7 +77,7 @@ impl ExampleContainer {
 
 #[pymodule(name = "getitem")]
 fn example(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    // ? -https://github.com/PyForge/maturin/issues/475
+    // ? -https://github.com/ClaraX/maturin/issues/475
     m.add_class::<ExampleContainer>()?;
     Ok(())
 }

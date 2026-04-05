@@ -1,14 +1,14 @@
 [project]
 requires-python = ">=3.11"
-name = "pyforge"
+name = "clarax"
 version = "0.3.0"
 description = "High-performance Rust-Python bindings for Django 5.x"
 authors = [{name = "Abdulwahed Mansour"}]
 license = {text = "MIT"}
 
 [project.urls]
-Homepage = "https://github.com/abdulwahed-sweden/pyforge"
-Repository = "https://github.com/abdulwahed-sweden/pyforge"
+Homepage = "https://github.com/abdulwahed-sweden/clarax"
+Repository = "https://github.com/abdulwahed-sweden/clarax"
 
 [tool.ruff.per-file-target-version]
 "*.pyi" = "py311"

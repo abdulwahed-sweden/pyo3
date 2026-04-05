@@ -43,7 +43,7 @@ pub trait WrapPyFunctionArg<'py, T>: wrap_pyfunctionarg::Sealed {
     fn wrap_pyfunction(self, function_def: &'static PyFunctionDef) -> PyResult<T>;
 }
 
-/// Seals `WrapPyFunctionArg` so that types outside PyForge cannot implement it.
+/// Seals `WrapPyFunctionArg` so that types outside ClaraX cannot implement it.
 mod wrap_pyfunctionarg {
     use crate::{types::PyModule, Borrowed, Bound, Python};
 

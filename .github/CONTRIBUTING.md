@@ -1,14 +1,14 @@
-# Contributing to PyForge
+# Contributing to ClaraX
 
-Thank you for your interest in contributing. PyForge is a Rust-accelerated
+Thank you for your interest in contributing. ClaraX is a Rust-accelerated
 Django integration library, so contributions can touch Rust, Python, or both.
 
 ## Development Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/abdulwahed-sweden/pyforge.git
-cd pyforge
+git clone https://github.com/abdulwahed-sweden/clarax.git
+cd clarax
 
 # Install Rust (if not already installed)
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -17,14 +17,14 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 python -m pip install maturin django djangorestframework pytest pytest-django
 
 # Build the native extension in development mode
-cd pyforge-django
+cd clarax-django
 maturin develop
 
 # Run Rust tests
 cargo test --workspace
 
 # Run Django integration tests
-cd pyforge-django
+cd clarax-django
 pytest tests/ -v
 ```
 
@@ -32,7 +32,7 @@ pytest tests/ -v
 
 ```bash
 # Rust micro-benchmarks
-cargo bench -p pyforge-django
+cargo bench -p clarax-django
 
 # Python comparison benchmarks
 python benchmarks/bench_serializer_comparison.py
@@ -65,7 +65,7 @@ Examples:
 ## Project Structure
 
 ```
-pyforge-django/
+clarax-django/
 ├── src/                    # Rust core
 │   ├── lib.rs              # #[pymodule] entry + ModelSchema #[pyclass]
 │   ├── model.rs            # Django _meta extraction + Python→Rust conversion
@@ -74,7 +74,7 @@ pyforge-django/
 │   ├── field_types.rs      # Django field type system
 │   ├── async_bridge.rs     # GIL-releasing wrappers
 │   └── error.rs            # Error types → Python exceptions
-├── django_pyforge/         # Python integration
+├── django_clarax/         # Python integration
 │   ├── __init__.py         # Re-exports from native extension
 │   ├── serializers.py      # RustSerializerMixin for DRF
 │   ├── validators.py       # Validation utilities
@@ -96,9 +96,9 @@ cp .env.example .env
 ./publish-pypi.sh --build
 
 # 3. Publish to PyPI
-./publish-pypi.sh all          # both pyforge-core and pyforge-django
-./publish-pypi.sh core         # pyforge-core only
-./publish-pypi.sh django       # pyforge-django only
+./publish-pypi.sh all          # both clarax-core and clarax-django
+./publish-pypi.sh core         # clarax-core only
+./publish-pypi.sh django       # clarax-django only
 
 # 4. Publish to crates.io (all 7 crates in dependency order)
 ./publish-crates.sh

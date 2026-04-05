@@ -1,17 +1,17 @@
-//! PyForge's interior mutability primitive.
+//! ClaraX's interior mutability primitive.
 //!
 //! Rust has strict aliasing rules - you can either have any number of immutable (shared) references or one mutable
 //! reference. Python's ownership model is the complete opposite of that - any Python object
 //! can be referenced any number of times, and mutation is allowed from any reference.
 //!
-//! PyForge deals with these differences by employing the [Interior Mutability]
-//! pattern. This requires that PyForge enforces the borrowing rules and it has two mechanisms for
+//! ClaraX deals with these differences by employing the [Interior Mutability]
+//! pattern. This requires that ClaraX enforces the borrowing rules and it has two mechanisms for
 //! doing so:
 //! - Statically it can enforce thread-safe access with the [`Python<'py>`](crate::Python) token.
 //!   All Rust code holding that token, or anything derived from it, can assume that they have
 //!   safe access to the Python interpreter's state. For this reason all the native Python objects
 //!   can be mutated through shared references.
-//! - However, methods and functions in Rust usually *do* need `&mut` references. While PyForge can
+//! - However, methods and functions in Rust usually *do* need `&mut` references. While ClaraX can
 //!   use the [`Python<'py>`](crate::Python) token to guarantee thread-safe access to them, it cannot
 //!   statically guarantee uniqueness of `&mut` references. As such those references have to be tracked
 //!   dynamically at runtime, using `PyCell` and the other types defined in this module. This works
@@ -23,7 +23,7 @@
 //! won't need to use `PyCell` directly:
 //!
 //! ```rust,no_run
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //!
 //! #[pyclass]
 //! struct Number {
@@ -42,7 +42,7 @@
 //! using `PyCell` under the hood:
 //!
 //! ```rust,ignore
-//! # use pyforge::prelude::*;
+//! # use clarax::prelude::*;
 //! # #[pyclass]
 //! # struct Number {
 //! #    inner: u32,
@@ -57,18 +57,18 @@
 //! #
 //! // The function which is exported to Python looks roughly like the following
 //! unsafe extern "C" fn __pymethod_increment__(
-//!     _slf: *mut pyforge::ffi::PyObject,
-//!     _args: *mut pyforge::ffi::PyObject,
-//! ) -> *mut pyforge::ffi::PyObject {
+//!     _slf: *mut clarax::ffi::PyObject,
+//!     _args: *mut clarax::ffi::PyObject,
+//! ) -> *mut clarax::ffi::PyObject {
 //!     use :: pyo3 as _pyo3;
-//!     _pyforge::impl_::trampoline::noargs(_slf, _args, |py, _slf| {
+//!     _clarax::impl_::trampoline::noargs(_slf, _args, |py, _slf| {
 //! #       #[allow(deprecated)]
 //!         let _cell = py
-//!             .from_borrowed_ptr::<_pyforge::PyAny>(_slf)
-//!             .cast::<_pyforge::PyCell<Number>>()?;
+//!             .from_borrowed_ptr::<_clarax::PyAny>(_slf)
+//!             .cast::<_clarax::PyCell<Number>>()?;
 //!         let mut _ref = _cell.try_borrow_mut()?;
 //!         let _slf: &mut Number = &mut *_ref;
-//!         _pyforge::impl_::callback::convert(py, Number::increment(_slf))
+//!         _clarax::impl_::callback::convert(py, Number::increment(_slf))
 //!     })
 //! }
 //! ```
@@ -78,7 +78,7 @@
 //!
 //! However, we *do* need `PyCell` if we want to call its methods from Rust:
 //! ```rust
-//! # use pyforge::prelude::*;
+//! # use clarax::prelude::*;
 //! #
 //! # #[pyclass]
 //! # struct Number {
@@ -118,7 +118,7 @@
 //! It is also necessary to use `PyCell` if you can receive mutable arguments that may overlap.
 //! Suppose the following function that swaps the values of two `Number`s:
 //! ```
-//! # use pyforge::prelude::*;
+//! # use clarax::prelude::*;
 //! # #[pyclass]
 //! # pub struct Number {
 //! #     inner: u32,
@@ -132,7 +132,7 @@
 //! #         let n = Py::new(py, Number{inner: 35}).unwrap();
 //! #         let n2 = n.clone_ref(py);
 //! #         assert!(n.is(&n2));
-//! #         let fun = pyforge::wrap_pyfunction!(swap_numbers, py).unwrap();
+//! #         let fun = clarax::wrap_pyfunction!(swap_numbers, py).unwrap();
 //! #         fun.call1((n, n2)).expect_err("Managed to create overlapping mutable references. Note: this is undefined behaviour.");
 //! #     });
 //! # }
@@ -150,7 +150,7 @@
 //! It is better to write that function like this:
 //! ```rust,ignore
 //! # #![allow(deprecated)]
-//! # use pyforge::prelude::*;
+//! # use clarax::prelude::*;
 //! # #[pyclass]
 //! # pub struct Number {
 //! #     inner: u32,
@@ -170,7 +170,7 @@
 //! #         let n = Py::new(py, Number{inner: 35}).unwrap();
 //! #         let n2 = n.clone_ref(py);
 //! #         assert!(n.is(&n2));
-//! #         let fun = pyforge::wrap_pyfunction!(swap_numbers, py).unwrap();
+//! #         let fun = clarax::wrap_pyfunction!(swap_numbers, py).unwrap();
 //! #         fun.call1((n, n2)).unwrap();
 //! #     });
 //! #
@@ -179,7 +179,7 @@
 //! #         let n = Py::new(py, Number{inner: 35}).unwrap();
 //! #         let n2 = Py::new(py, Number{inner: 42}).unwrap();
 //! #         assert!(!n.is(&n2));
-//! #         let fun = pyforge::wrap_pyfunction!(swap_numbers, py).unwrap();
+//! #         let fun = clarax::wrap_pyfunction!(swap_numbers, py).unwrap();
 //! #         fun.call1((&n, &n2)).unwrap();
 //! #         let n: u32 = n.borrow(py).inner;
 //! #         let n2: u32 = n2.borrow(py).inner;
@@ -190,7 +190,7 @@
 //! ```
 //! See the [guide] for more information.
 //!
-//! [guide]: https://github.com/abdulwahed-sweden/pyforge/latest/class.html#pycell-and-interior-mutability "PyCell and interior mutability"
+//! [guide]: https://github.com/abdulwahed-sweden/clarax/latest/class.html#pycell-and-interior-mutability "PyCell and interior mutability"
 //! [Interior Mutability]: https://doc.rust-lang.org/book/ch15-05-interior-mutability.html "RefCell<T> and the Interior Mutability Pattern - The Rust Programming Language"
 
 use crate::conversion::IntoPyObject;
@@ -219,7 +219,7 @@ use impl_::{PyClassBorrowChecker, PyClassObjectBaseLayout, PyClassObjectLayout};
 /// - you need to access the pointer of the [`Bound`], or
 /// - you want to get a super class.
 /// ```
-/// # use pyforge::prelude::*;
+/// # use clarax::prelude::*;
 /// #[pyclass(subclass)]
 /// struct Parent {
 ///     basename: &'static str,
@@ -239,7 +239,7 @@ use impl_::{PyClassBorrowChecker, PyClassObjectBaseLayout, PyClassObjectLayout};
 ///
 ///     fn format(slf: PyRef<'_, Self>) -> String {
 ///         // We can get *mut ffi::PyObject from PyRef
-///         let refcnt = unsafe { pyforge::ffi::Py_REFCNT(slf.as_ptr()) };
+///         let refcnt = unsafe { clarax::ffi::Py_REFCNT(slf.as_ptr()) };
 ///         // We can get &Self::BaseType by as_ref
 ///         let basename = slf.as_ref().basename;
 ///         format!("{}(base: {}, cnt: {})", slf.name, basename, refcnt)
@@ -247,7 +247,7 @@ use impl_::{PyClassBorrowChecker, PyClassObjectBaseLayout, PyClassObjectLayout};
 /// }
 /// # Python::attach(|py| {
 /// #     let sub = Py::new(py, Child::new()).unwrap();
-/// #     pyforge::py_run!(py, sub, "assert sub.format() == 'Caterpillar(base: Butterfly, cnt: 4)', sub.format()");
+/// #     clarax::py_run!(py, sub, "assert sub.format() == 'Caterpillar(base: Butterfly, cnt: 4)', sub.format()");
 /// # });
 /// ```
 ///
@@ -295,7 +295,7 @@ impl<'py, T: PyClass> PyRef<'py, T> {
     /// # Safety
     ///
     /// The reference is owned; when finished the caller should either transfer ownership
-    /// of the pointer or decrease the reference count (e.g. with [`pyforge::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
+    /// of the pointer or decrease the reference count (e.g. with [`clarax::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
     #[inline]
     pub fn into_ptr(self) -> *mut ffi::PyObject {
         self.inner.clone().into_ptr()
@@ -330,7 +330,7 @@ where
     ///
     /// # Examples
     /// ```
-    /// # use pyforge::prelude::*;
+    /// # use clarax::prelude::*;
     /// #[pyclass(subclass)]
     /// struct Base1 {
     ///     name1: &'static str,
@@ -362,7 +362,7 @@ where
     /// }
     /// # Python::attach(|py| {
     /// #     let sub = Py::new(py, Sub::new()).unwrap();
-    /// #     pyforge::py_run!(py, sub, "assert sub.name() == 'base1 base2 sub'")
+    /// #     clarax::py_run!(py, sub, "assert sub.name() == 'base1 base2 sub'")
     /// # });
     /// ```
     pub fn into_super(self) -> PyRef<'p, T::BaseType> {
@@ -410,7 +410,7 @@ where
     ///
     /// # Examples
     /// ```
-    /// # use pyforge::prelude::*;
+    /// # use clarax::prelude::*;
     /// #[pyclass(subclass)]
     /// struct Base {
     ///     base_name: &'static str,
@@ -442,7 +442,7 @@ where
     /// }
     /// # Python::attach(|py| {
     /// #     let sub = Py::new(py, Sub::new()).unwrap();
-    /// #     pyforge::py_run!(py, sub, "assert sub.format_name_lengths() == '9 8'")
+    /// #     clarax::py_run!(py, sub, "assert sub.format_name_lengths() == '9 8'")
     /// # });
     /// ```
     pub fn as_super(&self) -> &PyRef<'p, T::BaseType> {
@@ -570,7 +570,7 @@ impl<'py, T: PyClass<Frozen = False>> PyRefMut<'py, T> {
     /// # Safety
     ///
     /// The reference is owned; when finished the caller should either transfer ownership
-    /// of the pointer or decrease the reference count (e.g. with [`pyforge::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
+    /// of the pointer or decrease the reference count (e.g. with [`clarax::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
     #[inline]
     pub fn into_ptr(self) -> *mut ffi::PyObject {
         self.inner.clone().into_ptr()

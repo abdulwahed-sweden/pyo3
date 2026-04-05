@@ -65,8 +65,8 @@ impl PyWeakrefReference {
         all(feature = "macros", not(all(Py_LIMITED_API, not(Py_3_9)))),
         doc = "```rust"
     )]
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::PyWeakrefReference;
+    /// use clarax::prelude::*;
+    /// use clarax::types::PyWeakrefReference;
     ///
     /// #[pyclass(weakref)]
     /// struct Foo { /* fields omitted */ }
@@ -113,9 +113,9 @@ impl PyWeakrefReference {
         all(feature = "macros", not(all(Py_LIMITED_API, not(Py_3_9)))),
         doc = "```rust"
     )]
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::PyWeakrefReference;
-    /// use pyforge::ffi::c_str;
+    /// use clarax::prelude::*;
+    /// use clarax::types::PyWeakrefReference;
+    /// use clarax::ffi::c_str;
     ///
     /// #[pyclass(weakref)]
     /// struct Foo { /* fields omitted */ }

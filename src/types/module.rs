@@ -18,7 +18,7 @@ use std::str;
 
 /// Represents a Python [`module`][1] object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyModule>`][crate::Py] or [`Bound<'py, PyModule>`][Bound].
 ///
 /// For APIs available on `module` objects, see the [`PyModuleMethods`] trait which is implemented for
@@ -41,7 +41,7 @@ impl PyModule {
     /// # Examples
     ///
     /// ``` rust
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -60,7 +60,7 @@ impl PyModule {
                 .cast_into_unchecked()
         };
 
-        // By default, PyForge assumes modules do not use the GIL for thread safety.
+        // By default, ClaraX assumes modules do not use the GIL for thread safety.
         module.gil_used(false)?;
 
         Ok(module)
@@ -72,7 +72,7 @@ impl PyModule {
     ///
     /// ```no_run
     /// # fn main() {
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// Python::attach(|py| {
     ///     let module = PyModule::import(py, "antigravity").expect("No flying for you.");
@@ -123,8 +123,8 @@ impl PyModule {
     /// # Example: bundle in a file at compile time with [`include_str!`][std::include_str]:
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::ffi::c_str;
+    /// use clarax::prelude::*;
+    /// use clarax::ffi::c_str;
     ///
     /// # fn main() -> PyResult<()> {
     /// // This path is resolved relative to this file.
@@ -141,8 +141,8 @@ impl PyModule {
     /// # Example: Load a file at runtime with [`std::fs::read_to_string`].
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::ffi::c_str;
+    /// use clarax::prelude::*;
+    /// use clarax::ffi::c_str;
     /// use std::ffi::CString;
     ///
     /// # fn main() -> PyResult<()> {
@@ -218,7 +218,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pymodule]
     /// fn my_module(module: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -254,7 +254,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pyclass]
     /// struct Foo { /* fields omitted */ }
@@ -282,7 +282,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// make an *instance* of `Foo` (or *get* one for that matter, as we haven't exported
     /// anything that can return instances of `Foo`).
     ///
-    #[doc = concat!("[1]: https://github.com/abdulwahed-sweden/pyforge/v", env!("CARGO_PKG_VERSION"), "/class.html#constructor")]
+    #[doc = concat!("[1]: https://github.com/abdulwahed-sweden/clarax/v", env!("CARGO_PKG_VERSION"), "/class.html#constructor")]
     fn add_class<T>(&self) -> PyResult<()>
     where
         T: PyClass;
@@ -307,7 +307,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pymodule]
     /// fn my_module(py: Python<'_>, module: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -333,8 +333,8 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// super_useful_constant is important
     /// ```
     ///
-    /// [1]: https://github.com/PyForge/pyo3/issues/759
-    /// [2]: https://github.com/PyForge/pyo3/issues/1517#issuecomment-808664021
+    /// [1]: https://github.com/ClaraX/pyo3/issues/759
+    /// [2]: https://github.com/ClaraX/pyo3/issues/1517#issuecomment-808664021
     fn add_submodule(&self, module: &Bound<'_, PyModule>) -> PyResult<()>;
 
     /// Add a function to a module.
@@ -343,7 +343,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// to wrap a function annotated with [`#[pyfunction]`][1].
     ///
     /// ```rust,no_run
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pyfunction]
     /// fn say_hello() {
@@ -375,7 +375,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
 
     /// Declare whether or not this module supports running with the GIL disabled
     ///
-    /// Since PyForge 0.28, PyForge defaults to assuming that modules do not require the
+    /// Since ClaraX 0.28, ClaraX defaults to assuming that modules do not require the
     /// GIL for thread safety. Call this function with `true` to opt-out of supporting
     /// free-threaded Python.
     ///
@@ -386,7 +386,7 @@ pub trait PyModuleMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pymodule]
     /// fn my_module(py: Python<'_>, module: &Bound<'_, PyModule>) -> PyResult<()> {

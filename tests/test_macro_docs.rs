@@ -1,7 +1,7 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
-use pyforge::types::IntoPyDict;
+use clarax::prelude::*;
+use clarax::types::IntoPyDict;
 
 #[macro_use]
 mod test_utils;

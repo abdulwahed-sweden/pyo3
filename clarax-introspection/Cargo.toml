@@ -1,0 +1,21 @@
+[package]
+name = "clarax-introspection"
+version = "0.3.0"
+description = "Introspect dynamic libraries built with ClaraX to extract Python type metadata"
+authors = ["Abdulwahed Mansour"]
+homepage = "https://github.com/abdulwahed-sweden/clarax"
+repository = "https://github.com/abdulwahed-sweden/clarax"
+license = "MIT"
+edition = "2021"
+
+[dependencies]
+anyhow = "1"
+goblin = ">=0.9, <0.11"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+tempfile = "3.12.0"
+
+[lints]
+workspace = true

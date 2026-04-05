@@ -6,9 +6,9 @@ Once defined, the function needs to be added to a [module](./module.md).
 The following example defines a function called `double` in a Python module called `my_extension`:
 
 ```rust,no_run
-#[pyforge::pymodule]
+#[clarax::pymodule]
 mod my_extension {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     #[pyfunction]
     fn double(x: usize) -> usize {
@@ -21,11 +21,11 @@ This chapter of the guide explains full usage of the `#[pyfunction]` attribute.
 In this first section, the following topics are covered:
 
 - [Function options](#function-options)
-  - [`#[pyforge(name = "...")]`](#name)
-  - [`#[pyforge(signature = (...))]`](#signature)
-  - [`#[pyforge(text_signature = "...")]`](#text_signature)
-  - [`#[pyforge(pass_module)]`](#pass_module)
-  - [`#[pyforge(warn(message = "...", category = ...))]`](#warn)
+  - [`#[clarax(name = "...")]`](#name)
+  - [`#[clarax(signature = (...))]`](#signature)
+  - [`#[clarax(text_signature = "...")]`](#text_signature)
+  - [`#[clarax(pass_module)]`](#pass_module)
+  - [`#[clarax(warn(message = "...", category = ...))]`](#warn)
 - [Per-argument options](#per-argument-options)
 - [Advanced function patterns](#advanced-function-patterns)
 
@@ -36,61 +36,61 @@ There are also additional sections on the following topics:
 
 ## Function options
 
-The `#[pyforge]` attribute can be used to modify properties of the generated Python function.
+The `#[clarax]` attribute can be used to modify properties of the generated Python function.
 It can take any combination of the following options:
 
-- <a id="name"></a> `#[pyforge(name = "...")]`
+- <a id="name"></a> `#[clarax(name = "...")]`
 
     Overrides the name exposed to Python.
 
     In the following example, the Rust function `no_args_py` will be added to the Python module `module_with_functions` as the Python function `no_args`:
 
     ```rust
-    # use pyforge::prelude::*;
-    #[pyforge::pymodule]
+    # use clarax::prelude::*;
+    #[clarax::pymodule]
     mod module_with_functions {
-        use pyforge::prelude::*;
+        use clarax::prelude::*;
 
         #[pyfunction]
-        #[pyforge(name = "no_args")]
+        #[clarax(name = "no_args")]
         fn no_args_py() -> usize {
             42
         }
     }
 
     # Python::attach(|py| {
-    #     let m = pyforge::wrap_pymodule!(module_with_functions)(py);
+    #     let m = clarax::wrap_pymodule!(module_with_functions)(py);
     #     assert!(m.getattr(py, "no_args").is_ok());
     #     assert!(m.getattr(py, "no_args_py").is_err());
     # });
     ```
 
-- <a id="signature"></a> `#[pyforge(signature = (...))]`
+- <a id="signature"></a> `#[clarax(signature = (...))]`
 
     Defines the function signature in Python.
     See [Function Signatures](./function/signature.md).
 
-- <a id="text_signature"></a> `#[pyforge(text_signature = "...")]`
+- <a id="text_signature"></a> `#[clarax(text_signature = "...")]`
 
-    Overrides the PyForge-generated function signature visible in Python tooling (such as via [`inspect.signature`]).
+    Overrides the ClaraX-generated function signature visible in Python tooling (such as via [`inspect.signature`]).
     See the [corresponding topic in the Function Signatures subchapter](./function/signature.md#making-the-function-signature-available-to-python).
 
-- <a id="pass_module" ></a> `#[pyforge(pass_module)]`
+- <a id="pass_module" ></a> `#[clarax(pass_module)]`
 
-    Set this option to make PyForge pass the containing module as the first argument to the function.
+    Set this option to make ClaraX pass the containing module as the first argument to the function.
     It is then possible to use the module in the function body.
     The first argument **must** be of type `&Bound<'_, PyModule>`, `Bound<'_, PyModule>`, or `Py<PyModule>`.
 
     The following example creates a function `pyfunction_with_module` which returns the containing module's name (i.e. `module_with_fn`):
 
     ```rust,no_run
-    #[pyforge::pymodule]
+    #[clarax::pymodule]
     mod module_with_fn {
-        use pyforge::prelude::*;
-        use pyforge::types::PyString;
+        use clarax::prelude::*;
+        use clarax::types::PyString;
 
         #[pyfunction]
-        #[pyforge(pass_module)]
+        #[clarax(pass_module)]
         fn pyfunction_with_module<'py>(
             module: &Bound<'py, PyModule>,
         ) -> PyResult<Bound<'py, PyString>> {
@@ -99,7 +99,7 @@ It can take any combination of the following options:
     }
     ```
 
-- <a id="warn"></a> `#[pyforge(warn(message = "...", category = ...))]`
+- <a id="warn"></a> `#[clarax(warn(message = "...", category = ...))]`
 
     This option is used to display a warning when the function is used in Python.
     It is equivalent to [`warnings.warn(message, category)`](https://docs.python.org/3/library/warnings.html#warnings.warn).
@@ -108,32 +108,32 @@ It can take any combination of the following options:
 
     > Note: when used with `#[pymethods]`, this attribute does not work with `#[classattr]` nor `__traverse__` magic method.
 
-    The following are examples of using the `#[pyforge(warn)]` attribute:
+    The following are examples of using the `#[clarax(warn)]` attribute:
 
     ```rust
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     #[pymodule]
     mod raising_warning_fn {
-        use pyforge::prelude::pyfunction;
-        use pyforge::exceptions::PyFutureWarning;
+        use clarax::prelude::pyfunction;
+        use clarax::exceptions::PyFutureWarning;
 
         #[pyfunction]
-        #[pyforge(warn(message = "This is a warning message"))]
+        #[clarax(warn(message = "This is a warning message"))]
         fn function_with_warning() -> usize {
             42
         }
 
         #[pyfunction]
-        #[pyforge(warn(message = "This function is warning with FutureWarning", category = PyFutureWarning))]
+        #[clarax(warn(message = "This function is warning with FutureWarning", category = PyFutureWarning))]
         fn function_with_warning_and_custom_category() -> usize {
             42
         }
     }
 
-    # use pyforge::exceptions::{PyFutureWarning, PyUserWarning};
-    # use pyforge::types::{IntoPyDict, PyList};
-    # use pyforge::PyTypeInfo;
+    # use clarax::exceptions::{PyFutureWarning, PyUserWarning};
+    # use clarax::types::{IntoPyDict, PyList};
+    # use clarax::PyTypeInfo;
     #
     # fn catch_warning(py: Python<'_>, f: impl FnOnce(&Bound<'_, PyList>) -> ()) -> PyResult<()> {
     #     let warnings = py.import("warnings")?;
@@ -171,7 +171,7 @@ It can take any combination of the following options:
     #     assert_warnings!(
     #         py,
     #         {
-    #             let m = pyforge::wrap_pymodule!(raising_warning_fn)(py);
+    #             let m = clarax::wrap_pymodule!(raising_warning_fn)(py);
     #             let f1 = m.getattr(py, "function_with_warning").unwrap();
     #             let f2 = m.getattr(py, "function_with_warning_and_custom_category").unwrap();
     #             f1.call0(py).unwrap();
@@ -207,10 +207,10 @@ It can take any combination of the following options:
 
 ## Per-argument options
 
-The `#[pyforge]` attribute can be used on individual arguments to modify properties of them in the generated function.
+The `#[clarax]` attribute can be used on individual arguments to modify properties of them in the generated function.
 It can take any combination of the following options:
 
-- <a id="from_py_with"></a> `#[pyforge(from_py_with = ...)]`
+- <a id="from_py_with"></a> `#[clarax(from_py_with = ...)]`
 
     Set this on an option to specify a custom function to convert the function argument from Python to the desired Rust type, instead of using the default `FromPyObject` extraction.
     The function signature must be `fn(&Bound<'_, PyAny>) -> PyResult<T>` where `T` is the Rust type of the argument.
@@ -218,19 +218,19 @@ It can take any combination of the following options:
     The following example uses `from_py_with` to convert the input Python object to its length:
 
     ```rust
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     fn get_length(obj: &Bound<'_, PyAny>) -> PyResult<usize> {
         obj.len()
     }
 
     #[pyfunction]
-    fn object_length(#[pyforge(from_py_with = get_length)] argument: usize) -> usize {
+    fn object_length(#[clarax(from_py_with = get_length)] argument: usize) -> usize {
         argument
     }
 
     # Python::attach(|py| {
-    #     let f = pyforge::wrap_pyfunction!(object_length)(py).unwrap();
+    #     let f = clarax::wrap_pyfunction!(object_length)(py).unwrap();
     #     assert_eq!(f.call1((vec![1, 2, 3],)).unwrap().extract::<usize>().unwrap(), 3);
     # });
     ```
@@ -257,16 +257,16 @@ The ways to convert a Rust function into a Python object vary depending on the f
 
 ### Accessing the FFI functions
 
-In order to make Rust functions callable from Python, PyForge generates an `extern "C"` function whose exact signature depends on the Rust signature. (PyForge chooses the optimal Python argument passing convention.) It then embeds the call to the Rust function inside this FFI-wrapper function.
+In order to make Rust functions callable from Python, ClaraX generates an `extern "C"` function whose exact signature depends on the Rust signature. (ClaraX chooses the optimal Python argument passing convention.) It then embeds the call to the Rust function inside this FFI-wrapper function.
 This wrapper handles extraction of the regular arguments and the keyword arguments from the input `PyObject`s.
 
 The `wrap_pyfunction` macro can be used to directly get a `Bound<PyCFunction>` given a `#[pyfunction]` and a `Bound<PyModule>`: `wrap_pyfunction!(rust_fun, module)`.
 
-[`Bound<'_, PyAny>::is_callable`]: {{#PYO3_DOCS_URL}}/pyforge/prelude/trait.PyAnyMethods.html#tymethod.is_callable
-[`Bound<'_, PyAny>::call`]: {{#PYO3_DOCS_URL}}/pyforge/prelude/trait.PyAnyMethods.html#tymethod.call
-[`Bound<'_, PyAny>::call0`]: {{#PYO3_DOCS_URL}}/pyforge/prelude/trait.PyAnyMethods.html#tymethod.call0
-[`Bound<'_, PyAny>::call1`]: {{#PYO3_DOCS_URL}}/pyforge/prelude/trait.PyAnyMethods.html#tymethod.call1
-[`wrap_pyfunction!`]: {{#PYO3_DOCS_URL}}/pyforge/macro.wrap_pyfunction.html
-[`PyFunction`]: {{#PYO3_DOCS_URL}}/pyforge/types/struct.PyFunction.html
-[`PyCFunction`]: {{#PYO3_DOCS_URL}}/pyforge/types/struct.PyCFunction.html
+[`Bound<'_, PyAny>::is_callable`]: {{#PYO3_DOCS_URL}}/clarax/prelude/trait.PyAnyMethods.html#tymethod.is_callable
+[`Bound<'_, PyAny>::call`]: {{#PYO3_DOCS_URL}}/clarax/prelude/trait.PyAnyMethods.html#tymethod.call
+[`Bound<'_, PyAny>::call0`]: {{#PYO3_DOCS_URL}}/clarax/prelude/trait.PyAnyMethods.html#tymethod.call0
+[`Bound<'_, PyAny>::call1`]: {{#PYO3_DOCS_URL}}/clarax/prelude/trait.PyAnyMethods.html#tymethod.call1
+[`wrap_pyfunction!`]: {{#PYO3_DOCS_URL}}/clarax/macro.wrap_pyfunction.html
+[`PyFunction`]: {{#PYO3_DOCS_URL}}/clarax/types/struct.PyFunction.html
+[`PyCFunction`]: {{#PYO3_DOCS_URL}}/clarax/types/struct.PyCFunction.html
 [`inspect.signature`]: https://docs.python.org/3/library/inspect.html#inspect.signature

@@ -1,4 +1,4 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[doc = "This \0 contains a nul byte!"]
 #[pyclass]

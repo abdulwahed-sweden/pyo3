@@ -13,7 +13,7 @@ use std::ffi::CStr;
 
 /// Represents a Python code object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyCode>`][crate::Py] or [`Bound<'py, PyCode>`][crate::Bound].
 #[repr(transparent)]
 pub struct PyCode(PyAny);
@@ -125,7 +125,7 @@ impl<'py> PyCodeMethods<'py> for Bound<'py, PyCode> {
         //
         // See also:
         // - https://github.com/python/cpython/pull/24564 (the same fix in CPython 3.10)
-        // - https://github.com/PyForge/pyo3/issues/3370
+        // - https://github.com/ClaraX/pyo3/issues/3370
         let builtins_s = crate::intern!(self.py(), "__builtins__");
         let has_builtins = globals.contains(builtins_s)?;
         if !has_builtins {

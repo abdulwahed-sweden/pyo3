@@ -4,17 +4,17 @@
 use std::collections::HashMap;
 
 #[cfg(not(Py_LIMITED_API))]
-use pyforge::buffer::PyBuffer;
+use clarax::buffer::PyBuffer;
 #[cfg(any(not(Py_LIMITED_API), Py_3_12))]
-use pyforge::exceptions::PyWarning;
-use pyforge::exceptions::{PyFutureWarning, PyUserWarning};
-use pyforge::prelude::*;
+use clarax::exceptions::PyWarning;
+use clarax::exceptions::{PyFutureWarning, PyUserWarning};
+use clarax::prelude::*;
 #[cfg(not(Py_LIMITED_API))]
-use pyforge::types::PyDateTime;
+use clarax::types::PyDateTime;
 #[cfg(not(Py_LIMITED_API))]
-use pyforge::types::PyFunction;
-use pyforge::types::{self, PyCFunction};
-use pyforge_macros::pyclass;
+use clarax::types::PyFunction;
+use clarax::types::{self, PyCFunction};
+use clarax_macros::pyclass;
 
 mod test_utils;
 
@@ -50,7 +50,7 @@ fn test_optional_bool() {
 
 #[test]
 fn test_trailing_optional_no_signature() {
-    // Since PyForge 0.24, trailing optional arguments are treated like any other required argument
+    // Since ClaraX 0.24, trailing optional arguments are treated like any other required argument
     // (previously would get an implicit default of `None`)
 
     #[pyfunction]
@@ -142,7 +142,7 @@ f(a, b)
             PyBufferError
         );
 
-        pyforge::py_run!(
+        clarax::py_run!(
             py,
             f,
             r#"
@@ -175,7 +175,7 @@ fn test_functions_with_function_args() {
         let py_cfunc_arg = wrap_pyfunction!(function_with_pycfunction_arg)(py).unwrap();
         let bool_to_string = wrap_pyfunction!(optional_bool)(py).unwrap();
 
-        pyforge::py_run!(
+        clarax::py_run!(
             py,
             py_cfunc_arg
             bool_to_string,
@@ -188,7 +188,7 @@ fn test_functions_with_function_args() {
         {
             let py_func_arg = wrap_pyfunction!(function_with_pyfunction_arg)(py).unwrap();
 
-            pyforge::py_run!(
+            clarax::py_run!(
                 py,
                 py_func_arg,
                 r#"
@@ -222,7 +222,7 @@ fn test_function_with_custom_conversion() {
     Python::attach(|py| {
         let custom_conv_func = wrap_pyfunction!(function_with_custom_conversion)(py).unwrap();
 
-        pyforge::py_run!(
+        clarax::py_run!(
             py,
             custom_conv_func,
             r#"
@@ -429,7 +429,7 @@ fn extract_traceback(py: Python<'_>, mut error: PyErr) -> String {
 
 #[test]
 fn test_pycfunction_new() {
-    use pyforge::ffi;
+    use clarax::ffi;
 
     Python::attach(|py| {
         unsafe extern "C" fn c_fn(
@@ -459,7 +459,7 @@ fn test_pycfunction_new() {
 
 #[test]
 fn test_pycfunction_new_with_keywords() {
-    use pyforge::ffi;
+    use clarax::ffi;
     use std::ffi::c_long;
     use std::ptr;
 
@@ -584,7 +584,7 @@ fn test_closure_counter() {
 #[test]
 fn use_pyfunction() {
     mod function_in_module {
-        use pyforge::prelude::*;
+        use clarax::prelude::*;
 
         #[pyfunction]
         pub fn foo(x: i32) -> i32 {
@@ -643,7 +643,7 @@ fn test_some_wrap_arguments() {
     // Option<T> arguments get special treatment in pyfunction default values where it's
     // valid to pass the inner type without wrapping in `Some()`.
     //
-    // See also https://github.com/PyForge/pyo3/issues/3460
+    // See also https://github.com/ClaraX/pyo3/issues/3460
     const NONE: Option<u8> = None;
     #[pyfunction(signature = (a = 1, b = Some(2), c = None, d = NONE))]
     fn some_wrap_arguments(
@@ -700,7 +700,7 @@ fn test_pyfunction_raw_ident() {
     }
 
     Python::attach(|py| {
-        let m = pyforge::wrap_pymodule!(m)(py);
+        let m = clarax::wrap_pymodule!(m)(py);
         py_assert!(py, m, "m.struct()");
         py_assert!(py, m, "m.enum()");
     })
@@ -746,7 +746,7 @@ fn test_pyfunction_warn() {
     );
 
     #[pyfunction]
-    #[pyo3(warn(message = "TPW: custom deprecated category", category = pyforge::exceptions::PyDeprecationWarning))]
+    #[pyo3(warn(message = "TPW: custom deprecated category", category = clarax::exceptions::PyDeprecationWarning))]
     fn function_with_warning_with_custom_category() {}
 
     py_expect_warning_for_fn!(
@@ -754,7 +754,7 @@ fn test_pyfunction_warn() {
         f,
         [(
             "TPW: custom deprecated category",
-            pyforge::exceptions::PyDeprecationWarning
+            clarax::exceptions::PyDeprecationWarning
         )]
     );
 

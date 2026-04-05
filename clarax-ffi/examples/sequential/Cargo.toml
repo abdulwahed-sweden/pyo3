@@ -1,0 +1,17 @@
+[package]
+name = "sequential"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.83"
+
+[lib]
+name = "sequential"
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+clarax-ffi = { path = "../../" }
+
+[build-dependencies]
+clarax-build-config = { path = "../../../clarax-build-config" }
+
+[workspace]

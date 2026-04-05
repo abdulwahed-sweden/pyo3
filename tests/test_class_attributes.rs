@@ -1,7 +1,7 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
-use pyforge::py_run;
+use clarax::prelude::*;
+use clarax::py_run;
 
 mod test_utils;
 
@@ -153,7 +153,7 @@ fn recursive_class_attributes() {
 #[test]
 #[cfg(panic = "unwind")]
 fn test_fallible_class_attribute() {
-    use pyforge::exceptions::PyValueError;
+    use clarax::exceptions::PyValueError;
     use test_utils::UnraisableCapture;
 
     #[pyclass]
@@ -218,7 +218,7 @@ impl StructWithRenamedFields {
 
 #[test]
 fn test_renaming_all_struct_fields() {
-    use pyforge::types::PyBool;
+    use clarax::types::PyBool;
 
     Python::attach(|py| {
         let struct_class = py.get_type::<StructWithRenamedFields>();
@@ -247,7 +247,7 @@ fn new_impl() {
     Python::attach(|py| {
         // python should be able to do AutoNewCls(1, "two", 3.0)
         let cls = py.get_type::<AutoNewCls>();
-        pyforge::py_run!(
+        clarax::py_run!(
             py,
             cls,
             "inst = cls(1, 'two', 3.0); assert inst.a == 1; assert inst.b == 'two'; assert inst.c == 3.0"
@@ -263,7 +263,7 @@ fn new_impl_tuple_struct() {
     Python::attach(|py| {
         // python should be able to do AutoNewCls(1, "two", 3.0)
         let cls = py.get_type::<Point2d>();
-        pyforge::py_run!(
+        clarax::py_run!(
             py,
             cls,
             "inst = cls(0.2, 0.3); assert inst.first == 0.2; assert inst.second == 0.3"
@@ -287,7 +287,7 @@ macro_rules! test_case {
         }
         #[test]
         fn $test_name() {
-            //use pyforge::types::PyInt;
+            //use clarax::types::PyInt;
 
             Python::attach(|py| {
                 let struct_class = py.get_type::<$struct_name>();

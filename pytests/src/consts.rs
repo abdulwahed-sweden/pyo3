@@ -1,8 +1,8 @@
-use pyforge::pymodule;
+use clarax::pymodule;
 
 #[pymodule]
 pub mod consts {
-    use pyforge::{pyclass, pymethods};
+    use clarax::{pyclass, pymethods};
 
     /// Exports PI constant as part of the module
     #[pymodule_export]

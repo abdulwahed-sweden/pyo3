@@ -20,7 +20,7 @@ use crate::{
 /// (Function argument extraction borrows input arguments.)
 type PyArg<'py> = Borrowed<'py, 'py, PyAny>;
 
-/// Seals `PyFunctionArgument` so that types outside PyForge cannot implement it.
+/// Seals `PyFunctionArgument` so that types outside ClaraX cannot implement it.
 ///
 /// The public API is `FromPyObject`.
 mod function_argument {
@@ -39,7 +39,7 @@ mod function_argument {
     impl<T: PyClass<Frozen = False>> Sealed<false> for &'_ mut T {}
 }
 
-/// A trait which is used to help PyForge macros extract function arguments.
+/// A trait which is used to help ClaraX macros extract function arguments.
 ///
 /// `#[pyclass]` structs need to extract as `PyRef<T>` and `PyRefMut<T>`
 /// wrappers rather than extracting `&T` and `&mut T` directly. The `Holder` type is used
@@ -150,7 +150,7 @@ impl<'a, 'holder, 'py> PyFunctionArgument<'a, 'holder, 'py, false> for &'holder 
     }
 }
 
-/// Seals `FunctionArgumentHolder` so that types outside PyForge cannot implement it.
+/// Seals `FunctionArgumentHolder` so that types outside ClaraX cannot implement it.
 mod function_argument_holder {
     pub trait Sealed {}
 
@@ -216,7 +216,7 @@ pub fn extract_pyclass_ref_mut<'a, 'holder, T: PyClass<Frozen = False>>(
     Ok(&mut *holder.insert(PyClassGuardMut::try_borrow_mut_from_borrowed(obj.cast()?)?))
 }
 
-/// The standard implementation of how PyForge extracts a `#[pyfunction]` or `#[pymethod]` function argument.
+/// The standard implementation of how ClaraX extracts a `#[pyfunction]` or `#[pymethod]` function argument.
 pub fn extract_argument<'a, 'holder, 'py, T, const IMPLEMENTS_FROMPYOBJECT: bool>(
     obj: Borrowed<'a, 'py, PyAny>,
     holder: &'holder mut T::Holder,
@@ -320,7 +320,7 @@ pub unsafe fn unwrap_required_argument_bound<'a, 'py>(
     }
 }
 
-/// Cast a raw `*mut ffi::PyObject` to a `PyArg`. This is used to access safer PyForge
+/// Cast a raw `*mut ffi::PyObject` to a `PyArg`. This is used to access safer ClaraX
 /// APIs with the assumption that the borrowed argument is valid for the lifetime `'py`.
 ///
 /// This has the effect of limiting the lifetime of function arguments to `'py`, i.e.
@@ -338,7 +338,7 @@ pub unsafe fn cast_function_argument<'py>(
     unsafe { Borrowed::from_ptr_unchecked(py, raw_arg) }
 }
 
-/// Cast a `NonNull<ffi::PyObject>` to a `PyArg`. This is used to access safer PyForge
+/// Cast a `NonNull<ffi::PyObject>` to a `PyArg`. This is used to access safer ClaraX
 /// APIs with the assumption that the borrowed argument is valid for the lifetime `'py`.
 ///
 /// This has the effect of limiting the lifetime of function arguments to `'py`, i.e.
@@ -780,7 +780,7 @@ impl FunctionDescription {
     }
 }
 
-/// Seals `VarargsHandler` so that types outside PyForge cannot implement it.
+/// Seals `VarargsHandler` so that types outside ClaraX cannot implement it.
 mod varargs_handler {
     use crate::impl_::extract_argument::{NoVarargs, TupleVarargs};
 
@@ -868,7 +868,7 @@ impl<'py> VarargsHandler<'py> for TupleVarargs {
     }
 }
 
-/// Seals `VarkeywordsHandler` so that types outside PyForge cannot implement it.
+/// Seals `VarkeywordsHandler` so that types outside ClaraX cannot implement it.
 mod varkeywords_halder {
     use crate::impl_::extract_argument::{DictVarkeywords, NoVarkeywords};
 

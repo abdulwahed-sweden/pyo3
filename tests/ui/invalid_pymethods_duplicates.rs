@@ -1,7 +1,7 @@
 //! These tests are located in a separate file because they cause conflicting implementation
 //! errors, which means other errors such as typechecking errors are not reported.
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyclass]
 struct TwoNew {}

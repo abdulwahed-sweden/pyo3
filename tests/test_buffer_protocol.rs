@@ -2,11 +2,11 @@
 #![cfg(any(not(Py_LIMITED_API), Py_3_11))]
 #![warn(unsafe_op_in_unsafe_fn)]
 
-use pyforge::buffer::PyBuffer;
-use pyforge::exceptions::PyBufferError;
-use pyforge::ffi;
-use pyforge::prelude::*;
-use pyforge::types::IntoPyDict;
+use clarax::buffer::PyBuffer;
+use clarax::exceptions::PyBufferError;
+use clarax::ffi;
+use clarax::prelude::*;
+use clarax::types::IntoPyDict;
 use std::ffi::CString;
 use std::ffi::{c_int, c_void};
 use std::ptr;
@@ -96,7 +96,7 @@ fn test_buffer_referenced() {
 
 #[test]
 fn test_releasebuffer_unraisable_error() {
-    use pyforge::exceptions::PyValueError;
+    use clarax::exceptions::PyValueError;
     use test_utils::UnraisableCapture;
 
     #[pyclass]

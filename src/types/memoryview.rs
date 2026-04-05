@@ -5,7 +5,7 @@ use crate::{ffi, Bound, PyAny};
 
 /// Represents a Python `memoryview`.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyMemoryView>`][crate::Py] or [`Bound<'py, PyMemoryView>`][Bound].
 #[repr(transparent)]
 pub struct PyMemoryView(PyAny);

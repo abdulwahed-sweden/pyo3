@@ -1,7 +1,7 @@
 #![cfg(feature = "macros")]
 
-use pyforge::types::{PyDict, PyList, PyString};
-use pyforge::{prelude::*, py_run, IntoPyObject, IntoPyObjectExt};
+use clarax::types::{PyDict, PyList, PyString};
+use clarax::{prelude::*, py_run, IntoPyObject, IntoPyObjectExt};
 use std::collections::HashMap;
 use std::hash::Hash;
 

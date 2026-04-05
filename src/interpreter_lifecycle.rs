@@ -40,7 +40,7 @@ pub(crate) fn initialize() {
 ///
 /// ```rust
 /// unsafe {
-///     pyforge::with_embedded_python_interpreter(|py| {
+///     clarax::with_embedded_python_interpreter(|py| {
 ///         if let Err(e) = py.run(c"print('Hello World')", None, None) {
 ///             // We must make sure to not return a `PyErr`!
 ///             e.print(py);
@@ -77,7 +77,7 @@ where
     result
 }
 
-/// If PyForge is currently running `Py_InitializeEx` inside the `Once` guard,
+/// If ClaraX is currently running `Py_InitializeEx` inside the `Once` guard,
 /// block until it completes. Needed because `Py_InitializeEx` sets the
 /// `initialized` flag in the interpreter to true before it finishes all its
 /// steps (in particular, before it imports `site.py`).
@@ -85,7 +85,7 @@ where
 /// This must only be called after `Py_IsInitialized()` has returned true.
 ///
 /// If the `Once` was never started (e.g. the interpreter was initialized
-/// externally, not through PyForge), `call_once` runs the empty closure and
+/// externally, not through ClaraX), `call_once` runs the empty closure and
 /// returns — this is fine because `initialize()` checks
 /// `Py_IsInitialized()` inside its closure and skips `Py_InitializeEx` if
 /// the interpreter is already running. If the `Once` is currently in
@@ -112,7 +112,7 @@ pub(crate) fn ensure_initialized() {
     }
     #[cfg(not(feature = "auto-initialize"))]
     {
-        // This is a "hack" to make running `cargo test` for PyForge convenient (i.e. no need
+        // This is a "hack" to make running `cargo test` for ClaraX convenient (i.e. no need
         // to specify `--features auto-initialize` manually). Tests within the crate itself
         // all depend on the auto-initialize feature for conciseness but Cargo does not
         // provide a mechanism to specify required features for tests.

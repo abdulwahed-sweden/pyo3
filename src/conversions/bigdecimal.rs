@@ -13,8 +13,8 @@
 //! bigdecimal = "0.4"
 //! ```
 //!
-//! Note that you must use a compatible version of bigdecimal and PyForge.
-//! The required bigdecimal version may vary based on the version of PyForge.
+//! Note that you must use a compatible version of bigdecimal and ClaraX.
+//! The required bigdecimal version may vary based on the version of ClaraX.
 //!
 //! # Example
 //!
@@ -22,7 +22,7 @@
 //!
 //! ```rust
 //! use bigdecimal::BigDecimal;
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //!
 //! #[pyfunction]
 //! fn add_one(d: BigDecimal) -> BigDecimal {

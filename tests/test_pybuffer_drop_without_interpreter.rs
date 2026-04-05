@@ -3,12 +3,12 @@
 
 //! Dropping `Py<T>` after the interpreter has been finalized should be sound.
 //!
-//! See e.g. https://github.com/PyForge/pyo3/issues/4632 for an extension of this problem
+//! See e.g. https://github.com/ClaraX/pyo3/issues/4632 for an extension of this problem
 //! where the interpreter was finalized before `PyBuffer<T>` was dropped.
 //!
 //! This test runs in its own process to control the interpreter lifecycle.
 
-use pyforge::{buffer::PyBuffer, types::PyBytes};
+use clarax::{buffer::PyBuffer, types::PyBytes};
 
 #[test]
 fn test_pybuffer_drop_without_interpreter() {
@@ -18,17 +18,17 @@ fn test_pybuffer_drop_without_interpreter() {
     // However we should still be able to drop it without causing undefined behavior,
     // so that process shutdown is sound.
     let obj: PyBuffer<u8> = unsafe {
-        pyforge::with_embedded_python_interpreter(|py| {
+        clarax::with_embedded_python_interpreter(|py| {
             PyBuffer::get(&PyBytes::new(py, b"abcdef")).unwrap()
         })
     };
 
     // there should be no interpreter outside of the `with_embedded_python_interpreter` block
-    assert_eq!(unsafe { pyforge_ffi::Py_IsInitialized() }, 0);
+    assert_eq!(unsafe { clarax_ffi::Py_IsInitialized() }, 0);
 
     // dropping object should be sound
     drop(obj);
 
     // dropping object should not re-initialize the interpreter
-    assert_eq!(unsafe { pyforge_ffi::Py_IsInitialized() }, 0);
+    assert_eq!(unsafe { clarax_ffi::Py_IsInitialized() }, 0);
 }

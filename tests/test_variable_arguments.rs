@@ -1,7 +1,7 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
-use pyforge::types::{PyDict, PyTuple};
+use clarax::prelude::*;
+use clarax::types::{PyDict, PyTuple};
 
 mod test_utils;
 

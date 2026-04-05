@@ -1,4 +1,4 @@
-# PyForge Innovation Proposals
+# ClaraX Innovation Proposals
 
 **Author:** Abdulwahed Mansour
 **Date:** 2026-04-05
@@ -21,13 +21,13 @@ Proposals ranked by impact. Each one is independently implementable.
 
 ---
 
-## 2. `pyforge doctor` CLI command
+## 2. `clarax doctor` CLI command
 
-**What:** A management command that audits a Django project and reports which serializers would benefit from PyForge, which wouldn't, and why.
+**What:** A management command that audits a Django project and reports which serializers would benefit from ClaraX, which wouldn't, and why.
 
 **Why:** The #1 friction point for adoption is "which serializers should I add the mixin to?" We learned from Hyra that `ListingListSerializer` was slower with the mixin due to computed fields. A doctor command would have caught this before the developer wasted time benchmarking.
 
-**How:** `python manage.py pyforge_doctor` scans all ModelSerializer subclasses in INSTALLED_APPS, classifies their fields (model vs computed vs nested), and prints a report like:
+**How:** `python manage.py clarax_doctor` scans all ModelSerializer subclasses in INSTALLED_APPS, classifies their fields (model vs computed vs nested), and prints a report like:
 ```
 QueueEntrySerializer: 15/17 fields Rust-compatible → RECOMMENDED (est. 2.5x)
 ListingListSerializer: 17/21 fields Rust-compatible → NOT RECOMMENDED (4 computed fields)
@@ -43,7 +43,7 @@ ApplicationSerializer: 9/11 fields Rust-compatible → RECOMMENDED (est. 2.5x)
 
 **What:** `Schema.from_dataclass(UserData)` that introspects a Python dataclass or TypedDict and generates the Schema automatically.
 
-**Why:** pyforge-core requires manual `Schema({"name": Field(str, max_length=100), ...})` definitions. If a developer already has a `@dataclass` or `TypedDict`, they shouldn't have to repeat the type information.
+**Why:** clarax-core requires manual `Schema({"name": Field(str, max_length=100), ...})` definitions. If a developer already has a `@dataclass` or `TypedDict`, they shouldn't have to repeat the type information.
 
 **How:** In Python, inspect `__dataclass_fields__` or `__annotations__`. Map `str` → `Field(str)`, `int` → `Field(int)`, `Optional[str]` → `Field(str, nullable=True)`, `Annotated[str, MaxLength(100)]` → `Field(str, max_length=100)`. The Schema is built in Python and compiled to Rust — no Rust changes needed.
 
@@ -54,11 +54,11 @@ ApplicationSerializer: 9/11 fields Rust-compatible → RECOMMENDED (est. 2.5x)
 
 ## 4. Request-level metrics middleware
 
-**What:** Django middleware that tracks per-request PyForge metrics: fields_accelerated, fields_delegated, time_saved_ms, and exposes them via a `X-PyForge-Stats` response header.
+**What:** Django middleware that tracks per-request ClaraX metrics: fields_accelerated, fields_delegated, time_saved_ms, and exposes them via a `X-ClaraX-Stats` response header.
 
-**Why:** Observability. In production, you want to know "is PyForge actually doing anything on this endpoint?" Without metrics, developers add the mixin and hope. With metrics, they can see exactly which endpoints benefit and by how much.
+**Why:** Observability. In production, you want to know "is ClaraX actually doing anything on this endpoint?" Without metrics, developers add the mixin and hope. With metrics, they can see exactly which endpoints benefit and by how much.
 
-**How:** Add `PyForgeMetricsMiddleware` that reads from a thread-local counter incremented by `RustSerializerMixin.to_representation()`. After the view returns, attach `X-PyForge-Stats: rust=15,python=2,saved=4.2ms` to the response. Optional — only active when `PYFORGE_METRICS = True` in settings.
+**How:** Add `ClaraXMetricsMiddleware` that reads from a thread-local counter incremented by `RustSerializerMixin.to_representation()`. After the view returns, attach `X-ClaraX-Stats: rust=15,python=2,saved=4.2ms` to the response. Optional — only active when `CLARAX_METRICS = True` in settings.
 
 **Effort:** Low
 **Impact:** Medium
@@ -67,11 +67,11 @@ ApplicationSerializer: 9/11 fields Rust-compatible → RECOMMENDED (est. 2.5x)
 
 ## 5. FastAPI / Pydantic response model
 
-**What:** `pyforge_core.FastAPIModel` that wraps a `Schema` and can be used as a FastAPI response model, replacing Pydantic's serialization with Rust.
+**What:** `clarax_core.FastAPIModel` that wraps a `Schema` and can be used as a FastAPI response model, replacing Pydantic's serialization with Rust.
 
-**Why:** pyforge-core is framework-agnostic but has no FastAPI integration yet. FastAPI is the #2 Python web framework. Pydantic v2 already uses Rust (pydantic-core), but pyforge-core could offer a simpler, faster alternative for serialization-only use cases.
+**Why:** clarax-core is framework-agnostic but has no FastAPI integration yet. FastAPI is the #2 Python web framework. Pydantic v2 already uses Rust (pydantic-core), but clarax-core could offer a simpler, faster alternative for serialization-only use cases.
 
-**How:** Create a `pyforge-fastapi` Python package (no Rust needed) that wraps `Schema` in a class compatible with FastAPI's `response_model` parameter. When FastAPI calls `.model_dump()` or `.__get_validators__()`, delegate to `pyforge_core.serialize()`. This is a Python-only package that depends on `pyforge-core`.
+**How:** Create a `clarax-fastapi` Python package (no Rust needed) that wraps `Schema` in a class compatible with FastAPI's `response_model` parameter. When FastAPI calls `.model_dump()` or `.__get_validators__()`, delegate to `clarax_core.serialize()`. This is a Python-only package that depends on `clarax-core`.
 
 **Effort:** Medium
 **Impact:** High
@@ -82,7 +82,7 @@ ApplicationSerializer: 9/11 fields Rust-compatible → RECOMMENDED (est. 2.5x)
 
 **What:** Detect when a serializer causes N+1 database queries and emit a warning with the fix.
 
-**Why:** The #1 Django performance issue is N+1 queries from nested serializers. PyForge already classifies fields as "model" vs "nested/computed". If a nested serializer triggers a query per instance, PyForge could detect the missing `select_related` / `prefetch_related` and warn.
+**Why:** The #1 Django performance issue is N+1 queries from nested serializers. ClaraX already classifies fields as "model" vs "nested/computed". If a nested serializer triggers a query per instance, ClaraX could detect the missing `select_related` / `prefetch_related` and warn.
 
 **How:** In `RustSerializerMixin.to_representation()`, before delegating a Python field, check if the field accesses a ForeignKey attribute by inspecting `field.source`. If the FK isn't in the queryset's `select_related` set (accessible via `instance._state.fields_cache`), log a warning: "Field 'landlord_name' accesses ForeignKey 'landlord' which is not select_related — add .select_related('landlord') to your queryset."
 
@@ -97,7 +97,7 @@ ApplicationSerializer: 9/11 fields Rust-compatible → RECOMMENDED (est. 2.5x)
 
 **Why:** Currently, `ModelSchema` is compiled on first use — the first request to each endpoint pays the compilation cost (~1ms). Pre-warming at startup eliminates this cold-start latency.
 
-**How:** In `django_pyforge/apps.py`, during `ready()`, scan all imported `RustSerializerMixin` subclasses and call `_init_pyforge_schema()` on each. This uses Django's app registry which is fully loaded at `ready()` time.
+**How:** In `django_clarax/apps.py`, during `ready()`, scan all imported `RustSerializerMixin` subclasses and call `_init_clarax_schema()` on each. This uses Django's app registry which is fully loaded at `ready()` time.
 
 **Effort:** Low
 **Impact:** Low
@@ -148,7 +148,7 @@ ApplicationSerializer: 9/11 fields Rust-compatible → RECOMMENDED (est. 2.5x)
 | # | Proposal | Effort | Impact |
 |---|----------|--------|--------|
 | 1 | Queryset-to-Rust batch path | Medium | Game-changing |
-| 2 | `pyforge doctor` command | Low | High |
+| 2 | `clarax doctor` command | Low | High |
 | 3 | Auto-schema from dataclass | Low | High |
 | 5 | FastAPI response model | Medium | High |
 | 6 | N+1 query detector | Medium | High |

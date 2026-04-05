@@ -56,9 +56,9 @@ pub(crate) enum AttachError {
 }
 
 impl AttachGuard {
-    /// PyForge internal API for attaching to the Python interpreter. The public API is Python::attach.
+    /// ClaraX internal API for attaching to the Python interpreter. The public API is Python::attach.
     ///
-    /// If the thread was already attached via PyForge, this returns
+    /// If the thread was already attached via ClaraX, this returns
     /// `AttachGuard::Assumed`. Otherwise, the thread will attach now and
     /// `AttachGuard::Ensured` will be returned.
     pub(crate) fn attach() -> Self {
@@ -100,7 +100,7 @@ impl AttachGuard {
         }
 
         // Py_IsInitialized() can return 1 while Py_InitializeEx is still
-        // running (e.g. importing site.py). Block until any in-progress PyForge
+        // running (e.g. importing site.py). Block until any in-progress ClaraX
         // initialization has fully completed.
         crate::interpreter_lifecycle::wait_for_initialization();
 
@@ -328,7 +328,7 @@ pub unsafe fn register_decref(obj: NonNull<ffi::PyObject>) {
     }
 }
 
-/// Private helper function to check if we are currently in a GC traversal (as detected by PyForge).
+/// Private helper function to check if we are currently in a GC traversal (as detected by ClaraX).
 #[cfg(any(not(Py_LIMITED_API), Py_3_11))]
 pub(crate) fn is_in_gc_traversal() -> bool {
     ATTACH_COUNT
@@ -357,7 +357,7 @@ fn decrement_attach_count() {
         let current = c.get();
         debug_assert!(
             current > 0,
-            "Negative attach count detected. Please report this error to the PyForge repo as a bug."
+            "Negative attach count detected. Please report this error to the ClaraX repo as a bug."
         );
         c.set(current - 1);
     });

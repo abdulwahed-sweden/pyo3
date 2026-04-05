@@ -14,8 +14,8 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"hashbrown\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of hashbrown and PyForge.
-//! The required hashbrown version may vary based on the version of PyForge.
+//! Note that you must use compatible versions of hashbrown and ClaraX.
+//! The required hashbrown version may vary based on the version of ClaraX.
 #[cfg(feature = "experimental-inspect")]
 use crate::inspect::PyStaticExpr;
 use crate::{

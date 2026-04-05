@@ -1,7 +1,7 @@
 use crate::conversion::IntoPyObject;
 use crate::inspect::PyStaticExpr;
 
-/// Seals `PyReturnType` so that types outside PyForge cannot implement it.
+/// Seals `PyReturnType` so that types outside ClaraX cannot implement it.
 mod return_type {
     use crate::{impl_::introspection::PyReturnType, IntoPyObject};
 

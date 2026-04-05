@@ -1,4 +1,4 @@
-#![warn(clippy::undocumented_unsafe_blocks)] // TODO: remove this when the top-level is "warn" - https://github.com/PyForge/pyo3/issues/5487
+#![warn(clippy::undocumented_unsafe_blocks)] // TODO: remove this when the top-level is "warn" - https://github.com/ClaraX/pyo3/issues/5487
 
 use crate::call::PyCallArgs;
 use crate::conversion::IntoPyObject;
@@ -61,7 +61,7 @@ mod bound_object_sealed {
 ///
 /// This type can be thought of as equivalent to the tuple `(Py<T>, Python<'py>)`. By having the `'py`
 /// lifetime of the [`Python<'py>`] token, this ties the lifetime of the [`Bound<'py, T>`] smart pointer
-/// to the lifetime the thread is attached to the Python interpreter and allows PyForge to call Python APIs
+/// to the lifetime the thread is attached to the Python interpreter and allows ClaraX to call Python APIs
 /// at maximum efficiency.
 ///
 /// To access the object in situations where the thread is not attached, convert it to [`Py<T>`]
@@ -69,7 +69,7 @@ mod bound_object_sealed {
 /// [`Python::detach`](crate::Python::detach)'s closure.
 ///
 /// See
-#[doc = concat!("[the guide](https://github.com/abdulwahed-sweden/pyforge/v", env!("CARGO_PKG_VERSION"), "/types.html#boundpy-t)")]
+#[doc = concat!("[the guide](https://github.com/abdulwahed-sweden/clarax/v", env!("CARGO_PKG_VERSION"), "/types.html#boundpy-t)")]
 /// for more detail.
 #[repr(transparent)]
 pub struct Bound<'py, T>(Python<'py>, ManuallyDrop<Py<T>>);
@@ -83,7 +83,7 @@ where
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pyclass]
     /// struct Foo {/* fields omitted */}
@@ -119,8 +119,8 @@ impl<'py, T> Bound<'py, T> {
     /// # Example: Casting to a specific Python object
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::{PyDict, PyList};
+    /// use clarax::prelude::*;
+    /// use clarax::types::{PyDict, PyList};
     ///
     /// Python::attach(|py| {
     ///     let dict = PyDict::new(py);
@@ -137,8 +137,8 @@ impl<'py, T> Bound<'py, T> {
     /// This is useful if you want to mutate a `Py<PyAny>` that might actually be a pyclass.
     ///
     /// ```rust
-    /// # fn main() -> Result<(), pyforge::PyErr> {
-    /// use pyforge::prelude::*;
+    /// # fn main() -> Result<(), clarax::PyErr> {
+    /// use clarax::prelude::*;
     ///
     /// #[pyclass]
     /// struct Class {
@@ -193,8 +193,8 @@ impl<'py, T> Bound<'py, T> {
     /// # Example
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::{PyDict, PyList};
+    /// use clarax::prelude::*;
+    /// use clarax::types::{PyDict, PyList};
     ///
     /// Python::attach(|py| {
     ///     let obj: Bound<'_, PyAny> = PyDict::new(py).into_any();
@@ -244,8 +244,8 @@ impl<'py, T> Bound<'py, T> {
     /// # Example: Casting to a specific Python object but not a subtype
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::{PyBool, PyInt};
+    /// use clarax::prelude::*;
+    /// use clarax::types::{PyBool, PyInt};
     ///
     /// Python::attach(|py| {
     ///     let b = PyBool::new(py, true);
@@ -525,7 +525,7 @@ where
     /// # Examples
     ///
     /// ```rust
-    /// # use pyforge::prelude::*;
+    /// # use clarax::prelude::*;
     /// #
     /// #[pyclass]
     /// struct Foo {
@@ -561,7 +561,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// # use pyforge::prelude::*;
+    /// # use clarax::prelude::*;
     /// #
     /// #[pyclass]
     /// struct Foo {
@@ -625,7 +625,7 @@ where
     ///
     /// ```
     /// use std::sync::atomic::{AtomicUsize, Ordering};
-    /// # use pyforge::prelude::*;
+    /// # use clarax::prelude::*;
     ///
     /// #[pyclass(frozen)]
     /// struct FrozenCounter {
@@ -667,7 +667,7 @@ where
     ///
     /// ```rust
     /// # fn main() {
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pyclass(subclass)]
     /// struct BaseClass;
@@ -719,7 +719,7 @@ where
     ///
     /// ```rust
     /// # fn main() {
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pyclass(subclass)]
     /// struct BaseClass;
@@ -858,7 +858,7 @@ impl<'py, T> Bound<'py, T> {
     /// # Safety
     ///
     /// The reference is owned; when finished the caller should either transfer ownership
-    /// of the pointer or decrease the reference count (e.g. with [`pyforge::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
+    /// of the pointer or decrease the reference count (e.g. with [`clarax::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
     #[inline]
     pub fn into_ptr(self) -> *mut ffi::PyObject {
         ManuallyDrop::new(self).as_ptr()
@@ -942,7 +942,7 @@ impl<'py, T> BoundObject<'py, T> for Bound<'py, T> {
 /// reduces one level of pointer indirection, but additionally it removes the implicit lifetime
 /// relation that `'py` has to outlive `'a` (`'py: 'a`). This opens the possibility to borrow from
 /// the underlying Python object without necessarily requiring attachment to the interpreter for
-/// that duration. Within PyForge this is used for example for the byte slice (`&[u8]`) extraction.
+/// that duration. Within ClaraX this is used for example for the byte slice (`&[u8]`) extraction.
 ///
 /// [`Borrowed<'a, 'py, T>`] dereferences to [`Bound<'py, T>`], so all methods on [`Bound<'py, T>`]
 /// are available on [`Borrowed<'a, 'py, T>`].
@@ -962,7 +962,7 @@ impl<'a, 'py, T> Borrowed<'a, 'py, T> {
     ///
     /// # Example
     /// ```
-    /// use pyforge::{prelude::*, types::PyTuple};
+    /// use clarax::{prelude::*, types::PyTuple};
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -1083,7 +1083,7 @@ impl<'a, 'py, T> Borrowed<'a, 'py, T> {
     ///
     /// ```
     /// use std::sync::atomic::{AtomicUsize, Ordering};
-    /// # use pyforge::prelude::*;
+    /// # use clarax::prelude::*;
     ///
     /// #[pyclass(frozen)]
     /// struct FrozenCounter {
@@ -1288,7 +1288,7 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 ///
 /// to get a (mutable) reference to a contained pyclass, using a scheme similar to std's [`RefCell`].
 /// See the
-#[doc = concat!("[guide entry](https://github.com/abdulwahed-sweden/pyforge/v", env!("CARGO_PKG_VERSION"), "/class.html#bound-and-interior-mutability)")]
+#[doc = concat!("[guide entry](https://github.com/abdulwahed-sweden/clarax/v", env!("CARGO_PKG_VERSION"), "/class.html#bound-and-interior-mutability)")]
 /// for more information.
 ///  - You can call methods directly on `Py` with [`Py::call`], [`Py::call_method`] and friends.
 ///
@@ -1307,8 +1307,8 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 /// For example, this won't compile:
 ///
 /// ```compile_fail
-/// # use pyforge::prelude::*;
-/// # use pyforge::types::PyDict;
+/// # use clarax::prelude::*;
+/// # use clarax::types::PyDict;
 /// #
 /// #[pyclass]
 /// struct Foo<'py> {
@@ -1338,8 +1338,8 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 /// [`Py`]`<T>` can be used to get around this by removing the lifetime from `dict` and with it the proof of attachment.
 ///
 /// ```rust
-/// use pyforge::prelude::*;
-/// use pyforge::types::PyDict;
+/// use clarax::prelude::*;
+/// use clarax::types::PyDict;
 ///
 /// #[pyclass]
 /// struct Foo {
@@ -1359,7 +1359,7 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 /// #
 /// # fn main() -> PyResult<()> {
 /// #     Python::attach(|py| {
-/// #         let m = pyforge::types::PyModule::new(py, "test")?;
+/// #         let m = clarax::types::PyModule::new(py, "test")?;
 /// #         m.add_class::<Foo>()?;
 /// #
 /// #         let foo: Bound<'_, Foo> = m.getattr("Foo")?.call0()?.cast_into()?;
@@ -1373,7 +1373,7 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 ///
 /// This can also be done with other pyclasses:
 /// ```rust
-/// use pyforge::prelude::*;
+/// use clarax::prelude::*;
 ///
 /// #[pyclass]
 /// struct Bar {/* ... */}
@@ -1396,7 +1396,7 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 /// #
 /// # fn main() -> PyResult<()> {
 /// #     Python::attach(|py| {
-/// #         let m = pyforge::types::PyModule::new(py, "test")?;
+/// #         let m = clarax::types::PyModule::new(py, "test")?;
 /// #         m.add_class::<Foo>()?;
 /// #
 /// #         let foo: Bound<'_, Foo> = m.getattr("Foo")?.call0()?.cast_into()?;
@@ -1419,8 +1419,8 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 /// is not attached to the Python interpreter (and is gated behind the `py-clone` feature flag).
 ///
 /// ```rust
-/// use pyforge::prelude::*;
-/// use pyforge::types::PyDict;
+/// use clarax::prelude::*;
+/// use clarax::types::PyDict;
 ///
 /// # fn main() {
 /// Python::attach(|py| {
@@ -1478,7 +1478,7 @@ impl<'a, 'py, T> BoundObject<'py, T> for Borrowed<'a, 'py, T> {
 ///
 /// [`Rc`]: std::rc::Rc
 /// [`RefCell`]: std::cell::RefCell
-/// [gc]: https://github.com/abdulwahed-sweden/pyforge/main/class/protocols.html#garbage-collector-integration
+/// [gc]: https://github.com/abdulwahed-sweden/clarax/main/class/protocols.html#garbage-collector-integration
 #[repr(transparent)]
 pub struct Py<T>(NonNull<ffi::PyObject>, PhantomData<T>);
 
@@ -1503,7 +1503,7 @@ where
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pyclass]
     /// struct Foo {/* fields omitted */}
@@ -1541,7 +1541,7 @@ impl<T> Py<T> {
     /// # Safety
     ///
     /// The reference is owned; when finished the caller should either transfer ownership
-    /// of the pointer or decrease the reference count (e.g. with [`pyforge::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
+    /// of the pointer or decrease the reference count (e.g. with [`clarax::ffi::Py_DecRef`](crate::ffi::Py_DecRef)).
     #[inline]
     pub fn into_ptr(self) -> *mut ffi::PyObject {
         ManuallyDrop::new(self).0.as_ptr()
@@ -1580,7 +1580,7 @@ where
     /// # Examples
     ///
     /// ```rust
-    /// # use pyforge::prelude::*;
+    /// # use clarax::prelude::*;
     /// #
     /// #[pyclass]
     /// struct Foo {
@@ -1618,7 +1618,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// # use pyforge::prelude::*;
+    /// # use clarax::prelude::*;
     /// #
     /// #[pyclass]
     /// struct Foo {
@@ -1690,7 +1690,7 @@ where
     ///
     /// ```
     /// use std::sync::atomic::{AtomicUsize, Ordering};
-    /// # use pyforge::prelude::*;
+    /// # use clarax::prelude::*;
     ///
     /// #[pyclass(frozen)]
     /// struct FrozenCounter {
@@ -1763,7 +1763,7 @@ impl<T> Py<T> {
     #[inline]
     #[deprecated(
         since = "0.29.0",
-        note = "use `pyforge::ffi::Py_REFCNT(obj.as_ptr())` instead"
+        note = "use `clarax::ffi::Py_REFCNT(obj.as_ptr())` instead"
     )]
     pub fn get_refcnt(&self, py: Python<'_>) -> isize {
         self._get_refcnt(py)
@@ -1784,8 +1784,8 @@ impl<T> Py<T> {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::PyDict;
+    /// use clarax::prelude::*;
+    /// use clarax::types::PyDict;
     ///
     /// # fn main() {
     /// Python::attach(|py| {
@@ -1819,8 +1819,8 @@ impl<T> Py<T> {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::PyDict;
+    /// use clarax::prelude::*;
+    /// use clarax::types::PyDict;
     ///
     /// # fn main() {
     /// Python::attach(|py| {
@@ -1872,7 +1872,7 @@ impl<T> Py<T> {
     /// # Example: `intern!`ing the attribute name
     ///
     /// ```
-    /// # use pyforge::{prelude::*, intern};
+    /// # use clarax::{prelude::*, intern};
     /// #
     /// #[pyfunction]
     /// fn version(sys: Py<PyModule>, py: Python<'_>) -> PyResult<Py<PyAny>> {
@@ -1901,7 +1901,7 @@ impl<T> Py<T> {
     /// # Example: `intern!`ing the attribute name
     ///
     /// ```
-    /// # use pyforge::{intern, pyfunction, types::PyModule, IntoPyObjectExt, Py, PyAny, Python, PyResult};
+    /// # use clarax::{intern, pyfunction, types::PyModule, IntoPyObjectExt, Py, PyAny, Python, PyResult};
     /// #
     /// #[pyfunction]
     /// fn set_answer(ob: Py<PyAny>, py: Python<'_>) -> PyResult<()> {
@@ -2265,7 +2265,7 @@ impl<T> Clone for Py<T> {
 /// on the object by one if the thread is attached to the Python interpreter.
 ///
 /// Otherwise and by default, this registers the underlying pointer to have its reference count
-/// decremented the next time PyForge attaches to the Python interpreter.
+/// decremented the next time ClaraX attaches to the Python interpreter.
 ///
 /// However, if the `pyo3_disable_reference_pool` conditional compilation flag
 /// is enabled, it will abort the process.
@@ -2354,8 +2354,8 @@ impl Py<PyAny> {
     ///
     /// ```rust
     /// # #![allow(deprecated)]
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::{PyDict, PyList};
+    /// use clarax::prelude::*;
+    /// use clarax::types::{PyDict, PyList};
     ///
     /// Python::attach(|py| {
     ///     let any = PyDict::new(py).into_any().unbind();
@@ -2371,8 +2371,8 @@ impl Py<PyAny> {
     ///
     /// ```rust
     /// # #![allow(deprecated)]
-    /// # fn main() -> Result<(), pyforge::PyErr> {
-    /// use pyforge::prelude::*;
+    /// # fn main() -> Result<(), clarax::PyErr> {
+    /// use clarax::prelude::*;
     ///
     /// #[pyclass]
     /// struct Class {
@@ -2431,8 +2431,8 @@ impl<T> Py<T> {
     /// # Example: Casting to a specific Python object
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::{PyDict, PyList};
+    /// use clarax::prelude::*;
+    /// use clarax::types::{PyDict, PyList};
     ///
     /// Python::attach(|py| {
     ///     let any = PyDict::new(py).into_any().unbind();
@@ -2447,8 +2447,8 @@ impl<T> Py<T> {
     /// This is useful if you want to mutate a `Py<PyAny>` that might actually be a pyclass.
     ///
     /// ```rust
-    /// # fn main() -> Result<(), pyforge::PyErr> {
-    /// use pyforge::prelude::*;
+    /// # fn main() -> Result<(), clarax::PyErr> {
+    /// use clarax::prelude::*;
     ///
     /// #[pyclass]
     /// struct Class {

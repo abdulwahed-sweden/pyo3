@@ -1,5 +1,5 @@
-use pyforge::prelude::*;
-use pyforge::types::PyString;
+use clarax::prelude::*;
+use clarax::types::PyString;
 
 fn main() {
     Python::attach(|py| {

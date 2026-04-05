@@ -3,22 +3,22 @@
 It is desirable if both the Python and Rust parts of the application end up logging using the same configuration into the same place.
 
 This section of the guide briefly discusses how to connect the two languages' logging ecosystems together.
-The recommended way for Python extension modules is to configure Rust's logger to send log messages to Python using the `pyforge-log` crate.
+The recommended way for Python extension modules is to configure Rust's logger to send log messages to Python using the `clarax-log` crate.
 For users who want to do the opposite and send Python log messages to Rust, see the note at the end of this guide.
 
-## Using `pyforge-log` to send Rust log messages to Python
+## Using `clarax-log` to send Rust log messages to Python
 
-The [pyforge-log] crate allows sending the messages from the Rust side to Python's [logging] system.
+The [clarax-log] crate allows sending the messages from the Rust side to Python's [logging] system.
 This is mostly suitable for writing extension modules to consume from Python programs.
 
 Use [`pyo3_log::init`][init] to install the logger in its default configuration.
 It's also possible to tweak its configuration (mostly to tune its performance).
 
 ```rust,no_run
-#[pyforge::pymodule]
+#[clarax::pymodule]
 mod my_module {
     use log::info;
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     #[pyfunction]
     fn log_something() {
@@ -54,11 +54,11 @@ This limitation can be worked around if it is not possible to satisfy, read the 
 
 To have python logs be handled by Rust, one need only register a rust function to handle logs emitted from the core python logging module.
 
-This has been implemented within the [pyforge-pylogger] crate.
+This has been implemented within the [clarax-pylogger] crate.
 
 ```rust,no_run
 use log::{info, warn};
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 fn main() -> PyResult<()> {
     // register the host handler with python logger, providing a logger target
@@ -87,7 +87,7 @@ logging.error('Something bad happened')
 ```
 
 [logging]: https://docs.python.org/3/library/logging.html
-[pyforge-log]: https://crates.io/crates/pyforge-log
-[init]: https://docs.rs/pyforge-log/*/pyo3_log/fn.init.html
-[caching]: https://docs.rs/pyforge-log/*/pyo3_log/#performance-filtering-and-caching
-[pyforge-pylogger]: https://crates.io/crates/pyforge-pylogger
+[clarax-log]: https://crates.io/crates/clarax-log
+[init]: https://docs.rs/clarax-log/*/pyo3_log/fn.init.html
+[caching]: https://docs.rs/clarax-log/*/pyo3_log/#performance-filtering-and-caching
+[clarax-pylogger]: https://crates.io/crates/clarax-pylogger

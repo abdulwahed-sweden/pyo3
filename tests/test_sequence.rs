@@ -1,10 +1,10 @@
 #![cfg(feature = "macros")]
 
-use pyforge::exceptions::{PyIndexError, PyValueError};
-use pyforge::types::{IntoPyDict, PyList, PyMapping, PySequence};
-use pyforge::{ffi, prelude::*};
+use clarax::exceptions::{PyIndexError, PyValueError};
+use clarax::types::{IntoPyDict, PyList, PyMapping, PySequence};
+use clarax::{ffi, prelude::*};
 
-use pyforge::py_run;
+use clarax::py_run;
 
 mod test_utils;
 
@@ -105,7 +105,7 @@ impl ByteSequence {
 }
 
 /// Return a dict with `s = ByteSequence([1, 2, 3])`.
-fn seq_dict(py: Python<'_>) -> Bound<'_, pyforge::types::PyDict> {
+fn seq_dict(py: Python<'_>) -> Bound<'_, clarax::types::PyDict> {
     let d = [("ByteSequence", py.get_type::<ByteSequence>())]
         .into_py_dict(py)
         .unwrap();
@@ -383,7 +383,7 @@ impl GenericList {
 
     fn __getitem__(&self, idx: isize) -> PyResult<Py<PyAny>> {
         match self.items.get(idx as usize) {
-            Some(x) => pyforge::Python::attach(|py| Ok(x.clone_ref(py))),
+            Some(x) => clarax::Python::attach(|py| Ok(x.clone_ref(py))),
             None => Err(PyIndexError::new_err("Index out of bounds")),
         }
     }
@@ -392,7 +392,7 @@ impl GenericList {
 #[cfg(Py_3_10)]
 #[test]
 fn test_generic_both_subscriptions_types() {
-    use pyforge::types::PyInt;
+    use clarax::types::PyInt;
     use std::convert::Infallible;
 
     Python::attach(|py| {

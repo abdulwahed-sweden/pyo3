@@ -1,14 +1,14 @@
 #![cfg(feature = "macros")]
 
 #[cfg(any(not(Py_LIMITED_API), Py_3_12))]
-use pyforge::exceptions::PyWarning;
-use pyforge::exceptions::{PyFutureWarning, PyUserWarning};
-use pyforge::prelude::*;
-use pyforge::py_run;
-use pyforge::types::PySequence;
-use pyforge::types::{IntoPyDict, PyDict, PyList, PySet, PyString, PyTuple, PyType};
-use pyforge::BoundObject;
-use pyforge_macros::pyclass;
+use clarax::exceptions::PyWarning;
+use clarax::exceptions::{PyFutureWarning, PyUserWarning};
+use clarax::prelude::*;
+use clarax::py_run;
+use clarax::types::PySequence;
+use clarax::types::{IntoPyDict, PyDict, PyList, PySet, PyString, PyTuple, PyType};
+use clarax::BoundObject;
+use clarax_macros::pyclass;
 
 use crate::test_utils::CatchWarnings;
 
@@ -1182,7 +1182,7 @@ pymethods!(
 #[test]
 fn test_option_pyclass_arg() {
     // Option<&PyClass> argument with a default set in a signature regressed to a compile
-    // error in PyForge 0.17.0 - this test it continues to be accepted.
+    // error in ClaraX 0.17.0 - this test it continues to be accepted.
 
     #[pyclass]
     struct SomePyClass {}

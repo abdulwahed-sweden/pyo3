@@ -1,22 +1,22 @@
-# PyForge — Modern Rust-Python Bindings for Production
+# ClaraX — Modern Rust-Python Bindings for Production
 
 **Author & Sole Maintainer:** Abdulwahed Mansour  
-**Repository:** github.com/abdulwahed-sweden/pyforge  
+**Repository:** github.com/abdulwahed-sweden/clarax  
 **License:** MIT  
 **Version:** 0.1.0  
 **Status:** Pre-Publication — Audit Complete
 
 ---
 
-## What Is PyForge
+## What Is ClaraX
 
-PyForge is a modernized, production-focused fork of PyO3 (upstream), the Rust-Python binding library.
+ClaraX is a modernized, production-focused fork of PyO3 (upstream), the Rust-Python binding library.
 
-PyForge strips away legacy compatibility layers and delivers a clean, high-performance bridge between Rust and modern Python. It targets CPython 3.11+ exclusively, promotes async as first-class, and removes support for alternative interpreters (PyPy, GraalPy) that add complexity without serving modern production stacks.
+ClaraX strips away legacy compatibility layers and delivers a clean, high-performance bridge between Rust and modern Python. It targets CPython 3.11+ exclusively, promotes async as first-class, and removes support for alternative interpreters (PyPy, GraalPy) that add complexity without serving modern production stacks.
 
 ### Key Differences from PyO3 (Upstream)
 
-| Area | PyO3 0.28.x | PyForge 0.1.0 |
+| Area | PyO3 0.28.x | ClaraX 0.1.0 |
 |------|-------------|----------------|
 | Python minimum | 3.8 | **3.11** |
 | Async support | `experimental-async` feature flag | **Always enabled, first-class** |
@@ -26,7 +26,7 @@ PyForge strips away legacy compatibility layers and delivers a clean, high-perfo
 | `extension-module` flag | Deprecated but present | **Removed** |
 | `generate-import-lib` flag | Deprecated but present | **Removed** |
 | `num-complex` / `num-rational` | Included | **Removed from full feature set** |
-| Published crate names | `pyo3-*` | `pyforge-*` |
+| Published crate names | `pyo3-*` | `clarax-*` |
 
 ---
 
@@ -38,12 +38,12 @@ All 6 workspace crates renamed:
 
 | Old Name | New Name |
 |----------|----------|
-| `pyo3` | `pyforge` |
-| `pyo3-ffi` | `pyforge-ffi` |
-| `pyo3-macros` | `pyforge-macros` |
-| `pyo3-macros-backend` | `pyforge-macros-backend` |
-| `pyo3-build-config` | `pyforge-build-config` |
-| `pyo3-introspection` | `pyforge-introspection` |
+| `pyo3` | `clarax` |
+| `pyo3-ffi` | `clarax-ffi` |
+| `pyo3-macros` | `clarax-macros` |
+| `pyo3-macros-backend` | `clarax-macros-backend` |
+| `pyo3-build-config` | `clarax-build-config` |
+| `pyo3-introspection` | `clarax-introspection` |
 
 Author set to **Abdulwahed Mansour** across all crates.
 
@@ -53,7 +53,7 @@ Author set to **Abdulwahed Mansour** across all crates.
 - abi3 feature chain starts at `abi3-py311` (removed `abi3-py38`, `abi3-py39`, `abi3-py310`)
 - Build-time assertion enforces CPython 3.11+ and rejects PyPy/GraalPy
 - FFI package metadata updated: `min-version = "3.11"`
-- PyPy metadata section removed from `pyforge-ffi`
+- PyPy metadata section removed from `clarax-ffi`
 
 ### 3. Async First-Class
 
@@ -78,23 +78,23 @@ Author set to **Abdulwahed Mansour** across all crates.
 
 ### Phase 1: Foundation (COMPLETE)
 
-- [x] Rename all crates to `pyforge-*`
+- [x] Rename all crates to `clarax-*`
 - [x] Set sole authorship to Abdulwahed Mansour
 - [x] Raise minimum Python to 3.11
 - [x] Make async first-class
 - [x] Remove deprecated APIs
 - [x] Enforce CPython-only at build time
-- [x] Full source rename (`pyo3` -> `pyforge` in all Rust code)
+- [x] Full source rename (`pyo3` -> `clarax` in all Rust code)
 - [x] Remove ALL `#[cfg(PyPy)]` and `#[cfg(GraalPy)]` code paths (~925 blocks)
 - [x] Remove Python 3.8/3.9/3.10 compatibility shims from FFI
 - [x] 925 tests passing, zero compilation errors
 - [x] Simplify CI matrix to CPython 3.11+ (removed 3.8/3.9/3.10, PyPy, GraalPy)
-- [x] Repository cleanup: remove PyForge branding, irrelevant examples, old docs, Netlify config
+- [x] Repository cleanup: remove ClaraX branding, irrelevant examples, old docs, Netlify config
 - [ ] Update UI test snapshots for renamed error messages
 
 ### Phase 2: Django Integration Layer (COMPLETE)
 
-- [x] Create `pyforge-django` crate with workspace integration
+- [x] Create `clarax-django` crate with workspace integration
 - [x] Field type system: 16 Django field types mapped to Rust native types
 - [x] Model introspection: extract field descriptors from Django `_meta` API
 - [x] Serializer: JSON-compatible output with Decimal precision preservation
@@ -133,10 +133,10 @@ Author set to **Abdulwahed Mansour** across all crates.
 
 ### Phase 4: Publish (COMPLETE)
 
-- [x] Publish all 6 crates to crates.io (pyforge, pyforge-django, pyforge-ffi, pyforge-macros, pyforge-macros-backend, pyforge-build-config)
-- [x] Publish pyforge-django to PyPI (macOS x86_64 wheel)
+- [x] Publish all 6 crates to crates.io (clarax, clarax-django, clarax-ffi, clarax-macros, clarax-macros-backend, clarax-build-config)
+- [x] Publish clarax-django to PyPI (macOS x86_64 wheel)
 - [x] CI/CD pipeline: GitHub Actions with multi-platform wheel builds (Linux x86_64/ARM64, macOS x86_64/ARM64, Windows x86_64) for CPython 3.11/3.12/3.13
-- [x] Repository renamed from pyo3 to pyforge, all internal directory names consistent
+- [x] Repository renamed from pyo3 to clarax, all internal directory names consistent
 - [ ] Full documentation site
 - [ ] GitHub release with multi-platform wheels (v0.1.1)
 
@@ -174,5 +174,5 @@ Scopes: `core`, `ffi`, `macros`, `build`, `async`
 
 ---
 
-*This document is the authoritative roadmap for the PyForge project.*  
+*This document is the authoritative roadmap for the ClaraX project.*  
 *All work is performed by Abdulwahed Mansour.*

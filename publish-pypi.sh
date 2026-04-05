@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: Abdulwahed Mansour
-# Builds and publishes PyForge packages to PyPI.
+# Builds and publishes ClaraX packages to PyPI.
 # Usage: ./publish-pypi.sh [core|django|all]
 set -e
 
@@ -43,11 +43,11 @@ detect_platform() {
 }
 
 build_wheel() {
-    local CRATE_NAME=$1      # e.g., pyforge-core
-    local PKG_NAME=$2        # e.g., pyforge_core
-    local PYPI_NAME=$3       # e.g., pyforge-core
-    local SRC_DIR=$4         # e.g., pyforge-core/pyforge_core
-    local LIB_NAME=$5        # e.g., libpyforge_core
+    local CRATE_NAME=$1      # e.g., clarax-core
+    local PKG_NAME=$2        # e.g., clarax_core
+    local PYPI_NAME=$3       # e.g., clarax-core
+    local SRC_DIR=$4         # e.g., clarax-core/clarax_core
+    local LIB_NAME=$5        # e.g., libclarax_core
 
     local VERSION
     VERSION=$(python3 -c "import tomllib; print(tomllib.load(open('$REPO/$CRATE_NAME/pyproject.toml','rb'))['project']['version'])")
@@ -83,8 +83,8 @@ build_wheel() {
     done
 
     # Copy native extension
-    if [ "$CRATE_NAME" = "pyforge-django" ]; then
-        # Django: .so at root level (matches Rust lib name pyforge_django)
+    if [ "$CRATE_NAME" = "clarax-django" ]; then
+        # Django: .so at root level (matches Rust lib name clarax_django)
         cp "$DYLIB" "$STAGING/${PKG_NAME}.so"
     else
         # Core: .so inside the package as _native.so
@@ -108,14 +108,14 @@ Author: Abdulwahed Mansour
 License: MIT
 Requires-Python: >=3.11
 Description-Content-Type: text/markdown
-Project-URL: Homepage, https://github.com/abdulwahed-sweden/pyforge
-Project-URL: Repository, https://github.com/abdulwahed-sweden/pyforge
+Project-URL: Homepage, https://github.com/abdulwahed-sweden/clarax
+Project-URL: Repository, https://github.com/abdulwahed-sweden/clarax
 
 ${README_CONTENT}
 METAEOF
 
-    # Add django dependency for pyforge-django
-    if [ "$CRATE_NAME" = "pyforge-django" ]; then
+    # Add django dependency for clarax-django
+    if [ "$CRATE_NAME" = "clarax-django" ]; then
         sed -i '' '6a\
 Requires-Dist: django>=4.2
 ' "$DIST/METADATA"
@@ -123,7 +123,7 @@ Requires-Dist: django>=4.2
 
     cat > "$DIST/WHEEL" << WHEELEOF
 Wheel-Version: 1.0
-Generator: pyforge-publish
+Generator: clarax-publish
 Root-Is-Purelib: false
 Tag: ${TAG}
 WHEELEOF
@@ -172,22 +172,22 @@ publish_wheel() {
 
 case $PACKAGE in
     "core")
-        build_wheel "pyforge-core" "pyforge_core" "pyforge-core" "pyforge-core/pyforge_core" "libpyforge_core"
-        publish_wheel "pyforge_core"
+        build_wheel "clarax-core" "clarax_core" "clarax-core" "clarax-core/clarax_core" "libclarax_core"
+        publish_wheel "clarax_core"
         ;;
     "django")
-        build_wheel "pyforge-django" "pyforge_django" "pyforge-django" "pyforge-django/django_pyforge" "libpyforge_django"
-        publish_wheel "pyforge_django"
+        build_wheel "clarax-django" "clarax_django" "clarax-django" "clarax-django/django_clarax" "libclarax_django"
+        publish_wheel "clarax_django"
         ;;
     "all")
-        build_wheel "pyforge-core" "pyforge_core" "pyforge-core" "pyforge-core/pyforge_core" "libpyforge_core"
-        build_wheel "pyforge-django" "pyforge_django" "pyforge-django" "pyforge-django/django_pyforge" "libpyforge_django"
-        publish_wheel "pyforge_core"
-        publish_wheel "pyforge_django"
+        build_wheel "clarax-core" "clarax_core" "clarax-core" "clarax-core/clarax_core" "libclarax_core"
+        build_wheel "clarax-django" "clarax_django" "clarax-django" "clarax-django/django_clarax" "libclarax_django"
+        publish_wheel "clarax_core"
+        publish_wheel "clarax_django"
         ;;
     "--build")
-        build_wheel "pyforge-core" "pyforge_core" "pyforge-core" "pyforge-core/pyforge_core" "libpyforge_core"
-        build_wheel "pyforge-django" "pyforge_django" "pyforge-django" "pyforge-django/django_pyforge" "libpyforge_django"
+        build_wheel "clarax-core" "clarax_core" "clarax-core" "clarax-core/clarax_core" "libclarax_core"
+        build_wheel "clarax-django" "clarax_django" "clarax-django" "clarax-django/django_clarax" "libclarax_django"
         echo ""
         echo "Wheels built (not published). Run ./publish-pypi.sh all to publish."
         ;;
@@ -198,5 +198,5 @@ case $PACKAGE in
 esac
 
 echo ""
-echo "https://pypi.org/project/pyforge-core/"
-echo "https://pypi.org/project/pyforge-django/"
+echo "https://pypi.org/project/clarax-core/"
+echo "https://pypi.org/project/clarax-django/"

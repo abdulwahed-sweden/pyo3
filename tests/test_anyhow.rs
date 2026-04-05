@@ -1,10 +1,10 @@
 #![cfg(feature = "anyhow")]
 
-use pyforge::wrap_pyfunction;
+use clarax::wrap_pyfunction;
 
 #[test]
 fn test_anyhow_py_function_ok_result() {
-    use pyforge::{py_run, pyfunction, Python};
+    use clarax::{py_run, pyfunction, Python};
 
     #[pyfunction]
     #[expect(clippy::unnecessary_wraps)]
@@ -27,8 +27,8 @@ fn test_anyhow_py_function_ok_result() {
 
 #[test]
 fn test_anyhow_py_function_err_result() {
-    use pyforge::prelude::PyDictMethods;
-    use pyforge::{pyfunction, types::PyDict, Python};
+    use clarax::prelude::PyDictMethods;
+    use clarax::{pyfunction, types::PyDict, Python};
 
     #[pyfunction]
     fn produce_err_result() -> anyhow::Result<String> {

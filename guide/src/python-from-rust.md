@@ -2,11 +2,11 @@
 
 This chapter of the guide documents some ways to interact with Python code from Rust.
 
-Below is an introduction to the `'py` lifetime and some general remarks about how PyForge's API reasons about Python code.
+Below is an introduction to the `'py` lifetime and some general remarks about how ClaraX's API reasons about Python code.
 
 The subchapters also cover the following topics:
 
-- Python object types available in PyForge's API
+- Python object types available in ClaraX's API
 - How to work with Python exceptions
 - How to call Python functions
 - How to execute existing Python code
@@ -14,19 +14,19 @@ The subchapters also cover the following topics:
 ## The `'py` lifetime
 
 To safely interact with the Python interpreter a Rust thread must be [attached] to the Python interpreter.
-PyForge has a `Python<'py>` token that is used to prove that these conditions are met.
-Its lifetime `'py` is a central part of PyForge's API.
+ClaraX has a `Python<'py>` token that is used to prove that these conditions are met.
+Its lifetime `'py` is a central part of ClaraX's API.
 
 The `Python<'py>` token serves three purposes:
 
 - It provides global APIs for the Python interpreter, such as [`py.eval()`][eval] and [`py.import()`][import].
 - It can be passed to functions that require a proof of attachment, such as [`Py::clone_ref`][clone_ref].
-- Its lifetime `'py` is used to bind many of PyForge's types to the Python interpreter, such as [`Bound<'py, T>`][Bound].
+- Its lifetime `'py` is used to bind many of ClaraX's types to the Python interpreter, such as [`Bound<'py, T>`][Bound].
 
-PyForge's types that are bound to the `'py` lifetime, for example `Bound<'py, T>`, all contain a `Python<'py>` token.
+ClaraX's types that are bound to the `'py` lifetime, for example `Bound<'py, T>`, all contain a `Python<'py>` token.
 This means they have full access to the Python interpreter and offer a complete API for interacting with Python objects.
 
-Consult [PyForge's API documentation][obtaining-py] to learn how to acquire one of these tokens.
+Consult [ClaraX's API documentation][obtaining-py] to learn how to acquire one of these tokens.
 
 ### The Global Interpreter Lock
 
@@ -34,10 +34,10 @@ Prior to the introduction of free-threaded Python (first available in 3.13, full
 This ensured that only one Python thread can use the Python interpreter and its API at the same time.
 Historically, Rust code was able to use the GIL as a synchronization guarantee, but the introduction of free-threaded Python removed this possibility.
 
-The [`pyforge::sync`] module offers synchronization tools which abstract over both Python builds.
+The [`clarax::sync`] module offers synchronization tools which abstract over both Python builds.
 
 To enable any parallelism on the GIL-enabled build, and best throughput on the free-threaded build, non-Python operations (system calls and native Rust code) should consider detaching from the Python interpreter to allow other work to proceed.
-See [the section on parallelism](parallelism.md) for how to do that using PyForge's API.
+See [the section on parallelism](parallelism.md) for how to do that using ClaraX's API.
 
 ## Python's memory model
 
@@ -46,18 +46,18 @@ Python's memory model differs from Rust's memory model in two key ways:
 - There is no concept of ownership; all Python objects are shared and usually implemented via reference counting
 - There is no concept of exclusive (`&mut`) references; any reference can mutate a Python object
 
-PyForge's API reflects this by providing smart pointer types, `Py<T>`, `Bound<'py, T>`, and (the very rarely used) `Borrowed<'a, 'py, T>`.
+ClaraX's API reflects this by providing smart pointer types, `Py<T>`, `Bound<'py, T>`, and (the very rarely used) `Borrowed<'a, 'py, T>`.
 These smart pointers all use Python reference counting.
 See the [subchapter on types](./types.md) for more detail on these types.
 
-Because of the lack of exclusive `&mut` references, PyForge's APIs for Python objects, for example [`PyListMethods::append`], use shared references.
+Because of the lack of exclusive `&mut` references, ClaraX's APIs for Python objects, for example [`PyListMethods::append`], use shared references.
 This is safe because Python objects have internal mechanisms to prevent data races (as of time of writing, the Python GIL).
 
 [attached]: https://docs.python.org/3.14/glossary.html#term-attached-thread-state
-[obtaining-py]: {{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html#obtaining-a-python-token
-[`pyforge::sync`]: {{#PYO3_DOCS_URL}}/pyforge/sync/index.html
-[eval]: {{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html#method.eval
-[import]: {{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html#method.import
-[clone_ref]: {{#PYO3_DOCS_URL}}/pyforge/prelude/struct.Py.html#method.clone_ref
-[Bound]: {{#PYO3_DOCS_URL}}/pyforge/struct.Bound.html
-[`PyListMethods::append`]: {{#PYO3_DOCS_URL}}/pyforge/types/trait.PyListMethods.html#tymethod.append
+[obtaining-py]: {{#PYO3_DOCS_URL}}/clarax/marker/struct.Python.html#obtaining-a-python-token
+[`clarax::sync`]: {{#PYO3_DOCS_URL}}/clarax/sync/index.html
+[eval]: {{#PYO3_DOCS_URL}}/clarax/marker/struct.Python.html#method.eval
+[import]: {{#PYO3_DOCS_URL}}/clarax/marker/struct.Python.html#method.import
+[clone_ref]: {{#PYO3_DOCS_URL}}/clarax/prelude/struct.Py.html#method.clone_ref
+[Bound]: {{#PYO3_DOCS_URL}}/clarax/struct.Bound.html
+[`PyListMethods::append`]: {{#PYO3_DOCS_URL}}/clarax/types/trait.PyListMethods.html#tymethod.append

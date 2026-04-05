@@ -31,7 +31,7 @@ jobs:
         with:
           workspaces: |
             .
-            pyforge-benches
+            clarax-benches
           save-if: ${{ github.ref == 'refs/heads/main' || contains(github.event.pull_request.labels.*.name, 'CI-save-pr-cache') }}
           cache-all-crates: "true"
           cache-workspace-crates: "true"

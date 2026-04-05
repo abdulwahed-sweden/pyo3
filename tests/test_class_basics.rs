@@ -1,10 +1,10 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
-use pyforge::py_run;
-use pyforge::types::PyType;
+use clarax::prelude::*;
+use clarax::py_run;
+use clarax::types::PyType;
 #[cfg(not(target_arch = "wasm32"))]
-use pyforge::PyClass;
+use clarax::PyClass;
 
 mod test_utils;
 
@@ -236,7 +236,7 @@ struct ClassWithHash {
 #[test]
 fn class_with_hash() {
     Python::attach(|py| {
-        use pyforge::types::IntoPyDict;
+        use clarax::types::IntoPyDict;
         let class = ClassWithHash { value: 42 };
         let hash = {
             use std::hash::{Hash, Hasher};

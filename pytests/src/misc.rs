@@ -1,4 +1,4 @@
-use pyforge::{
+use clarax::{
     prelude::*,
     types::{PyDict, PyString},
 };
@@ -23,7 +23,7 @@ fn hammer_attaching_in_thread() -> LockHolder {
     std::thread::spawn(move || {
         receiver.recv().ok();
         // now the interpreter has shut down, so hammer the attach API. In buggy
-        // versions of PyForge this will cause a crash.
+        // versions of ClaraX this will cause a crash.
         loop {
             Python::try_attach(|_py| ());
         }
@@ -45,8 +45,8 @@ fn accepts_bool(val: bool) -> bool {
 fn get_item_and_run_callback(dict: Bound<'_, PyDict>, callback: Bound<'_, PyAny>) -> PyResult<()> {
     // This function gives the opportunity to run a pure-Python callback so that
     // gevent can instigate a context switch. This had problematic interactions
-    // with PyForge's removed "GIL Pool".
-    // For context, see https://github.com/PyForge/pyo3/issues/3668
+    // with ClaraX's removed "GIL Pool".
+    // For context, see https://github.com/ClaraX/pyo3/issues/3668
     let item = dict.get_item("key")?.expect("key not found in dict");
     let string = item.to_string();
     callback.call0()?;

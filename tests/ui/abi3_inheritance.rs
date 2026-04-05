@@ -1,5 +1,5 @@
-use pyforge::exceptions::PyException;
-use pyforge::prelude::*;
+use clarax::exceptions::PyException;
+use clarax::prelude::*;
 
 #[pyclass(extends=PyException)]
 #[derive(Clone)]

@@ -19,7 +19,7 @@ use std::ptr::{self, NonNull};
 /// > in one module available to other modules, so the regular import mechanism can
 /// > be used to access C APIs defined in dynamically loaded modules.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyCapsule>`][crate::Py] or [`Bound<'py, PyCapsule>`][Bound].
 ///
 /// For APIs available on capsule objects, see the [`PyCapsuleMethods`] trait which is implemented for
@@ -27,7 +27,7 @@ use std::ptr::{self, NonNull};
 ///
 /// # Example
 /// ```
-/// use pyforge::{prelude::*, types::PyCapsule, ffi::c_str};
+/// use clarax::{prelude::*, types::PyCapsule, ffi::c_str};
 ///
 /// #[repr(C)]
 /// struct Foo {
@@ -63,7 +63,7 @@ impl PyCapsule {
     /// # Example
     ///
     /// ```
-    /// use pyforge::{prelude::*, types::PyCapsule, ffi::c_str};
+    /// use clarax::{prelude::*, types::PyCapsule, ffi::c_str};
     /// use std::ffi::CStr;
     /// use std::ptr::NonNull;
     ///
@@ -233,7 +233,7 @@ impl PyCapsule {
     /// # Example
     ///
     /// ```
-    /// use pyforge::{prelude::*, types::PyCapsule};
+    /// use clarax::{prelude::*, types::PyCapsule};
     /// use std::ffi::c_void;
     /// use std::ptr::NonNull;
     ///
@@ -285,12 +285,12 @@ impl PyCapsule {
     /// # Example
     ///
     /// ```
-    /// use pyforge::{prelude::*, types::PyCapsule};
+    /// use clarax::{prelude::*, types::PyCapsule};
     /// use std::ffi::c_void;
     /// use std::ptr::NonNull;
     ///
-    /// unsafe extern "C" fn free_data(capsule: *mut pyforge::ffi::PyObject) {
-    ///     let ptr = pyforge::ffi::PyCapsule_GetPointer(capsule, c"my_module.data".as_ptr());
+    /// unsafe extern "C" fn free_data(capsule: *mut clarax::ffi::PyObject) {
+    ///     let ptr = clarax::ffi::PyCapsule_GetPointer(capsule, c"my_module.data".as_ptr());
     ///     if !ptr.is_null() {
     ///         drop(Box::from_raw(ptr as *mut u32));
     ///     }
@@ -385,7 +385,7 @@ pub trait PyCapsuleMethods<'py>: crate::sealed::Sealed {
     /// ```
     /// use std::ffi::c_void;
     /// use std::sync::mpsc::{channel, Sender};
-    /// use pyforge::{prelude::*, types::PyCapsule};
+    /// use clarax::{prelude::*, types::PyCapsule};
     ///
     /// # fn main() -> PyResult<()> {
     /// let (tx, rx) = channel::<String>();

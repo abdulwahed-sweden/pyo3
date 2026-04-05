@@ -1,21 +1,21 @@
 [package]
 authors = ["Abdulwahed Mansour"]
-name = "pyforge-pytests"
+name = "clarax-pytests"
 version = "0.1.0"
-description = "Python-based tests for PyForge"
+description = "Python-based tests for ClaraX"
 edition = "2021"
 publish = false
 rust-version = "1.83"
 
 [features]
-experimental-async = ["pyforge/experimental-async"]
-experimental-inspect = ["pyforge/experimental-inspect"]
+experimental-async = ["clarax/experimental-async"]
+experimental-inspect = ["clarax/experimental-inspect"]
 
 [dependencies]
-pyforge = { path = "../" }
+clarax = { path = "../" }
 
 [build-dependencies]
-pyforge-build-config = { path = "../pyforge-build-config" }
+clarax-build-config = { path = "../clarax-build-config" }
 
 [lib]
 name = "pyo3_pytests"

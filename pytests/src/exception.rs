@@ -1,13 +1,13 @@
-use pyforge::create_exception;
-use pyforge::exceptions::PyValueError;
-use pyforge::prelude::*;
+use clarax::create_exception;
+use clarax::exceptions::PyValueError;
+use clarax::prelude::*;
 
 create_exception!(pytests.exception, MyValueError, PyValueError);
 
 #[pymodule(gil_used = false)]
 pub mod exception {
-    use pyforge::exceptions::PyValueError;
-    use pyforge::prelude::*;
+    use clarax::exceptions::PyValueError;
+    use clarax::prelude::*;
 
     #[pymodule_export]
     use super::MyValueError;

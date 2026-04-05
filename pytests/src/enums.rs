@@ -1,4 +1,4 @@
-use pyforge::{pyclass, pyfunction, pymodule};
+use clarax::{pyclass, pyfunction, pymodule};
 
 #[pymodule]
 pub mod enums {

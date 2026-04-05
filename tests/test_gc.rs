@@ -1,12 +1,12 @@
 #![cfg(feature = "macros")]
 #![warn(unsafe_op_in_unsafe_fn)]
 
-use pyforge::class::PyTraverseError;
-use pyforge::class::PyVisit;
-use pyforge::ffi;
-use pyforge::prelude::*;
+use clarax::class::PyTraverseError;
+use clarax::class::PyVisit;
+use clarax::ffi;
+use clarax::prelude::*;
 #[cfg(not(Py_GIL_DISABLED))]
-use pyforge::py_run;
+use clarax::py_run;
 #[cfg(not(target_arch = "wasm32"))]
 use std::cell::Cell;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -95,7 +95,7 @@ impl DropCheck {
     }
 
     #[track_caller]
-    fn assert_drops_with_gc(&self, object: *mut pyforge::ffi::PyObject) {
+    fn assert_drops_with_gc(&self, object: *mut clarax::ffi::PyObject) {
         // running the GC might take a few cycles to collect an object
         for _ in 0..100 {
             if self.0.is_completed() {
@@ -587,7 +587,7 @@ fn unsendable_are_not_traversed_on_foreign_thread() {
     }
 
     #[derive(Clone, Copy)]
-    struct SendablePtr(*mut pyforge::ffi::PyObject);
+    struct SendablePtr(*mut clarax::ffi::PyObject);
 
     unsafe impl Send for SendablePtr {}
 
@@ -717,13 +717,13 @@ fn test_traverse_subclass_override_clear() {
 
 // Manual traversal utilities
 
-unsafe fn get_type_traverse(tp: *mut pyforge::ffi::PyTypeObject) -> Option<pyforge::ffi::traverseproc> {
-    unsafe { std::mem::transmute(pyforge::ffi::PyType_GetSlot(tp, pyforge::ffi::Py_tp_traverse)) }
+unsafe fn get_type_traverse(tp: *mut clarax::ffi::PyTypeObject) -> Option<clarax::ffi::traverseproc> {
+    unsafe { std::mem::transmute(clarax::ffi::PyType_GetSlot(tp, clarax::ffi::Py_tp_traverse)) }
 }
 
 // a dummy visitor function
 extern "C" fn novisit(
-    _object: *mut pyforge::ffi::PyObject,
+    _object: *mut clarax::ffi::PyObject,
     _arg: *mut core::ffi::c_void,
 ) -> std::ffi::c_int {
     0
@@ -731,7 +731,7 @@ extern "C" fn novisit(
 
 // a visitor function which errors (returns nonzero code)
 extern "C" fn visit_error(
-    _object: *mut pyforge::ffi::PyObject,
+    _object: *mut clarax::ffi::PyObject,
     _arg: *mut core::ffi::c_void,
 ) -> std::ffi::c_int {
     -1
@@ -740,8 +740,8 @@ extern "C" fn visit_error(
 #[test]
 #[cfg(any(not(Py_LIMITED_API), Py_3_11))] // buffer availability
 fn test_drop_buffer_during_traversal_without_gil() {
-    use pyforge::buffer::PyBuffer;
-    use pyforge::types::PyBytes;
+    use clarax::buffer::PyBuffer;
+    use clarax::types::PyBytes;
 
     // `PyBuffer` has a drop method which attempts to attach to the Python interpreter,
     // if the thread is during traverse we leak it for safety. This should _never_ be happening

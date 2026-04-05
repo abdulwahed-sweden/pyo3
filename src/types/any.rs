@@ -21,14 +21,14 @@ use std::ptr;
 
 /// Represents any Python object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyAny>`][crate::Py] or [`Bound<'py, PyAny>`][Bound].
 ///
 /// For APIs available on all Python objects, see the [`PyAnyMethods`] trait which is implemented for
 /// [`Bound<'py, PyAny>`][Bound].
 ///
 /// See
-#[doc = concat!("[the guide](https://github.com/abdulwahed-sweden/pyforge/v", env!("CARGO_PKG_VERSION"), "/types.html#concrete-python-types)")]
+#[doc = concat!("[the guide](https://github.com/abdulwahed-sweden/clarax/v", env!("CARGO_PKG_VERSION"), "/types.html#concrete-python-types)")]
 /// for an explanation of the different Python object types.
 #[repr(transparent)]
 pub struct PyAny(UnsafeCell<ffi::PyObject>);
@@ -62,7 +62,7 @@ impl crate::impl_::pyclass::PyClassBaseType for PyAny {
 
 /// This trait represents the Python APIs which are usable on all Python objects.
 ///
-/// It is recommended you import this trait via `use pyforge::prelude::*` rather than
+/// It is recommended you import this trait via `use clarax::prelude::*` rather than
 /// by importing this trait directly.
 #[doc(alias = "PyAny")]
 pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
@@ -82,7 +82,7 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Example: `intern!`ing the attribute name
     ///
     /// ```
-    /// # use pyforge::{prelude::*, intern};
+    /// # use clarax::{prelude::*, intern};
     /// #
     /// #[pyfunction]
     /// fn has_version(sys: &Bound<'_, PyModule>) -> PyResult<bool> {
@@ -108,7 +108,7 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Example: `intern!`ing the attribute name
     ///
     /// ```
-    /// # use pyforge::{prelude::*, intern};
+    /// # use clarax::{prelude::*, intern};
     /// #
     /// #[pyfunction]
     /// fn version<'py>(sys: &Bound<'py, PyModule>) -> PyResult<Bound<'py, PyAny>> {
@@ -139,7 +139,7 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     ///
     /// # Example: Retrieving an optional attribute
     /// ```
-    /// # use pyforge::{prelude::*, intern};
+    /// # use clarax::{prelude::*, intern};
     /// #
     /// #[pyfunction]
     /// fn get_version_if_exists<'py>(sys: &Bound<'py, PyModule>) -> PyResult<Option<Bound<'py, PyAny>>> {
@@ -166,7 +166,7 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Example: `intern!`ing the attribute name
     ///
     /// ```
-    /// # use pyforge::{prelude::*, intern};
+    /// # use clarax::{prelude::*, intern};
     /// #
     /// #[pyfunction]
     /// fn set_answer(ob: &Bound<'_, PyAny>) -> PyResult<()> {
@@ -210,8 +210,8 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::PyFloat;
+    /// use clarax::prelude::*;
+    /// use clarax::types::PyFloat;
     /// use std::cmp::Ordering;
     ///
     /// # fn main() -> PyResult<()> {
@@ -227,8 +227,8 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// It will return `PyErr` for values that cannot be compared:
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::{PyFloat, PyString};
+    /// use clarax::prelude::*;
+    /// use clarax::types::{PyFloat, PyString};
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -264,8 +264,8 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::class::basic::CompareOp;
-    /// use pyforge::prelude::*;
+    /// use clarax::class::basic::CompareOp;
+    /// use clarax::prelude::*;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -419,7 +419,7 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -448,9 +448,9 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::PyDict;
-    /// use pyforge_ffi::c_str;
+    /// use clarax::prelude::*;
+    /// use clarax::types::PyDict;
+    /// use clarax_ffi::c_str;
     /// use std::ffi::CStr;
     ///
     /// const CODE: &CStr = cr#"
@@ -484,7 +484,7 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```no_run
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -506,8 +506,8 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge_ffi::c_str;
+    /// use clarax::prelude::*;
+    /// use clarax_ffi::c_str;
     /// use std::ffi::CStr;
     ///
     /// const CODE: &CStr = cr#"
@@ -542,9 +542,9 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::PyDict;
-    /// use pyforge_ffi::c_str;
+    /// use clarax::prelude::*;
+    /// use clarax::types::PyDict;
+    /// use clarax_ffi::c_str;
     /// use std::ffi::CStr;
     ///
     /// const CODE: &CStr = cr#"
@@ -589,8 +589,8 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge_ffi::c_str;
+    /// use clarax::prelude::*;
+    /// use clarax_ffi::c_str;
     /// use std::ffi::CStr;
     ///
     /// const CODE: &CStr = cr#"
@@ -626,8 +626,8 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge_ffi::c_str;
+    /// use clarax::prelude::*;
+    /// use clarax_ffi::c_str;
     /// use std::ffi::CStr;
     ///
     /// const CODE: &CStr = cr#"
@@ -701,8 +701,8 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// # Example: Checking a Python object for iterability
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::{PyAny, PyNone};
+    /// use clarax::prelude::*;
+    /// use clarax::types::{PyAny, PyNone};
     ///
     /// fn is_iterable(obj: &Bound<'_, PyAny>) -> bool {
     ///     match obj.try_iter() {
@@ -736,8 +736,8 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     ///
     /// ```rust
     /// # #![allow(deprecated)]
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::{PyDict, PyList};
+    /// use clarax::prelude::*;
+    /// use clarax::types::{PyDict, PyList};
     ///
     /// Python::attach(|py| {
     ///     let dict = PyDict::new(py);
@@ -756,8 +756,8 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     ///
     /// ```rust
     /// # #![allow(deprecated)]
-    /// # fn main() -> Result<(), pyforge::PyErr> {
-    /// use pyforge::prelude::*;
+    /// # fn main() -> Result<(), clarax::PyErr> {
+    /// use clarax::prelude::*;
     ///
     /// #[pyclass]
     /// struct Class {
@@ -792,8 +792,8 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     ///
     /// ```rust
     /// # #![allow(deprecated)]
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::{PyDict, PyList};
+    /// use clarax::prelude::*;
+    /// use clarax::types::{PyDict, PyList};
     ///
     /// Python::attach(|py| {
     ///     let obj: Bound<'_, PyAny> = PyDict::new(py).into_any();
@@ -828,8 +828,8 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     ///
     /// ```rust
     /// # #![allow(deprecated)]
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::{PyBool, PyInt};
+    /// use clarax::prelude::*;
+    /// use clarax::types::{PyBool, PyInt};
     ///
     /// Python::attach(|py| {
     ///     let b = PyBool::new(py, true);
@@ -883,7 +883,7 @@ pub trait PyAnyMethods<'py>: crate::sealed::Sealed {
     /// Returns the reference count for the Python object.
     #[deprecated(
         since = "0.29.0",
-        note = "use `pyforge::ffi::Py_REFCNT(obj.as_ptr())` instead"
+        note = "use `clarax::ffi::Py_REFCNT(obj.as_ptr())` instead"
     )]
     fn get_refcnt(&self) -> isize;
 
@@ -1108,7 +1108,7 @@ impl<'py> PyAnyMethods<'py> for Bound<'py, PyAny> {
         fn inner(any: &Bound<'_, PyAny>, other: Borrowed<'_, '_, PyAny>) -> PyResult<Ordering> {
             let other = other.as_ptr();
             // Almost the same as ffi::PyObject_RichCompareBool, but this one doesn't try self == other.
-            // See https://github.com/PyForge/pyo3/issues/985 for more.
+            // See https://github.com/ClaraX/pyo3/issues/985 for more.
             let do_compare = |other, op| unsafe {
                 ffi::PyObject_RichCompare(any.as_ptr(), other, op)
                     .assume_owned_or_err(any.py())
@@ -1671,7 +1671,7 @@ mod tests {
         types::{IntoPyDict, PyAny, PyAnyMethods, PyBool, PyInt, PyList, PyModule, PyTypeMethods},
         Bound, BoundObject, IntoPyObject, PyTypeInfo, Python,
     };
-    use pyforge_ffi::c_str;
+    use clarax_ffi::c_str;
     use std::fmt::Debug;
 
     #[test]

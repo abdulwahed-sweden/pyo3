@@ -1,6 +1,6 @@
 #![cfg(all(feature = "macros", not(any(PyPy, GraalPy))))]
 
-use pyforge::{prelude::*, types::PySuper};
+use clarax::{prelude::*, types::PySuper};
 
 #[pyclass(subclass)]
 struct BaseClass {
@@ -44,7 +44,7 @@ impl SubClass {
 fn test_call_super_method() {
     Python::attach(|py| {
         let cls = py.get_type::<SubClass>();
-        pyforge::py_run!(
+        clarax::py_run!(
             py,
             cls,
             r#"

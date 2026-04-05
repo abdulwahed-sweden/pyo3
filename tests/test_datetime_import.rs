@@ -1,6 +1,6 @@
 #![cfg(not(Py_LIMITED_API))]
 
-use pyforge::{prelude::*, types::PyDate};
+use clarax::{prelude::*, types::PyDate};
 use tempfile::Builder;
 
 #[test]

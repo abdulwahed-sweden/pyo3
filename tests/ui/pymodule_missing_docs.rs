@@ -1,7 +1,7 @@
 #![deny(missing_docs)]
 //! Some crate docs
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 /// Some module documentation
 #[pymodule]

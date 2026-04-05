@@ -1,6 +1,6 @@
 # Executing existing Python code
 
-If you already have some existing Python code that you need to execute from Rust, the following FAQs can help you select the right PyForge functionality for your situation:
+If you already have some existing Python code that you need to execute from Rust, the following FAQs can help you select the right ClaraX functionality for your situation:
 
 ## Want to access Python APIs? Then use `PyModule::import`
 
@@ -8,7 +8,7 @@ If you already have some existing Python code that you need to execute from Rust
 You can use this to import and use any Python module available in your environment.
 
 ```rust
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 fn main() -> PyResult<()> {
     Python::attach(|py| {
@@ -23,14 +23,14 @@ fn main() -> PyResult<()> {
 }
 ```
 
-[`PyModule::import`]: {{#PYO3_DOCS_URL}}/pyforge/types/struct.PyModule.html#method.import
+[`PyModule::import`]: {{#PYO3_DOCS_URL}}/clarax/types/struct.PyModule.html#method.import
 
 ## Want to run just an expression? Then use `eval`
 
-[`Python::eval`]({{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html#method.eval) is a method to execute a [Python expression](https://docs.python.org/3/reference/expressions.html) and return the evaluated value as a `Bound<'py, PyAny>` object.
+[`Python::eval`]({{#PYO3_DOCS_URL}}/clarax/marker/struct.Python.html#method.eval) is a method to execute a [Python expression](https://docs.python.org/3/reference/expressions.html) and return the evaluated value as a `Bound<'py, PyAny>` object.
 
 ```rust
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 # fn main() -> Result<(), ()> {
 Python::attach(|py| {
@@ -55,8 +55,8 @@ You can also use the [`py_run!`] macro, which is a shorthand for [`Python::run`]
 Since [`py_run!`] panics on exceptions, we recommend you use this macro only for quickly testing your Python extension modules.
 
 ```rust
-use pyforge::prelude::*;
-use pyforge::py_run;
+use clarax::prelude::*;
+use clarax::py_run;
 
 # fn main() {
 #[pyclass]
@@ -93,13 +93,13 @@ assert userdata.as_tuple() == userdata_as_tuple
 
 ## You have a Python file or code snippet? Then use `PyModule::from_code`
 
-[`PyModule::from_code`]({{#PYO3_DOCS_URL}}/pyforge/types/struct.PyModule.html#method.from_code) can be used to generate a Python module which can then be used just as if it was imported with `PyModule::import`.
+[`PyModule::from_code`]({{#PYO3_DOCS_URL}}/clarax/types/struct.PyModule.html#method.from_code) can be used to generate a Python module which can then be used just as if it was imported with `PyModule::import`.
 
 **Warning**: This will compile and execute code.
 **Never** pass untrusted code to this function!
 
 ```rust
-use pyforge::{prelude::*, types::IntoPyDict};
+use clarax::{prelude::*, types::IntoPyDict};
 
 # fn main() -> PyResult<()> {
 Python::attach(|py| {
@@ -136,17 +136,17 @@ def leaky_relu(x, slope=0.01):
 Python maintains the `sys.modules` dict as a cache of all imported modules.
 An import in Python will first attempt to lookup the module from this dict, and if not present will use various strategies to attempt to locate and load the module.
 
-The [`append_to_inittab`]({{#PYO3_DOCS_URL}}/pyforge/macro.append_to_inittab.html) macro can be used to add additional `#[pymodule]` modules to an embedded Python interpreter.
+The [`append_to_inittab`]({{#PYO3_DOCS_URL}}/clarax/macro.append_to_inittab.html) macro can be used to add additional `#[pymodule]` modules to an embedded Python interpreter.
 The macro **must** be invoked _before_ initializing Python.
 
 As an example, the below adds the module `foo` to the embedded interpreter:
 
 ```rust
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 mod foo {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     #[pyfunction]
     fn add_one(x: i64) -> i64 {
@@ -155,7 +155,7 @@ mod foo {
 }
 
 fn main() -> PyResult<()> {
-    pyforge::append_to_inittab!(foo);
+    clarax::append_to_inittab!(foo);
     Python::attach(|py| Python::run(py, c"import foo; foo.add_one(6)", None, None))
 }
 ```
@@ -163,8 +163,8 @@ fn main() -> PyResult<()> {
 If `append_to_inittab` cannot be used due to constraints in the program, an alternative is to create a module using [`PyModule::new`] and insert it manually into `sys.modules`:
 
 ```rust
-use pyforge::prelude::*;
-use pyforge::types::PyDict;
+use clarax::prelude::*;
+use clarax::types::PyDict;
 
 #[pyfunction]
 pub fn add_one(x: i64) -> i64 {
@@ -239,7 +239,7 @@ The example below shows:
 `src/main.rs`:
 
 ```rust,ignore
-use pyforge::prelude::*;
+use clarax::prelude::*;
 use pyo3_ffi::c_str;
 
 fn main() -> PyResult<()> {
@@ -273,8 +273,8 @@ It is recommended to use absolute paths because then your binary can be run from
 `src/main.rs`:
 
 ```rust,no_run
-use pyforge::prelude::*;
-use pyforge::types::PyList;
+use clarax::prelude::*;
+use clarax::types::PyList;
 use std::fs;
 use std::path::Path;
 use std::ffi::CString;
@@ -304,7 +304,7 @@ fn main() -> PyResult<()> {
 Use context managers by directly invoking `__enter__` and `__exit__`.
 
 ```rust
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 fn main() {
     Python::attach(|py| {
@@ -369,7 +369,7 @@ See also [the FAQ entry](../faq.md#ctrl-c-doesnt-do-anything-while-my-rust-code-
 Alternatively, set Python's `signal` module to take the default action for a signal:
 
 ```rust
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 # fn main() -> PyResult<()> {
 Python::attach(|py| -> PyResult<()> {
@@ -383,6 +383,6 @@ Python::attach(|py| -> PyResult<()> {
 # }
 ```
 
-[`py_run!`]: {{#PYO3_DOCS_URL}}/pyforge/macro.py_run.html
-[`Python::run`]: {{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html#method.run
-[`PyModule::new`]: {{#PYO3_DOCS_URL}}/pyforge/types/struct.PyModule.html#method.new
+[`py_run!`]: {{#PYO3_DOCS_URL}}/clarax/macro.py_run.html
+[`Python::run`]: {{#PYO3_DOCS_URL}}/clarax/marker/struct.Python.html#method.run
+[`PyModule::new`]: {{#PYO3_DOCS_URL}}/clarax/types/struct.PyModule.html#method.new

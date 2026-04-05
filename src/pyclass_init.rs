@@ -14,8 +14,8 @@ use std::marker::PhantomData;
 /// # Examples
 ///
 /// ```
-/// # use pyforge::prelude::*;
-/// # use pyforge::py_run;
+/// # use clarax::prelude::*;
+/// # use clarax::py_run;
 /// #[pyclass(subclass)]
 /// struct BaseClass {
 ///     #[pyo3(get)]
@@ -75,7 +75,7 @@ impl<T: PyClass> PyClassInitializer<T> {
     ///
     /// # Examples
     /// ```
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// #[pyclass(subclass)]
     /// struct BaseClass {

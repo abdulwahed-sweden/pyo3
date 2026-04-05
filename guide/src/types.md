@@ -1,11 +1,11 @@
 # Python object types
 
-PyForge offers two main sets of types to interact with Python objects.
+ClaraX offers two main sets of types to interact with Python objects.
 This section of the guide expands into detail about these types and how to choose which to use.
 
 The first set of types are the smart pointers which all Python objects are wrapped in.
 These are `Py<T>`, `Bound<'py, T>`, and `Borrowed<'a, 'py, T>`.
-The [first section below](#pyforges-smart-pointers) expands on each of these in detail and why there are three of them.
+The [first section below](#claraxs-smart-pointers) expands on each of these in detail and why there are three of them.
 
 The second set of types are types which fill in the generic parameter `T` of the smart pointers.
 The most common is `PyAny`, which represents any Python object (similar to Python's `typing.Any`).
@@ -13,9 +13,9 @@ There are also concrete types for many Python built-in types, such as `PyList`, 
 User defined `#[pyclass]` types also fit this category.
 The [second section below](#concrete-python-types) expands on how to use these types.
 
-## PyForge's smart pointers
+## ClaraX's smart pointers
 
-PyForge's API offers three generic [smart pointers](glossary.md#smart-pointer): `Py<T>`, `Bound<'py, T>` and `Borrowed<'a, 'py, T>`.
+ClaraX's API offers three generic [smart pointers](glossary.md#smart-pointer): `Py<T>`, `Bound<'py, T>` and `Borrowed<'a, 'py, T>`.
 For each of these the type parameter `T` will be filled by a [concrete Python type](#concrete-python-types).
 For example, a Python list object can be represented by `Py<PyList>`, `Bound<'py, PyList>`, and `Borrowed<'a, 'py, PyList>`.
 
@@ -35,7 +35,7 @@ The sections below also explain these smart pointers in a little more detail.
 
 ### `Py<T>`
 
-[`Py<T>`][Py] is the foundational smart pointer in PyForge's API.
+[`Py<T>`][Py] is the foundational smart pointer in ClaraX's API.
 The type parameter `T` denotes the type of the Python object.
 Very frequently this is `PyAny`, meaning any Python object.
 
@@ -47,7 +47,7 @@ The lack of binding to the `'py` lifetime also carries drawbacks:
 - Almost all methods on `Py<T>` require a `Python<'py>` token as the first argument
 - Other functionality, such as [`Drop`][Drop], needs to check at runtime for attachment to the Python interpreter, at a small performance cost
 
-Because of the drawbacks `Bound<'py, T>` is preferred for many of PyForge's APIs.
+Because of the drawbacks `Bound<'py, T>` is preferred for many of ClaraX's APIs.
 In particular, `Bound<'py, T>` is better for function arguments.
 
 To convert a `Py<T>` into a `Bound<'py, T>`, the `Py::bind` and `Py::into_bound` methods are available. `Bound<'py, T>` can be converted back into `Py<T>` using [`Bound::unbind`].
@@ -57,7 +57,7 @@ To convert a `Py<T>` into a `Bound<'py, T>`, the `Py::bind` and `Py::into_bound`
 [`Bound<'py, T>`][Bound] is the counterpart to `Py<T>` which is also bound to the `'py` lifetime.
 It can be thought of as equivalent to the Rust tuple `(Python<'py>, Py<T>)`.
 
-By having the binding to the `'py` lifetime, `Bound<'py, T>` can offer the complete PyForge API at maximum efficiency.
+By having the binding to the `'py` lifetime, `Bound<'py, T>` can offer the complete ClaraX API at maximum efficiency.
 This means that `Bound<'py, T>` should usually be used whenever carrying this lifetime is acceptable, and `Py<T>` otherwise.
 
 `Bound<'py, T>` engages in Python reference counting.
@@ -65,7 +65,7 @@ This means that `Bound<'py, T>` owns a Python object.
 Rust code which just wants to borrow a Python object should use a shared reference `&Bound<'py, T>`.
 Just like `std::sync::Arc`, using `.clone()` and `drop()` will cheaply increment and decrement the reference count of the object (just in this case, the reference counting is implemented by the Python interpreter itself).
 
-To give an example of how `Bound<'py, T>` is PyForge's primary API type, consider the following Python code:
+To give an example of how `Bound<'py, T>` is ClaraX's primary API type, consider the following Python code:
 
 ```python
 def example():
@@ -75,11 +75,11 @@ def example():
     del x        # delete the original reference
 ```
 
-Using PyForge's API, and in particular `Bound<'py, PyList>`, this code translates into the following Rust code:
+Using ClaraX's API, and in particular `Bound<'py, PyList>`, this code translates into the following Rust code:
 
 ```rust
-use pyforge::prelude::*;
-use pyforge::types::PyList;
+use clarax::prelude::*;
+use clarax::types::PyList;
 
 fn example<'py>(py: Python<'py>) -> PyResult<()> {
     let x: Bound<'py, PyList> = PyList::empty(py);
@@ -94,8 +94,8 @@ fn example<'py>(py: Python<'py>) -> PyResult<()> {
 Or, without the type annotations:
 
 ```rust
-use pyforge::prelude::*;
-use pyforge::types::PyList;
+use clarax::prelude::*;
+use clarax::types::PyList;
 
 fn example(py: Python<'_>) -> PyResult<()> {
     let x = PyList::empty(py);
@@ -115,7 +115,7 @@ This occurs when the function output has at least one lifetime, and there is mor
 To demonstrate, consider this function which takes accepts Python objects and applies the [Python `+` operation][PyAnyMethods::add] to them:
 
 ```rust,compile_fail
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 fn add(left: &'_ Bound<'_, PyAny>, right: &'_ Bound<'_, PyAny>) -> PyResult<Bound<'_, PyAny>> {
     left.add(right)
 }
@@ -131,7 +131,7 @@ For the shared references, it's also fine to reduce `&'_` to just `&`.
 The working end result is below:
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 fn add<'py>(
     left: &Bound<'py, PyAny>,
     right: &Bound<'py, PyAny>,
@@ -139,7 +139,7 @@ fn add<'py>(
     left.add(right)
 }
 # Python::attach(|py| {
-#     let s = pyforge::types::PyString::new(py, "s");
+#     let s = clarax::types::PyString::new(py, "s");
 #     assert!(add(&s, &s).unwrap().eq("ss").unwrap());
 # })
 ```
@@ -148,13 +148,13 @@ If naming the `'py` lifetime adds unwanted complexity to the function signature,
 The cost is instead paid by a slight increase in implementation complexity, as seen by the introduction of a call to [`Bound::unbind`]:
 
 ```rust
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 fn add(left: &Bound<'_, PyAny>, right: &Bound<'_, PyAny>) -> PyResult<Py<PyAny>> {
     let output: Bound<'_, PyAny> = left.add(right)?;
     Ok(output.unbind())
 }
 # Python::attach(|py| {
-#     let s = pyforge::types::PyString::new(py, "s");
+#     let s = clarax::types::PyString::new(py, "s");
 #     assert!(add(&s, &s).unwrap().bind(py).eq("ss").unwrap());
 # })
 ```
@@ -167,11 +167,11 @@ The difference is that `Borrowed<'a, 'py, T>` is just a smart pointer rather tha
 
 `Borrowed<'a, 'py, T>` dereferences to `Bound<'py, T>`, so all methods on `Bound<'py, T>` are available on `Borrowed<'a, 'py, T>`.
 
-An example where `Borrowed<'a, 'py, T>` is used is in [`PyTupleMethods::get_borrowed_item`]({{#PYO3_DOCS_URL}}/pyforge/types/trait.PyTupleMethods.html#tymethod.get_item):
+An example where `Borrowed<'a, 'py, T>` is used is in [`PyTupleMethods::get_borrowed_item`]({{#PYO3_DOCS_URL}}/clarax/types/trait.PyTupleMethods.html#tymethod.get_item):
 
 ```rust
-use pyforge::prelude::*;
-use pyforge::types::PyTuple;
+use clarax::prelude::*;
+use clarax::types::PyTuple;
 
 # fn example<'py>(py: Python<'py>) -> PyResult<()> {
 // Create a new tuple with the elements (0, 1, 2)
@@ -254,19 +254,19 @@ Each concrete Python type such as `PyAny`, `PyTuple` and `PyDict` exposes its AP
 Each type's API is exposed as a trait: [`PyAnyMethods`], [`PyTupleMethods`], [`PyDictMethods`], and so on for all concrete types.
 Using traits rather than associated methods on the `Bound` smart pointer is done for a couple of reasons:
 
-- Clarity of documentation: each trait gets its own documentation page in the PyForge API docs.
-  If all methods were on the `Bound` smart pointer directly, the vast majority of PyForge's API would be on a single, extremely long, documentation page.
+- Clarity of documentation: each trait gets its own documentation page in the ClaraX API docs.
+  If all methods were on the `Bound` smart pointer directly, the vast majority of ClaraX's API would be on a single, extremely long, documentation page.
 - Consistency: downstream code implementing Rust APIs for existing Python types can also follow this pattern of using a trait.
   Downstream code would not be allowed to add new associated methods directly on the `Bound` type.
 - Future design: it is hoped that a future Rust with [arbitrary self types](https://github.com/rust-lang/rust/issues/44874) will remove the need for these traits in favour of placing the methods directly on `PyAny`, `PyTuple`, `PyDict`, and so on.
 
-These traits are all included in the `pyforge::prelude` module, so with the glob import `use pyforge::prelude::*` the full PyForge API is made available to downstream code.
+These traits are all included in the `clarax::prelude` module, so with the glob import `use clarax::prelude::*` the full ClaraX API is made available to downstream code.
 
 The following function accesses the first item in the input Python list, using the `.get_item()` method from the `PyListMethods` trait:
 
 ```rust
-use pyforge::prelude::*;
-use pyforge::types::PyList;
+use clarax::prelude::*;
+use clarax::types::PyList;
 
 fn get_first_item<'py>(list: &Bound<'py, PyList>) -> PyResult<Bound<'py, PyAny>> {
     list.get_item(0)
@@ -289,8 +289,8 @@ Casting to `Bound<'py, PyAny>` can be done with `.as_any()` or `.into_any()`.
 For example, the following snippet shows how to cast `Bound<'py, PyAny>` to `Bound<'py, PyTuple>`:
 
 ```rust
-# use pyforge::prelude::*;
-# use pyforge::types::PyTuple;
+# use clarax::prelude::*;
+# use clarax::types::PyTuple;
 # fn example<'py>(py: Python<'py>) -> PyResult<()> {
 // create a new Python `tuple`, and use `.into_any()` to erase the type
 let obj: Bound<'py, PyAny> = PyTuple::empty(py).into_any();
@@ -309,7 +309,7 @@ Custom [`#[pyclass]`][pyclass] types implement [`PyTypeCheck`], so `.cast()` als
 The snippet below is the same as the snippet above casting instead to a custom type `MyClass`:
 
 ```rust
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyclass]
 struct MyClass {}
@@ -336,8 +336,8 @@ This method is available for all types which implement the [`FromPyObject`] trai
 For example, the following snippet extracts a Rust tuple of integers from a Python tuple:
 
 ```rust
-# use pyforge::prelude::*;
-# use pyforge::types::PyTuple;
+# use clarax::prelude::*;
+# use clarax::types::PyTuple;
 # fn example<'py>(py: Python<'py>) -> PyResult<()> {
 // create a new Python `tuple`, and use `.into_any()` to erase the type
 let obj: Bound<'py, PyAny> = PyTuple::new(py, [1, 2, 3])?.into_any();
@@ -353,19 +353,19 @@ assert_eq!((x, y, z), (1, 2, 3));
 To avoid copying data, [`#[pyclass]`][pyclass] types can directly reference Rust data stored within the Python objects without needing to `.extract()`.
 See the [corresponding documentation in the class section of the guide](./class.md#bound-and-interior-mutability) for more detail.
 
-[Bound]: {{#PYO3_DOCS_URL}}/pyforge/struct.Bound.html
-[`Bound::unbind`]: {{#PYO3_DOCS_URL}}/pyforge/struct.Bound.html#method.unbind
-[Py]: {{#PYO3_DOCS_URL}}/pyforge/struct.Py.html
-[PyAnyMethods::add]: {{#PYO3_DOCS_URL}}/pyforge/types/trait.PyAnyMethods.html#tymethod.add
-[PyAnyMethods::extract]: {{#PYO3_DOCS_URL}}/pyforge/types/trait.PyAnyMethods.html#tymethod.extract
-[Bound::cast]: {{#PYO3_DOCS_URL}}/pyforge/struct.Bound.html#method.cast
-[Bound::cast_into]: {{#PYO3_DOCS_URL}}/pyforge/struct.Bound.html#method.cast_into
-[`PyTypeCheck`]: {{#PYO3_DOCS_URL}}/pyforge/type_object/trait.PyTypeCheck.html
-[`PyAnyMethods`]: {{#PYO3_DOCS_URL}}/pyforge/types/trait.PyAnyMethods.html
-[`PyDictMethods`]: {{#PYO3_DOCS_URL}}/pyforge/types/trait.PyDictMethods.html
-[`PyTupleMethods`]: {{#PYO3_DOCS_URL}}/pyforge/types/trait.PyTupleMethods.html
+[Bound]: {{#PYO3_DOCS_URL}}/clarax/struct.Bound.html
+[`Bound::unbind`]: {{#PYO3_DOCS_URL}}/clarax/struct.Bound.html#method.unbind
+[Py]: {{#PYO3_DOCS_URL}}/clarax/struct.Py.html
+[PyAnyMethods::add]: {{#PYO3_DOCS_URL}}/clarax/types/trait.PyAnyMethods.html#tymethod.add
+[PyAnyMethods::extract]: {{#PYO3_DOCS_URL}}/clarax/types/trait.PyAnyMethods.html#tymethod.extract
+[Bound::cast]: {{#PYO3_DOCS_URL}}/clarax/struct.Bound.html#method.cast
+[Bound::cast_into]: {{#PYO3_DOCS_URL}}/clarax/struct.Bound.html#method.cast_into
+[`PyTypeCheck`]: {{#PYO3_DOCS_URL}}/clarax/type_object/trait.PyTypeCheck.html
+[`PyAnyMethods`]: {{#PYO3_DOCS_URL}}/clarax/types/trait.PyAnyMethods.html
+[`PyDictMethods`]: {{#PYO3_DOCS_URL}}/clarax/types/trait.PyDictMethods.html
+[`PyTupleMethods`]: {{#PYO3_DOCS_URL}}/clarax/types/trait.PyTupleMethods.html
 [pyclass]: class.md
-[Borrowed]: {{#PYO3_DOCS_URL}}/pyforge/struct.Borrowed.html
+[Borrowed]: {{#PYO3_DOCS_URL}}/clarax/struct.Borrowed.html
 [Drop]: https://doc.rust-lang.org/std/ops/trait.Drop.html
-[PyAny]: {{#PYO3_DOCS_URL}}/pyforge/types/struct.PyAny.html
-[`FromPyObject`]: {{#PYO3_DOCS_URL}}/pyforge/conversion/trait.FromPyObject.html
+[PyAny]: {{#PYO3_DOCS_URL}}/clarax/types/struct.PyAny.html
+[`FromPyObject`]: {{#PYO3_DOCS_URL}}/clarax/conversion/trait.FromPyObject.html

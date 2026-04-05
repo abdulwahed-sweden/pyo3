@@ -14,7 +14,7 @@ use std::ptr::NonNull;
 
 /// Represents a builtin Python function object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyCFunction>`][crate::Py] or [`Bound<'py, PyCFunction>`][Bound].
 #[repr(transparent)]
 pub struct PyCFunction(PyAny);
@@ -63,8 +63,8 @@ impl PyCFunction {
     /// # Examples
     ///
     /// ```
-    /// # use pyforge::prelude::*;
-    /// # use pyforge::{py_run, types::{PyCFunction, PyDict, PyTuple}};
+    /// # use clarax::prelude::*;
+    /// # use clarax::{py_run, types::{PyCFunction, PyDict, PyTuple}};
     ///
     /// Python::attach(|py| {
     ///     let add_one = |args: &Bound<'_, PyTuple>, _kwargs: Option<&Bound<'_, PyDict>>| -> PyResult<_> {
@@ -85,7 +85,7 @@ impl PyCFunction {
         F: Fn(&Bound<'_, PyTuple>, Option<&Bound<'_, PyDict>>) -> R + Send + 'static,
         for<'p> R: crate::impl_::callback::IntoPyCallbackOutput<'p, *mut ffi::PyObject>,
     {
-        let name = name.unwrap_or(c"pyforge-closure");
+        let name = name.unwrap_or(c"clarax-closure");
         let doc = doc.unwrap_or(c"");
         let method_def =
             pymethods::PyMethodDef::cfunction_with_keywords(name, run_closure::<F, R>, doc);
@@ -117,7 +117,7 @@ impl PyCFunction {
     }
 }
 
-static CLOSURE_CAPSULE_NAME: &CStr = c"pyforge-closure";
+static CLOSURE_CAPSULE_NAME: &CStr = c"clarax-closure";
 
 unsafe extern "C" fn run_closure<F, R>(
     capsule_ptr: *mut ffi::PyObject,
@@ -160,7 +160,7 @@ unsafe impl<F: Send> Send for ClosureDestructor<F> {}
 
 /// Represents a Python function object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyFunction>`][crate::Py] or [`Bound<'py, PyFunction>`][Bound].
 #[repr(transparent)]
 #[cfg(not(Py_LIMITED_API))]

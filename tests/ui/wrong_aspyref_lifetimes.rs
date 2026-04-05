@@ -1,4 +1,4 @@
-use pyforge::{types::PyDict, Bound, Py, Python};
+use clarax::{types::PyDict, Bound, Py, Python};
 
 fn main() {
     let dict: Py<PyDict> = Python::attach(|py| PyDict::new(py).unbind());

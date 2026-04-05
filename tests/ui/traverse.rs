@@ -1,6 +1,6 @@
-use pyforge::prelude::*;
-use pyforge::PyTraverseError;
-use pyforge::PyVisit;
+use clarax::prelude::*;
+use clarax::PyTraverseError;
+use clarax::PyVisit;
 
 #[pyclass]
 struct TraverseTriesToTakePyRef {}

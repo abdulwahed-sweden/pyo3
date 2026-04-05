@@ -1,4 +1,4 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyclass(eq)]
 #[derive(PartialEq)]

@@ -9,4 +9,4 @@ name = "decorator"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyforge = "{{PYFORGE_VERSION}}"
+clarax = "{{CLARAX_VERSION}}"

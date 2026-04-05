@@ -4,32 +4,32 @@ Python's object model defines several protocols for different object behavior, s
 Python classes support these protocols by implementing "magic" methods, such as `__str__` or `__repr__`.
 Because of the double-underscores surrounding their name, these are also known as "dunder" methods.
 
-PyForge makes it possible for every magic method to be implemented in `#[pymethods]` just as they would be done in a regular Python class, with a few notable differences:
+ClaraX makes it possible for every magic method to be implemented in `#[pymethods]` just as they would be done in a regular Python class, with a few notable differences:
 
 - `__new__` is replaced by the [`#[new]` attribute](../class.md#constructor).
 - `__del__` is not yet supported, but may be in the future.
-- `__buffer__` and `__release_buffer__` are currently not supported and instead PyForge supports [`__getbuffer__` and `__releasebuffer__`](#buffer-objects) methods (these predate [PEP 688](https://peps.python.org/pep-0688/#python-level-buffer-protocol)), again this may change in the future.
-- PyForge adds [`__traverse__` and `__clear__`](#garbage-collector-integration) methods for controlling garbage collection.
-- The Python C-API which PyForge is implemented upon requires many magic methods to have a specific function signature in C and be placed into special "slots" on the class type object.
+- `__buffer__` and `__release_buffer__` are currently not supported and instead ClaraX supports [`__getbuffer__` and `__releasebuffer__`](#buffer-objects) methods (these predate [PEP 688](https://peps.python.org/pep-0688/#python-level-buffer-protocol)), again this may change in the future.
+- ClaraX adds [`__traverse__` and `__clear__`](#garbage-collector-integration) methods for controlling garbage collection.
+- The Python C-API which ClaraX is implemented upon requires many magic methods to have a specific function signature in C and be placed into special "slots" on the class type object.
   This limits the allowed argument and return types for these methods.
   They are listed in detail in the section below.
 
-If a magic method is not on the list above (for example `__init_subclass__`), then it should just work in PyForge.
+If a magic method is not on the list above (for example `__init_subclass__`), then it should just work in ClaraX.
 If this is not the case, please file a bug report.
 
-## Magic Methods handled by PyForge
+## Magic Methods handled by ClaraX
 
 If a function name in `#[pymethods]` is a magic method which is known to need special handling, it will be automatically placed into the correct slot in the Python type object.
-The function name is taken from the usual rules for naming `#[pymethods]`: the `#[pyforge(name = "...")]` attribute is used if present, otherwise the Rust function name is used.
+The function name is taken from the usual rules for naming `#[pymethods]`: the `#[clarax(name = "...")]` attribute is used if present, otherwise the Rust function name is used.
 
-The magic methods handled by PyForge are very similar to the standard Python ones on [this page](https://docs.python.org/3/reference/datamodel.html#special-method-names) - in particular they are the subset which have slots as [defined here](https://docs.python.org/3/c-api/typeobj.html).
+The magic methods handled by ClaraX are very similar to the standard Python ones on [this page](https://docs.python.org/3/reference/datamodel.html#special-method-names) - in particular they are the subset which have slots as [defined here](https://docs.python.org/3/c-api/typeobj.html).
 
-When PyForge handles a magic method, a couple of changes apply compared to other `#[pymethods]`:
+When ClaraX handles a magic method, a couple of changes apply compared to other `#[pymethods]`:
 
 - The Rust function signature is restricted to match the magic method.
-- The `#[pyforge(signature = (...)]` and `#[pyforge(text_signature = "...")]` attributes are not allowed.
+- The `#[clarax(signature = (...)]` and `#[clarax(text_signature = "...")]` attributes are not allowed.
 
-The following sections list all magic methods for which PyForge implements the necessary special handling.
+The following sections list all magic methods for which ClaraX implements the necessary special handling.
 The given signatures should be interpreted as follows:
 
 - All methods take a receiver as first argument, shown as `<self>`.
@@ -38,11 +38,11 @@ The given signatures should be interpreted as follows:
 - Return values can be optionally wrapped in `PyResult`.
 - `object` means that any type is allowed that can be extracted from a Python
    object (if argument) or converted to a Python object (if return value).
-- Other types must match what's given, e.g. `pyforge::basic::CompareOp` for
+- Other types must match what's given, e.g. `clarax::basic::CompareOp` for
    `__richcmp__`'s second argument.
 - For the comparison and arithmetic methods, extraction errors are not
    propagated as exceptions, but lead to a return of `NotImplemented`.
-- For some magic methods, the return values are not restricted by PyForge, but checked by the Python interpreter.
+- For some magic methods, the return values are not restricted by ClaraX, but checked by the Python interpreter.
    For example, `__str__` needs to return a string object.
    This is indicated by `object (Python type)`.
 
@@ -56,7 +56,7 @@ The given signatures should be interpreted as follows:
 - `__hash__(<self>) -> isize`
 
   Objects that compare equal must have the same hash value.
-  Any type up to 64 bits may be returned instead of `isize`, PyForge will convert to an isize automatically (wrapping unsigned types like `u64` and `usize`).
+  Any type up to 64 bits may be returned instead of `isize`, ClaraX will convert to an isize automatically (wrapping unsigned types like `u64` and `usize`).
 
   <details>
   <summary>Disabling Python's default hash</summary>
@@ -67,7 +67,7 @@ The given signatures should be interpreted as follows:
   This is done like so:
 
   ```rust,no_run
-  # use pyforge::prelude::*;
+  # use clarax::prelude::*;
   #
   #[pyclass]
   struct NotHashable {}
@@ -103,7 +103,7 @@ The given signatures should be interpreted as follows:
 <!-- rumdl-disable MD013 -->
 <!-- TODO: report false positive -->
 
-- `__richcmp__(<self>, object, pyforge::basic::CompareOp) -> object`
+- `__richcmp__(<self>, object, clarax::basic::CompareOp) -> object`
 
     Implements Python comparison operations (`==`, `!=`, `<`, `<=`, `>`, and `>=`) in a single method.
     The `CompareOp` argument indicates the comparison operation being performed.
@@ -122,11 +122,11 @@ The given signatures should be interpreted as follows:
     for some of the operations:
 
     ```rust,no_run
-    use pyforge::class::basic::CompareOp;
-    use pyforge::types::PyNotImplemented;
+    use clarax::class::basic::CompareOp;
+    use clarax::types::PyNotImplemented;
 
-    # use pyforge::prelude::*;
-    # use pyforge::BoundObject;
+    # use clarax::prelude::*;
+    # use clarax::BoundObject;
     #
     # #[pyclass]
     # struct Number(i32);
@@ -185,7 +185,7 @@ Returning `None` from `__next__` indicates that that there are no further items.
 Example:
 
 ```rust,no_run
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 use std::sync::Mutex;
 
@@ -210,7 +210,7 @@ In this case, the iterable only needs to implement `__iter__()` while the iterat
 For example:
 
 ```rust,no_run
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 
 #[pyclass]
 struct Iter {
@@ -245,9 +245,9 @@ impl Container {
 
 # Python::attach(|py| {
 #     let container = Container { iter: vec![1, 2, 3, 4] };
-#     let inst = pyforge::Py::new(py, container).unwrap();
-#     pyforge::py_run!(py, inst, "assert list(inst) == [1, 2, 3, 4]");
-#     pyforge::py_run!(py, inst, "assert list(iter(iter(inst))) == [1, 2, 3, 4]");
+#     let inst = clarax::Py::new(py, container).unwrap();
+#     clarax::py_run!(py, inst, "assert list(inst) == [1, 2, 3, 4]");
+#     clarax::py_run!(py, inst, "assert list(iter(iter(inst))) == [1, 2, 3, 4]");
 # });
 ```
 
@@ -271,10 +271,10 @@ To express this in Rust, return `PyResult::Err` with a `PyStopIteration` as the 
 The magic methods in this section can be used to implement Python container types.
 They are two main categories of container in Python: "mappings" such as `dict`, with arbitrary keys, and "sequences" such as `list` and `tuple`, with integer keys.
 
-The Python C-API which PyForge is built upon has separate "slots" for sequences and mappings.
+The Python C-API which ClaraX is built upon has separate "slots" for sequences and mappings.
 When writing a `class` in pure Python, there is no such distinction in the implementation - a `__getitem__` implementation will fill the slots for both the mapping and sequence forms, for example.
 
-By default PyForge reproduces the Python behaviour of filling both mapping and sequence slots.
+By default ClaraX reproduces the Python behaviour of filling both mapping and sequence slots.
 This makes sense for the "simple" case which matches Python, and also for sequences, where the mapping slot is used anyway to implement slice indexing.
 
 Mapping types usually will not want the sequence slots filled.
@@ -285,10 +285,10 @@ Having them filled will lead to outcomes which may be unwanted, such as:
 - Python provides a default implementation of `__iter__` for sequences, which calls `__getitem__` with consecutive positive integers starting from 0 until an `IndexError` is returned.
   Unless the mapping only contains consecutive positive integer keys, this `__iter__` implementation will likely not be the intended behavior.
 
-Use the `#[pyclass(mapping)]` annotation to instruct PyForge to only fill the mapping slots, leaving the sequence ones empty.
+Use the `#[pyclass(mapping)]` annotation to instruct ClaraX to only fill the mapping slots, leaving the sequence ones empty.
 This will apply to `__getitem__`, `__setitem__`, and `__delitem__`.
 
-Use the `#[pyclass(sequence)]` annotation to instruct PyForge to fill the `sq_length` slot instead of the `mp_length` slot for `__len__`.
+Use the `#[pyclass(sequence)]` annotation to instruct ClaraX to fill the `sq_length` slot instead of the `mp_length` slot for `__len__`.
 This will help libraries such as `numpy` recognise the class as a sequence, however will also cause CPython to automatically add the sequence length to any negative indices before passing them to `__getitem__`. (`__getitem__`, `__setitem__` and `__delitem__` mapping slots are still used for sequences, for slice operations.)
 
 - `__len__(<self>) -> usize`
@@ -313,7 +313,7 @@ This will help libraries such as `numpy` recognise the class as a sequence, howe
     mechanism as for a pure-Python class. This is done like so:
 
     ```rust,no_run
-    # use pyforge::prelude::*;
+    # use clarax::prelude::*;
     #
     #[pyclass]
     struct NoContains {}
@@ -333,7 +333,7 @@ This will help libraries such as `numpy` recognise the class as a sequence, howe
 
     Implements retrieval of the `self[a]` element.
 
-    *Note:* Negative integer indexes are not handled specially by PyForge.
+    *Note:* Negative integer indexes are not handled specially by ClaraX.
     However, for classes with `#[pyclass(sequence)]`, when a negative index is accessed via `PySequence::get_item`, the underlying C API already adjusts the index to be positive.
 
 - `__setitem__(<self>, object, object) -> ()`
@@ -456,18 +456,18 @@ These correspond to the slots `tp_traverse` and `tp_clear` in the Python C API.
 `__clear__` must clear out any mutable references to other Python objects (thus breaking reference cycles).
 Immutable references do not have to be cleared, as every cycle must contain at least one mutable reference.
 
-- `__traverse__(<self>, pyforge::class::gc::PyVisit<'_>) -> Result<(), pyforge::class::gc::PyTraverseError>`
+- `__traverse__(<self>, clarax::class::gc::PyVisit<'_>) -> Result<(), clarax::class::gc::PyTraverseError>`
 - `__clear__(<self>) -> ()`
 
 > [!NOTE]
-> `__traverse__` does not work with [`#[pyforge(warn(...))]`](../function.md#warn).
+> `__traverse__` does not work with [`#[clarax(warn(...))]`](../function.md#warn).
 
 Example:
 
 ```rust,no_run
-use pyforge::prelude::*;
-use pyforge::PyTraverseError;
-use pyforge::gc::PyVisit;
+use clarax::prelude::*;
+use clarax::PyTraverseError;
+use clarax::gc::PyVisit;
 
 #[pyclass]
 struct ClassWithGCSupport {
@@ -498,5 +498,5 @@ Most importantly, safe access to the interpreter is prohibited inside implementa
 > [!NOTE]
 > These methods are part of the C API, PyPy does not necessarily honor them. If you are building for PyPy you should measure memory consumption to make sure you do not have runaway memory growth. See [this issue on the PyPy bug tracker](https://github.com/pypy/pypy/issues/3848).
 
-[`PySequence`]: {{#PYO3_DOCS_URL}}/pyforge/types/struct.PySequence.html
-[`CompareOp::matches`]: {{#PYO3_DOCS_URL}}/pyforge/pyclass/enum.CompareOp.html#method.matches
+[`PySequence`]: {{#PYO3_DOCS_URL}}/clarax/types/struct.PySequence.html
+[`CompareOp::matches`]: {{#PYO3_DOCS_URL}}/clarax/pyclass/enum.CompareOp.html#method.matches

@@ -1,5 +1,5 @@
-use pyforge::prelude::*;
-use pyforge::types::{PyCFunction, PyDict, PyTuple};
+use clarax::prelude::*;
+use clarax::types::{PyCFunction, PyDict, PyTuple};
 
 fn main() {
     let fun: Py<PyCFunction> = Python::attach(|py| {

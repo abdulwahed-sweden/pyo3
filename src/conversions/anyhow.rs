@@ -25,13 +25,13 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"anyhow\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of anyhow and PyForge.
-//! The required anyhow version may vary based on the version of PyForge.
+//! Note that you must use compatible versions of anyhow and ClaraX.
+//! The required anyhow version may vary based on the version of ClaraX.
 //!
 //! # Example: Propagating a `PyErr` into [`anyhow::Error`]
 //!
 //! ```rust
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //! use std::path::PathBuf;
 //!
 //! // A wrapper around a Rust function.
@@ -59,8 +59,8 @@
 //! it can already convert anything that implements [`Error`](std::error::Error):
 //!
 //! ```rust
-//! use pyforge::prelude::*;
-//! use pyforge::types::PyBytes;
+//! use clarax::prelude::*;
+//! use clarax::types::PyBytes;
 //!
 //! // An example function that must handle multiple error types.
 //! //

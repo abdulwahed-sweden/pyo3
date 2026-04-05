@@ -2,7 +2,7 @@
 
 //! Trampolines for various pyfunction and pymethod implementations.
 //!
-//! They exist to monomorphise std::panic::catch_unwind once into PyForge, rather than inline in every
+//! They exist to monomorphise std::panic::catch_unwind once into ClaraX, rather than inline in every
 //! function, thus saving a huge amount of compile-time complexity.
 
 use std::{

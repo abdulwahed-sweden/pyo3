@@ -1,4 +1,4 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 use std::sync::atomic::AtomicPtr;
 
 #[pyfunction]

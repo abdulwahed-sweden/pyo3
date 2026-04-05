@@ -1,7 +1,7 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
-use pyforge::py_run;
+use clarax::prelude::*;
+use clarax::py_run;
 use std::fmt::{Display, Formatter};
 
 mod test_utils;

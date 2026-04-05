@@ -1,4 +1,4 @@
-// Copyright (c) 2017-present PyForge Project and Contributors
+// Copyright (c) 2017-present ClaraX Project and Contributors
 
 use super::PyMapping;
 use crate::err::PyResult;

@@ -1,12 +1,12 @@
-//! Test for [#220](https://github.com/PyForge/pyo3/issues/220)
+//! Test for [#220](https://github.com/ClaraX/pyo3/issues/220)
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule(gil_used = false)]
 pub mod subclassing {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
     #[cfg(not(Py_LIMITED_API))]
-    use pyforge::types::PyDict;
+    use clarax::types::PyDict;
 
     #[pyclass(subclass)]
     pub struct Subclassable {}

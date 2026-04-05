@@ -1,5 +1,5 @@
 //! With abi3, dict not supported until python 3.9 or greater
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyclass(dict)]
 struct TestClass {}

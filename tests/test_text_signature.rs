@@ -1,8 +1,8 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
-use pyforge::types::{PyDict, PyTuple};
-use pyforge::{types::PyType, wrap_pymodule};
+use clarax::prelude::*;
+use clarax::types::{PyDict, PyTuple};
+use clarax::{types::PyType, wrap_pymodule};
 
 mod test_utils;
 
@@ -148,7 +148,7 @@ fn test_auto_test_signature_function() {
 
     #[pyfunction]
     fn trailing_optional_required(a: i32, b: Option<i32>, c: Option<i32>) {
-        // Since PyForge 0.24, trailing optional arguments are treated like any other required argument
+        // Since ClaraX 0.24, trailing optional arguments are treated like any other required argument
         // (previously would get an implicit default of `None`)
         let _ = (a, b, c);
     }
@@ -160,7 +160,7 @@ fn test_auto_test_signature_function() {
                     .unwrap()
                     .getattr("__text_signature__")
                     .unwrap()
-                    .cast_into::<pyforge::types::PyString>()
+                    .cast_into::<clarax::types::PyString>()
                     .unwrap(),
                 $expected
             );

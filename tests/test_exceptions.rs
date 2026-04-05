@@ -1,7 +1,7 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
-use pyforge::{exceptions, py_run};
+use clarax::prelude::*;
+use clarax::{exceptions, py_run};
 use std::error::Error;
 use std::fmt;
 #[cfg(not(target_os = "windows"))]
@@ -99,7 +99,7 @@ fn test_exception_nosegfault() {
 
 #[test]
 fn test_write_unraisable() {
-    use pyforge::{exceptions::PyRuntimeError, types::PyNotImplemented};
+    use clarax::{exceptions::PyRuntimeError, types::PyNotImplemented};
     use test_utils::UnraisableCapture;
 
     Python::attach(|py| {

@@ -52,7 +52,7 @@ fn try_new_from_iter<'py>(
 
 /// Represents a Python `tuple` object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyTuple>`][crate::Py] or [`Bound<'py, PyTuple>`][Bound].
 ///
 /// For APIs available on `tuple` objects, see the [`PyTupleMethods`] trait which is implemented for
@@ -75,8 +75,8 @@ impl PyTuple {
     /// # Examples
     ///
     /// ```rust
-    /// use pyforge::prelude::*;
-    /// use pyforge::types::PyTuple;
+    /// use clarax::prelude::*;
+    /// use clarax::types::PyTuple;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| {
@@ -144,7 +144,7 @@ pub trait PyTupleMethods<'py>: crate::sealed::Sealed {
     /// Gets the tuple item at the specified index.
     /// # Example
     /// ```
-    /// use pyforge::prelude::*;
+    /// use clarax::prelude::*;
     ///
     /// # fn main() -> PyResult<()> {
     /// Python::attach(|py| -> PyResult<()> {
@@ -1373,7 +1373,7 @@ mod tests {
     }
 
     // An iterator that lies about its `ExactSizeIterator` implementation.
-    // See https://github.com/PyForge/pyo3/issues/2118
+    // See https://github.com/ClaraX/pyo3/issues/2118
     struct FaultyIter(Range<usize>, usize);
 
     impl Iterator for FaultyIter {

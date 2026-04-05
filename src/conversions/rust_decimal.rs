@@ -13,8 +13,8 @@
 //! rust_decimal = "1.0"
 //! ```
 //!
-//! Note that you must use a compatible version of rust_decimal and PyForge.
-//! The required rust_decimal version may vary based on the version of PyForge.
+//! Note that you must use a compatible version of rust_decimal and ClaraX.
+//! The required rust_decimal version may vary based on the version of ClaraX.
 //!
 //! # Example
 //!
@@ -22,7 +22,7 @@
 //!
 //! ```rust,no_run
 //! use rust_decimal::Decimal;
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //!
 //! #[pyfunction]
 //! fn add_one(d: Decimal) -> Decimal {

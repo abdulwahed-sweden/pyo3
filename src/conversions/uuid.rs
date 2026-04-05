@@ -14,16 +14,16 @@
 //! uuid = "1.11.0"
 //! ```
 //!
-//! Note that you must use a compatible version of uuid and PyForge.
-//! The required uuid version may vary based on the version of PyForge.
+//! Note that you must use a compatible version of uuid and ClaraX.
+//! The required uuid version may vary based on the version of ClaraX.
 //!
 //! # Example
 //!
 //! Rust code to create a function that parses a UUID string and returns it as a `Uuid`:
 //!
 //! ```rust,no_run
-//! use pyforge::prelude::*;
-//! use pyforge::exceptions::PyValueError;
+//! use clarax::prelude::*;
+//! use clarax::exceptions::PyValueError;
 //! use uuid::Uuid;
 //!
 //! /// Parse a UUID from a string.

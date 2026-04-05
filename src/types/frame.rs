@@ -3,12 +3,12 @@ use crate::sealed::Sealed;
 use crate::types::{PyCode, PyDict};
 use crate::PyAny;
 use crate::{ffi, Bound, PyResult, Python};
-use pyforge_ffi::PyObject;
+use clarax_ffi::PyObject;
 use std::ffi::CStr;
 
 /// Represents a Python frame.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyFrame>`][crate::Py] or [`Bound<'py, PyFrame>`][crate::Bound].
 #[repr(transparent)]
 pub struct PyFrame(PyAny);

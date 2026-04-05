@@ -1,14 +1,14 @@
 #![forbid(unsafe_code)]
 #![forbid(unsafe_op_in_unsafe_fn)]
 
-use pyforge::*;
+use clarax::*;
 
 #[expect(unexpected_cfgs)]
 #[path = "../../src/tests/hygiene/mod.rs"]
 mod hygiene;
 
 mod gh_4394 {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     #[derive(Eq, Ord, PartialEq, PartialOrd, Clone)]
     #[pyclass(get_all, skip_from_py_object)]
@@ -18,7 +18,7 @@ mod gh_4394 {
     }
 
     #[derive(Eq, Ord, PartialEq, PartialOrd, Debug, Hash, Clone, Copy)]
-    #[pyforge::pyclass(eq, eq_int, skip_from_py_object)]
+    #[clarax::pyclass(eq, eq_int, skip_from_py_object)]
     pub enum Operator {
         Equal,
     }
@@ -29,8 +29,8 @@ mod gh_4394 {
 }
 
 mod from_py_with {
-    use pyforge::prelude::*;
-    use pyforge::types::PyBytes;
+    use clarax::prelude::*;
+    use clarax::types::PyBytes;
 
     fn bytes_from_py(bytes: &Bound<'_, PyAny>) -> PyResult<Vec<u8>> {
         Ok(bytes.cast::<PyBytes>()?.as_bytes().to_vec())

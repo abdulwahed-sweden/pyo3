@@ -1,9 +1,9 @@
 #![cfg(feature = "macros")]
 
-use pyforge::exceptions::PyValueError;
-use pyforge::prelude::*;
-use pyforge::sync::PyOnceLock;
-use pyforge::types::IntoPyDict;
+use clarax::exceptions::PyValueError;
+use clarax::prelude::*;
+use clarax::sync::PyOnceLock;
+use clarax::types::IntoPyDict;
 
 #[pyclass]
 struct EmptyClassWithNew {}
@@ -151,12 +151,12 @@ impl SuperClass {
 }
 
 /// Checks that `subclass.__new__` works correctly.
-/// See https://github.com/PyForge/pyo3/issues/947 for the corresponding bug.
+/// See https://github.com/ClaraX/pyo3/issues/947 for the corresponding bug.
 #[test]
 fn subclass_new() {
     Python::attach(|py| {
         let super_cls = py.get_type::<SuperClass>();
-        let source = pyforge_ffi::c_str!(
+        let source = clarax_ffi::c_str!(
             r#"
 class Class(SuperClass):
     def __new__(cls):
@@ -215,12 +215,12 @@ struct NewExisting {
 #[pymethods]
 impl NewExisting {
     #[new]
-    fn new(py: pyforge::Python<'_>, val: usize) -> pyforge::Py<NewExisting> {
-        static PRE_BUILT: PyOnceLock<[pyforge::Py<NewExisting>; 2]> = PyOnceLock::new();
+    fn new(py: clarax::Python<'_>, val: usize) -> clarax::Py<NewExisting> {
+        static PRE_BUILT: PyOnceLock<[clarax::Py<NewExisting>; 2]> = PyOnceLock::new();
         let existing = PRE_BUILT.get_or_init(py, || {
             [
-                pyforge::Py::new(py, NewExisting { num: 0 }).unwrap(),
-                pyforge::Py::new(py, NewExisting { num: 1 }).unwrap(),
+                clarax::Py::new(py, NewExisting { num: 0 }).unwrap(),
+                clarax::Py::new(py, NewExisting { num: 1 }).unwrap(),
             ]
         });
 
@@ -228,7 +228,7 @@ impl NewExisting {
             return existing[val].clone_ref(py);
         }
 
-        pyforge::Py::new(py, NewExisting { num: val }).unwrap()
+        clarax::Py::new(py, NewExisting { num: val }).unwrap()
     }
 }
 
@@ -299,17 +299,17 @@ fn test_new_returns_bound() {
     })
 }
 
-#[pyforge::pyclass]
+#[clarax::pyclass]
 struct NewClassMethod {
     #[pyo3(get)]
-    cls: pyforge::Py<PyAny>,
+    cls: clarax::Py<PyAny>,
 }
 
-#[pyforge::pymethods]
+#[clarax::pymethods]
 impl NewClassMethod {
     #[new]
     #[classmethod]
-    fn new(cls: &pyforge::Bound<'_, pyforge::types::PyType>) -> Self {
+    fn new(cls: &clarax::Bound<'_, clarax::types::PyType>) -> Self {
         Self {
             cls: cls.clone().into_any().unbind(),
         }
@@ -318,8 +318,8 @@ impl NewClassMethod {
 
 #[test]
 fn test_new_class_method() {
-    pyforge::Python::attach(|py| {
+    clarax::Python::attach(|py| {
         let cls = py.get_type::<NewClassMethod>();
-        pyforge::py_run!(py, cls, "assert cls().cls is cls");
+        clarax::py_run!(py, cls, "assert cls().cls is cls");
     });
 }

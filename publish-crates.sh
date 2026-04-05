@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: Abdulwahed Mansour
-# Publishes all PyForge crates to crates.io in dependency order.
+# Publishes all ClaraX crates to crates.io in dependency order.
 # Usage: ./publish-crates.sh
 set -e
 
@@ -22,16 +22,16 @@ fi
 export CARGO_REGISTRY_TOKEN
 
 CRATES=(
-    "pyforge-build-config"
-    "pyforge-ffi"
-    "pyforge-macros-backend"
-    "pyforge-macros"
-    "pyforge"
-    "pyforge-core"
-    "pyforge-django"
+    "clarax-build-config"
+    "clarax-ffi"
+    "clarax-macros-backend"
+    "clarax-macros"
+    "clarax"
+    "clarax-core"
+    "clarax-django"
 )
 
-echo "PyForge — crates.io publish"
+echo "ClaraX — crates.io publish"
 echo ""
 
 # Verify workspace builds

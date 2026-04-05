@@ -7,7 +7,7 @@ use std::ffi::c_double;
 
 /// Represents a Python [`complex`](https://docs.python.org/3/library/functions.html#complex) object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyComplex>`][crate::Py] or [`Bound<'py, PyComplex>`][Bound].
 ///
 /// For APIs available on `complex` objects, see the [`PyComplexMethods`] trait which is implemented for

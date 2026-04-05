@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to PyForge will be documented here.
+All notable changes to ClaraX will be documented here.
 
 Format: [keepachangelog.com](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -9,13 +9,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 - `serialize_values_list()` — accepts `QuerySet.values_list()` output directly, single Python-Rust bridge crossing for the entire batch
-- `pyforge_doctor` management command — audits all ModelSerializer classes, reports Rust field ratio and recommendation. Supports `--app`, `--threshold`, `--json` flags
+- `clarax_doctor` management command — audits all ModelSerializer classes, reports Rust field ratio and recommendation. Supports `--app`, `--threshold`, `--json` flags
 - `from_dataclass()` and `from_typeddict()` — auto-generate Schema from Python type annotations, supports `Optional`, `Annotated` with constraint markers
-- `PyForgeMetricsMiddleware` — adds `X-PyForge-Stats` response header with rust_fields, python_fields, calls, and milliseconds per request
+- `ClaraXMetricsMiddleware` — adds `X-ClaraX-Stats` response header with rust_fields, python_fields, calls, and milliseconds per request
 - N+1 query detection — warns when ForeignKey fields are not in `select_related` during serialization (DEBUG mode only)
 - `serialize_stream()` — yields serialized chunks from a queryset for `StreamingHttpResponse`, constant memory regardless of queryset size
 - Compile-time schema validation — `Field(int, max_length=100)` raises `SchemaError` at definition time instead of silently ignoring the constraint
-- Benchmark regression CI — GitHub Actions workflow runs benchmarks on PRs touching pyforge-core or pyforge-django
+- Benchmark regression CI — GitHub Actions workflow runs benchmarks on PRs touching clarax-core or clarax-django
 - Constraint markers for `Annotated`: `MaxLength`, `MinLength`, `MinValue`, `MaxValue`, `MaxDigits`, `DecimalPlaces`
 
 ### Performance
@@ -26,18 +26,18 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [0.2.0] — 2026-04-05
 
 ### Added
-- **pyforge-core**: framework-agnostic Rust serialization and validation engine
+- **clarax-core**: framework-agnostic Rust serialization and validation engine
   - `Schema`, `Field`, `serialize`, `serialize_many`, `validate`, `validate_many`
   - 12 supported types: str, int, float, bool, Decimal, datetime, date, time, UUID, list, dict, bytes
   - Rayon parallel validation at 128-entry threshold
   - 34 Rust unit tests
-- Python package `pyforge-core` on PyPI — works without Django
+- Python package `clarax-core` on PyPI — works without Django
 
 ### Changed
-- **pyforge-django** now delegates all serialization and validation to pyforge-core
+- **clarax-django** now delegates all serialization and validation to clarax-core
   - 750 lines of duplicated logic removed
   - 150 lines of thin delegation wrappers added
-  - `DjangoFieldType.to_core_type()` maps Django's 16 field types to pyforge-core's 12 types
+  - `DjangoFieldType.to_core_type()` maps Django's 16 field types to clarax-core's 12 types
 - `RustSerializerMixin` rewritten: cached field classification + DRF bypass on `many=True`
   - 2.3-3.2x speedup over DRF (up from 1.4-1.5x in v0.1.x)
 - All crate versions bumped to 0.2.0
@@ -49,7 +49,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Stats
 - 1,350 tests passing across the workspace
 - Zero clippy warnings
-- Zero code duplication between pyforge-core and pyforge-django
+- Zero code duplication between clarax-core and clarax-django
 
 ## [0.1.0] — 2026-04-04
 
@@ -82,9 +82,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Security
 
-- All string inputs validated through PyForge extract() — no UTF-8 panic paths
+- All string inputs validated through ClaraX extract() — no UTF-8 panic paths
 - Memory exhaustion protection via Django's field size limit enforcement
 - Bounds-checked indexing throughout — no buffer overflow vectors
 - No `unwrap()` on user-controlled input — all fallible operations return `DjangoError`
 
-[0.1.0]: https://github.com/abdulwahed-sweden/pyforge/releases/tag/v0.1.0
+[0.1.0]: https://github.com/abdulwahed-sweden/clarax/releases/tag/v0.1.0

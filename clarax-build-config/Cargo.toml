@@ -1,0 +1,37 @@
+[package]
+name = "clarax-build-config"
+version = "0.3.0"
+description = "Build configuration for the ClaraX ecosystem — CPython 3.11+ only"
+authors = ["Abdulwahed Mansour"]
+keywords = ["clarax", "python", "cpython", "build"]
+homepage = "https://github.com/abdulwahed-sweden/clarax"
+repository = "https://github.com/abdulwahed-sweden/clarax"
+categories = ["api-bindings", "development-tools::ffi"]
+license = "MIT"
+edition = "2021"
+rust-version.workspace = true
+
+[dependencies]
+target-lexicon = "0.13.3"
+
+[build-dependencies]
+target-lexicon = "0.13.3"
+
+[features]
+default = []
+
+# Attempt to resolve a Python interpreter config for building in the build
+# script. If this feature isn't enabled, the build script no-ops.
+resolve-config = []
+
+# Removed: extension-module and generate-import-lib (deprecated)
+
+# These features are enabled by pyo3 when building Stable ABI extension modules.
+abi3 = []
+abi3-py311 = ["abi3-py312"]
+abi3-py312 = ["abi3-py313"]
+abi3-py313 = ["abi3-py314"]
+abi3-py314 = ["abi3"]
+
+[package.metadata.docs.rs]
+features = ["resolve-config"]

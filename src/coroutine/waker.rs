@@ -2,7 +2,7 @@ use crate::sync::PyOnceLock;
 use crate::types::any::PyAnyMethods;
 use crate::types::PyCFunction;
 use crate::{intern, wrap_pyfunction, Bound, Py, PyAny, PyResult, Python};
-use pyforge_macros::pyfunction;
+use clarax_macros::pyfunction;
 use std::sync::Arc;
 use std::task::Wake;
 

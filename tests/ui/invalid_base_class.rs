@@ -1,5 +1,5 @@
-use pyforge::prelude::*;
-use pyforge::types::PyBool;
+use clarax::prelude::*;
+use clarax::types::PyBool;
 
 #[pyclass(extends=PyBool)]
 struct ExtendsBool;

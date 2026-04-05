@@ -19,7 +19,7 @@
 //!
 //! ```rust,no_run
 //! use num_rational::Ratio;
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //!
 //! #[pyfunction]
 //! fn add_five_to_fraction(fraction: Ratio<i32>) -> Ratio<i32> {

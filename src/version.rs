@@ -5,9 +5,9 @@
 /// # Examples
 ///
 /// ```rust
-/// # use pyforge::Python;
+/// # use clarax::Python;
 /// Python::attach(|py| {
-///     // PyForge supports Python 3.8 and up.
+///     // ClaraX supports Python 3.8 and up.
 ///     assert!(py.version_info() >= (3, 8));
 ///     assert!(py.version_info() >= (3, 8, 0));
 /// });

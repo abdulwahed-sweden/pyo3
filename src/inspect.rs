@@ -1,6 +1,6 @@
 //! Runtime inspection of objects exposed to Python.
 //!
-//! Tracking issue: <https://github.com/PyForge/pyo3/issues/2454>.
+//! Tracking issue: <https://github.com/ClaraX/pyo3/issues/2454>.
 
 use crate::impl_::introspection::{escape_json_string, escaped_json_string_len};
 use std::fmt::{self, Display, Write};
@@ -8,8 +8,8 @@ use std::fmt::{self, Display, Write};
 /// Builds a type hint from a module name and a member name in the module
 ///
 /// ```
-/// use pyforge::type_hint_identifier;
-/// use pyforge::inspect::PyStaticExpr;
+/// use clarax::type_hint_identifier;
+/// use clarax::inspect::PyStaticExpr;
 ///
 /// const T: PyStaticExpr = type_hint_identifier!("datetime", "date");
 /// assert_eq!(T.to_string(), "datetime.date");
@@ -34,8 +34,8 @@ pub(crate) use type_hint_identifier;
 /// Builds the union of multiple type hints
 ///
 /// ```
-/// use pyforge::{type_hint_identifier, type_hint_union};
-/// use pyforge::inspect::PyStaticExpr;
+/// use clarax::{type_hint_identifier, type_hint_union};
+/// use clarax::inspect::PyStaticExpr;
 ///
 /// const T: PyStaticExpr = type_hint_union!(type_hint_identifier!("builtins", "int"), type_hint_identifier!("builtins", "float"));
 /// assert_eq!(T.to_string(), "int | float");
@@ -54,8 +54,8 @@ pub(crate) use type_hint_union;
 /// Builds a subscribed type hint
 ///
 /// ```
-/// use pyforge::{type_hint_identifier, type_hint_subscript};
-/// use pyforge::inspect::PyStaticExpr;
+/// use clarax::{type_hint_identifier, type_hint_subscript};
+/// use clarax::inspect::PyStaticExpr;
 ///
 /// const T: PyStaticExpr = type_hint_subscript!(type_hint_identifier!("collections.abc", "Sequence"), type_hint_identifier!("builtins", "float"));
 /// assert_eq!(T.to_string(), "collections.abc.Sequence[float]");
@@ -314,7 +314,7 @@ impl fmt::Display for PyStaticExpr {
     }
 }
 
-/// A PyForge extension to the Python AST to know more about [`PyStaticExpr::Constant`].
+/// A ClaraX extension to the Python AST to know more about [`PyStaticExpr::Constant`].
 ///
 /// This enables advanced features like escaping.
 #[derive(Clone, Copy)]

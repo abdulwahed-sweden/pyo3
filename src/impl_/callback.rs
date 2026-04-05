@@ -12,11 +12,11 @@ pub trait PyCallbackOutput: Copy + py_callback_output::Sealed {
     const ERR_VALUE: Self;
 }
 
-/// Seals `PyCallbackOutput` so that types outside PyForge cannot implement it.
+/// Seals `PyCallbackOutput` so that types outside ClaraX cannot implement it.
 mod py_callback_output {
     use std::os::raw::c_int;
 
-    use pyforge_ffi::Py_ssize_t;
+    use clarax_ffi::Py_ssize_t;
 
     use crate::ffi::PyObject;
 
@@ -44,9 +44,9 @@ pub trait IntoPyCallbackOutput<'py, Target>: into_py_callback_output::Sealed<'py
     fn convert(self, py: Python<'py>) -> PyResult<Target>;
 }
 
-/// Seals `IntoPyCallbackOutput` so that types outside PyForge cannot implement it.
+/// Seals `IntoPyCallbackOutput` so that types outside ClaraX cannot implement it.
 mod into_py_callback_output {
-    use pyforge_ffi::Py_hash_t;
+    use clarax_ffi::Py_hash_t;
 
     use crate::{
         ffi,
@@ -164,7 +164,7 @@ pub trait WrappingCastTo<T>: wrapping_cast_to::Sealed<T> {
     fn wrapping_cast(self) -> T;
 }
 
-/// Seals `WrappingCastTo` so that types outside PyForge cannot implement it.
+/// Seals `WrappingCastTo` so that types outside ClaraX cannot implement it.
 mod wrapping_cast_to {
     pub trait Sealed<T> {}
 }

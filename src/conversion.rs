@@ -37,7 +37,7 @@ use std::marker::PhantomData;
     message = "`{Self}` cannot be converted to a Python object",
     note = "`IntoPyObject` is automatically implemented by the `#[pyclass]` macro",
     note = "if you do not wish to have a corresponding Python type, implement it manually",
-    note = "if you do not own `{Self}` you can perform a manual conversion to one of the types in `pyforge::types::*`"
+    note = "if you do not own `{Self}` you can perform a manual conversion to one of the types in `clarax::types::*`"
 )]
 pub trait IntoPyObject<'py>: Sized {
     /// The Python output type
@@ -265,8 +265,8 @@ impl<'py, T> IntoPyObjectExt<'py> for T where T: IntoPyObject<'py> {}
 /// # Examples
 ///
 /// ```rust
-/// use pyforge::prelude::*;
-/// use pyforge::types::PyString;
+/// use clarax::prelude::*;
+/// use clarax::types::PyString;
 ///
 /// # fn main() -> PyResult<()> {
 /// Python::attach(|py| {
@@ -297,7 +297,7 @@ impl<'py, T> IntoPyObjectExt<'py> for T where T: IntoPyObject<'py> {}
 /// macro.
 /// ```rust,no_run
 /// # #![allow(dead_code)]
-/// use pyforge::prelude::*;
+/// use clarax::prelude::*;
 ///
 /// #[derive(FromPyObject)]
 /// struct MyObject {
@@ -320,7 +320,7 @@ impl<'py, T> IntoPyObjectExt<'py> for T where T: IntoPyObject<'py> {}
 /// the lifetimes of [`FromPyObject`] can be elided:
 /// ```rust,no_run
 /// # #![allow(dead_code)]
-/// use pyforge::prelude::*;
+/// use clarax::prelude::*;
 ///
 /// struct MyObject {
 ///     msg: String,
@@ -345,12 +345,12 @@ impl<'py, T> IntoPyObjectExt<'py> for T where T: IntoPyObject<'py> {}
 /// ## Manual implementation for types with lifetime parameters
 /// For types that contain lifetimes, these lifetimes need to be bound to the corresponding
 /// [`FromPyObject`] lifetime. This is roughly how the extraction of a typed [`Bound`] is
-/// implemented within PyForge.
+/// implemented within ClaraX.
 ///
 /// ```rust,no_run
 /// # #![allow(dead_code)]
-/// use pyforge::prelude::*;
-/// use pyforge::types::PyString;
+/// use clarax::prelude::*;
+/// use clarax::types::PyString;
 ///
 /// struct MyObject<'py>(Bound<'py, PyString>);
 ///
@@ -378,7 +378,7 @@ impl<'py, T> IntoPyObjectExt<'py> for T where T: IntoPyObject<'py> {}
 /// [`Cow<'a, str>`]: std::borrow::Cow
 /// [`Cow::Borrowed`]: std::borrow::Cow::Borrowed
 /// [`Cow::Owned`]: std::borrow::Cow::Owned
-/// [guide]: https://github.com/abdulwahed-sweden/pyforge/latest/conversions/traits.html#deriving-frompyobject
+/// [guide]: https://github.com/abdulwahed-sweden/clarax/latest/conversions/traits.html#deriving-frompyobject
 pub trait FromPyObject<'a, 'py>: Sized {
     /// The type returned in the event of a conversion error.
     ///
@@ -454,7 +454,7 @@ mod from_py_object_sequence {
     }
 }
 
-// Only reachable / implementable inside PyForge itself.
+// Only reachable / implementable inside ClaraX itself.
 pub(crate) use from_py_object_sequence::FromPyObjectSequence;
 
 /// A data structure that can be extracted without borrowing any data from the input.
@@ -470,7 +470,7 @@ pub(crate) use from_py_object_sequence::FromPyObjectSequence;
 /// below.
 ///
 /// ```,no_run
-/// # use pyforge::prelude::*;
+/// # use clarax::prelude::*;
 /// # #[allow(dead_code)]
 /// pub struct MyWrapper<T>(T);
 ///
@@ -573,7 +573,7 @@ impl<'py> IntoPyObject<'py> for () {
 }
 
 /// ```rust,compile_fail
-/// use pyforge::prelude::*;
+/// use clarax::prelude::*;
 ///
 /// #[pyclass]
 /// struct TestClass {

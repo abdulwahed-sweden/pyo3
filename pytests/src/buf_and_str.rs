@@ -1,13 +1,13 @@
 #![cfg(any(not(Py_LIMITED_API), Py_3_11))]
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 /// Objects related to PyBuffer and PyStr
 #[pymodule]
 pub mod buf_and_str {
-    use pyforge::buffer::PyBuffer;
-    use pyforge::prelude::*;
-    use pyforge::types::{PyBytes, PyMemoryView, PyString};
+    use clarax::buffer::PyBuffer;
+    use clarax::prelude::*;
+    use clarax::types::{PyBytes, PyMemoryView, PyString};
     use std::borrow::Cow;
 
     /// This is for confirming that PyBuffer does not cause memory leak

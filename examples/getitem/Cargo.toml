@@ -9,6 +9,6 @@ name = "getitem"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyforge = { path = "../../" }
+clarax = { path = "../../" }
 
 [workspace]

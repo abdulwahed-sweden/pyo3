@@ -1,6 +1,6 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyclass(subclass)]
 struct Base {
@@ -64,7 +64,7 @@ impl SubWithInit {
         (Self, Base::new())
     }
 
-    fn __init__(mut slf: pyforge::PyClassGuardMut<'_, Self>) {
+    fn __init__(mut slf: clarax::PyClassGuardMut<'_, Self>) {
         slf.as_super().__init__(); // need to call super __init__ manually
         slf.as_super().num += 1;
     }

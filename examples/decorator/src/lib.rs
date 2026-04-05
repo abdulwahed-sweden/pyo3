@@ -1,5 +1,5 @@
-use pyforge::prelude::*;
-use pyforge::types::{PyDict, PyTuple};
+use clarax::prelude::*;
+use clarax::types::{PyDict, PyTuple};
 use std::sync::atomic::{AtomicU64, Ordering};
 
 /// A function decorator that keeps track how often it is called.

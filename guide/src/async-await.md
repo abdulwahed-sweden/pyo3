@@ -1,7 +1,7 @@
 # Using `async` and `await`
 
 *This feature is still in active development.*
-*See [the related issue](https://github.com/abdulwahed-sweden/pyforge/issues/1632).*
+*See [the related issue](https://github.com/abdulwahed-sweden/clarax/issues/1632).*
 
 `#[pyfunction]` and `#[pymethods]` attributes also support `async fn`.
 
@@ -10,10 +10,10 @@
 # #[cfg(feature = "experimental-async")] {
 use std::{thread, time::Duration};
 use futures::channel::oneshot;
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pyfunction]
-#[pyforge(signature=(seconds, result=None))]
+#[clarax(signature=(seconds, result=None))]
 async fn sleep(seconds: f64, result: Option<Py<PyAny>>) -> Option<Py<PyAny>> {
     let (tx, rx) = oneshot::channel();
     thread::spawn(move || {
@@ -45,7 +45,7 @@ This strongly suggests to prefer shared borrows `&self` over exclusive ones `&mu
 
 Even if it is not possible to pass a `py: Python<'py>` token to an `async fn`, we're still attached to the interpreter during the execution of the future – the same as for a regular `fn` without `Python<'py>`/`Bound<'py, PyAny>` parameter
 
-It is still possible to get a `Python` marker using [`Python::attach`]({{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html#method.attach); because `attach` is reentrant and optimized, the cost will be negligible.
+It is still possible to get a `Python` marker using [`Python::attach`]({{#PYO3_DOCS_URL}}/clarax/marker/struct.Python.html#method.attach); because `attach` is reentrant and optimized, the cost will be negligible.
 
 ## Detaching from the interpreter across `.await`
 
@@ -59,7 +59,7 @@ use std::{
     pin::{Pin, pin},
     task::{Context, Poll},
 };
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 struct AllowThreads<F>(F);
 
@@ -81,17 +81,17 @@ where
 
 ## Cancellation
 
-Cancellation on the Python side can be caught using [`CancelHandle`]({{#PYO3_DOCS_URL}}/pyforge/coroutine/struct.CancelHandle.html) type, by annotating a function parameter with `#[pyforge(cancel_handle)]`.
+Cancellation on the Python side can be caught using [`CancelHandle`]({{#PYO3_DOCS_URL}}/clarax/coroutine/struct.CancelHandle.html) type, by annotating a function parameter with `#[clarax(cancel_handle)]`.
 
 ```rust,no_run
 # #![allow(dead_code)]
 # #[cfg(feature = "experimental-async")] {
 use futures::FutureExt;
-use pyforge::prelude::*;
-use pyforge::coroutine::CancelHandle;
+use clarax::prelude::*;
+use clarax::coroutine::CancelHandle;
 
 #[pyfunction]
-async fn cancellable(#[pyforge(cancel_handle)] mut cancel: CancelHandle) {
+async fn cancellable(#[clarax(cancel_handle)] mut cancel: CancelHandle) {
     futures::select! {
         /* _ = ... => println!("done"), */
         _ = cancel.cancelled().fuse() => println!("cancelled"),
@@ -102,9 +102,9 @@ async fn cancellable(#[pyforge(cancel_handle)] mut cancel: CancelHandle) {
 
 ## The `Coroutine` type
 
-To make a Rust future awaitable in Python, PyForge defines a [`Coroutine`]({{#PYO3_DOCS_URL}}/pyforge/coroutine/struct.Coroutine.html) type, which implements the Python [coroutine protocol](https://docs.python.org/3/library/collections.abc.html#collections.abc.Coroutine).
+To make a Rust future awaitable in Python, ClaraX defines a [`Coroutine`]({{#PYO3_DOCS_URL}}/clarax/coroutine/struct.Coroutine.html) type, which implements the Python [coroutine protocol](https://docs.python.org/3/library/collections.abc.html#collections.abc.Coroutine).
 
 Each `coroutine.send` call is translated to a `Future::poll` call.
-If a [`CancelHandle`]({{#PYO3_DOCS_URL}}/pyforge/coroutine/struct.CancelHandle.html) parameter is declared, the exception passed to `coroutine.throw` call is stored in it and can be retrieved with [`CancelHandle::cancelled`]({{#PYO3_DOCS_URL}}/pyforge/coroutine/struct.CancelHandle.html#method.cancelled); otherwise, it cancels the Rust future, and the exception is reraised;
+If a [`CancelHandle`]({{#PYO3_DOCS_URL}}/clarax/coroutine/struct.CancelHandle.html) parameter is declared, the exception passed to `coroutine.throw` call is stored in it and can be retrieved with [`CancelHandle::cancelled`]({{#PYO3_DOCS_URL}}/clarax/coroutine/struct.CancelHandle.html#method.cancelled); otherwise, it cancels the Rust future, and the exception is reraised;
 
 *The type does not yet have a public constructor until the design is finalized.*

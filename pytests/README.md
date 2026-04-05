@@ -1,6 +1,6 @@
-# pyforge-pytests
+# clarax-pytests
 
-An extension module built using PyForge, used to test and benchmark PyForge from Python.
+An extension module built using ClaraX, used to test and benchmark ClaraX from Python.
 
 The `stubs` directory contains Python stubs used to test the automated stubs introspection.
 To test them run `nox -s test-introspection`.

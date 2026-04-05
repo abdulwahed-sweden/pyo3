@@ -2,7 +2,7 @@
 
 //! Ensure that pyo3 macros can be used inside macro_rules!
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[macro_use]
 mod test_utils;

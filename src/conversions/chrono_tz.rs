@@ -14,14 +14,14 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"chrono-tz\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of chrono, chrono-tz and PyForge.
-//! The required chrono version may vary based on the version of PyForge.
+//! Note that you must use compatible versions of chrono, chrono-tz and ClaraX.
+//! The required chrono version may vary based on the version of ClaraX.
 //!
 //! # Example: Convert a `zoneinfo.ZoneInfo` to chrono-tz's `Tz`
 //!
 //! ```rust,no_run
 //! use chrono_tz::Tz;
-//! use pyforge::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
+//! use clarax::{Python, PyResult, IntoPyObject, types::PyAnyMethods};
 //!
 //! fn main() -> PyResult<()> {
 //!     Python::initialize();

@@ -1,13 +1,13 @@
 [package]
-name = "pyforge"
+name = "clarax"
 version = "0.3.0"
 description = "High-performance Rust-Python bindings for Django 5.x — async-first, CPython 3.11+ only"
 authors = ["Abdulwahed Mansour"]
 readme = "README.md"
 keywords = ["django", "rust", "python", "serializer", "performance"]
-homepage = "https://github.com/abdulwahed-sweden/pyforge"
-repository = "https://github.com/abdulwahed-sweden/pyforge"
-documentation = "https://docs.rs/pyforge"
+homepage = "https://github.com/abdulwahed-sweden/clarax"
+repository = "https://github.com/abdulwahed-sweden/clarax"
+documentation = "https://docs.rs/clarax"
 categories = ["api-bindings", "development-tools::ffi"]
 license = "MIT"
 exclude = [
@@ -29,10 +29,10 @@ libc = "0.2.62"
 once_cell = "1.21"
 
 # ffi bindings to the python interpreter, split into a separate crate so they can be used independently
-pyforge-ffi = { path = "pyforge-ffi", version = "=0.3.0" }
+clarax-ffi = { path = "clarax-ffi", version = "=0.3.0" }
 
 # support crate for macros feature
-pyforge-macros = { path = "pyforge-macros", version = "=0.3.0", optional = true }
+clarax-macros = { path = "clarax-macros", version = "=0.3.0", optional = true }
 
 # support crate for multiple-pymethods feature
 inventory = { version = "0.3.5", optional = true }
@@ -82,35 +82,35 @@ uuid = { version = "1.10.0", features = ["v4"] }
 parking_lot = { version = "0.12.3", features = ["arc_lock"] }
 
 [build-dependencies]
-pyforge-build-config = { path = "pyforge-build-config", version = "=0.3.0", features = ["resolve-config"] }
+clarax-build-config = { path = "clarax-build-config", version = "=0.3.0", features = ["resolve-config"] }
 
 [features]
 default = ["macros", "experimental-async"]
 
 # Enables support for `async fn` for `#[pyfunction]` and `#[pymethods]`.
-# Async support is now first-class in PyForge — enabled by default with macros
-experimental-async = ["macros", "pyforge-macros/experimental-async"]
+# Async support is now first-class in ClaraX — enabled by default with macros
+experimental-async = ["macros", "clarax-macros/experimental-async"]
 
-# Enables pyforge::inspect module and additional type information on FromPyObject
+# Enables clarax::inspect module and additional type information on FromPyObject
 # and IntoPy traits
-experimental-inspect = ["pyforge-macros/experimental-inspect"]
+experimental-inspect = ["clarax-macros/experimental-inspect"]
 
 # Enables macros: #[pyclass], #[pymodule], #[pyfunction] etc.
-macros = ["pyforge-macros"]
+macros = ["clarax-macros"]
 
 # Enables multiple #[pymethods] per #[pyclass]
-multiple-pymethods = ["inventory", "pyforge-macros/multiple-pymethods"]
+multiple-pymethods = ["inventory", "clarax-macros/multiple-pymethods"]
 
 # Removed: extension-module (deprecated, use PYO3_BUILD_EXTENSION_MODULE env var)
 
 # Use the Python limited API. See https://www.python.org/dev/peps/pep-0384/ for more.
-abi3 = ["pyforge-build-config/abi3", "pyforge-ffi/abi3"]
+abi3 = ["clarax-build-config/abi3", "clarax-ffi/abi3"]
 
-# With abi3, set minimum Python version. PyForge requires 3.11+.
-abi3-py311 = ["abi3-py312", "pyforge-build-config/abi3-py311", "pyforge-ffi/abi3-py311"]
-abi3-py312 = ["abi3-py313", "pyforge-build-config/abi3-py312", "pyforge-ffi/abi3-py312"]
-abi3-py313 = ["abi3-py314", "pyforge-build-config/abi3-py313", "pyforge-ffi/abi3-py313"]
-abi3-py314 = ["abi3", "pyforge-build-config/abi3-py314", "pyforge-ffi/abi3-py314"]
+# With abi3, set minimum Python version. ClaraX requires 3.11+.
+abi3-py311 = ["abi3-py312", "clarax-build-config/abi3-py311", "clarax-ffi/abi3-py311"]
+abi3-py312 = ["abi3-py313", "clarax-build-config/abi3-py312", "clarax-ffi/abi3-py312"]
+abi3-py313 = ["abi3-py314", "clarax-build-config/abi3-py313", "clarax-ffi/abi3-py313"]
+abi3-py314 = ["abi3", "clarax-build-config/abi3-py314", "clarax-ffi/abi3-py314"]
 
 # Removed: generate-import-lib (deprecated, raw-dylib used instead)
 
@@ -167,13 +167,13 @@ full = [
 
 [workspace]
 members = [
-    "pyforge-ffi",
-    "pyforge-build-config",
-    "pyforge-macros",
-    "pyforge-macros-backend",
-    "pyforge-introspection",
-    "pyforge-core",
-    "pyforge-django",
+    "clarax-ffi",
+    "clarax-build-config",
+    "clarax-macros",
+    "clarax-macros-backend",
+    "clarax-introspection",
+    "clarax-core",
+    "clarax-django",
     "pytests",
     "examples",
 ]

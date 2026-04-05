@@ -1,16 +1,16 @@
 # Performance
 
-To achieve the best possible performance, it is useful to be aware of several tricks and sharp edges concerning PyForge's API.
+To achieve the best possible performance, it is useful to be aware of several tricks and sharp edges concerning ClaraX's API.
 
 ## `extract` versus `cast`
 
-Pythonic API implemented using PyForge are often polymorphic, i.e. they will accept `&Bound<'_, PyAny>` and try to turn this into multiple more concrete types to which the requested operation is applied.
+Pythonic API implemented using ClaraX are often polymorphic, i.e. they will accept `&Bound<'_, PyAny>` and try to turn this into multiple more concrete types to which the requested operation is applied.
 This often leads to chains of calls to `extract`, e.g.
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
-# use pyforge::{exceptions::PyTypeError, types::PyList};
+# use clarax::prelude::*;
+# use clarax::{exceptions::PyTypeError, types::PyList};
 
 fn frobnicate_list<'py>(list: &Bound<'_, PyList>) -> PyResult<Bound<'py, PyAny>> {
     todo!()
@@ -38,8 +38,8 @@ This avoids the costly conversion of a `PyDowncastError` to a `PyErr` required t
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
-# use pyforge::{exceptions::PyTypeError, types::PyList};
+# use clarax::prelude::*;
+# use clarax::{exceptions::PyTypeError, types::PyList};
 # fn frobnicate_list<'py>(list: &Bound<'_, PyList>) -> PyResult<Bound<'py, PyAny>> { todo!() }
 # fn frobnicate_vec<'py>(vec: Vec<Bound<'py, PyAny>>) -> PyResult<Bound<'py, PyAny>> { todo!() }
 #
@@ -65,8 +65,8 @@ For example, instead of writing
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
-# use pyforge::types::PyList;
+# use clarax::prelude::*;
+# use clarax::types::PyList;
 
 struct Foo(Py<PyList>);
 
@@ -86,8 +86,8 @@ use the more efficient
 
 ```rust,no_run
 # #![allow(dead_code)]
-# use pyforge::prelude::*;
-# use pyforge::types::PyList;
+# use clarax::prelude::*;
+# use clarax::types::PyList;
 # struct Foo(Py<PyList>);
 # struct FooBound<'py>(Bound<'py, PyList>);
 #
@@ -105,7 +105,7 @@ impl PartialEq<Foo> for FooBound<'_> {
 
 CPython support multiple calling protocols: [`tp_call`] and [`vectorcall`].
 [`vectorcall`] is a more efficient protocol unlocking faster calls.
-PyForge will try to dispatch Python `call`s using the [`vectorcall`] calling convention to archive maximum performance if possible and falling back to [`tp_call`] otherwise.
+ClaraX will try to dispatch Python `call`s using the [`vectorcall`] calling convention to archive maximum performance if possible and falling back to [`tp_call`] otherwise.
 This is implemented using the (internal) `PyCallArgs` trait.
 It defines how Rust types can be used as Python `call` arguments.
 This trait is currently implemented for
@@ -130,16 +130,16 @@ On the free-threaded build, this is still best practice as there are several "st
 
 As a rule of thumb, attaching and detaching from the Python interpreter takes less than a millisecond, so any work which is expected to take multiple milliseconds can likely benefit from detaching from the interpreter.
 
-[`Python::detach`]: {{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html#method.detach
+[`Python::detach`]: {{#PYO3_DOCS_URL}}/clarax/marker/struct.Python.html#method.detach
 
 ## Disable the global reference pool
 
-PyForge uses global mutable state to keep track of deferred reference count updates implied by `impl<T> Drop for Py<T>` being called without being attached to the interpreter.
-The necessary synchronization to obtain and apply these reference count updates when PyForge-based code next attaches to the interpreter is somewhat expensive and can become a significant part of the cost of crossing the Python-Rust boundary.
+ClaraX uses global mutable state to keep track of deferred reference count updates implied by `impl<T> Drop for Py<T>` being called without being attached to the interpreter.
+The necessary synchronization to obtain and apply these reference count updates when ClaraX-based code next attaches to the interpreter is somewhat expensive and can become a significant part of the cost of crossing the Python-Rust boundary.
 
 This functionality can be avoided by setting the `pyo3_disable_reference_pool` conditional compilation flag.
 This removes the global reference pool and the associated costs completely.
-However, it does _not_ remove the `Drop` implementation for `Py<T>` which is necessary to interoperate with existing Rust code written without PyForge-based code in mind.
+However, it does _not_ remove the `Drop` implementation for `Py<T>` which is necessary to interoperate with existing Rust code written without ClaraX-based code in mind.
 To stay compatible with the wider Rust ecosystem in these cases, we keep the implementation but abort when `Drop` is called without being attached to the interpreter.
 If `pyo3_leak_on_drop_without_reference_pool` is additionally enabled, objects dropped without being attached to Python will be leaked instead which is always sound but might have determinal effects like resource exhaustion in the long term.
 
@@ -147,8 +147,8 @@ This limitation is important to keep in mind when this setting is used, especial
 For example, the following code
 
 ```rust,ignore
-# use pyforge::prelude::*;
-# use pyforge::types::PyList;
+# use clarax::prelude::*;
+# use clarax::types::PyList;
 let numbers: Py<PyList> = Python::attach(|py| PyList::empty(py).unbind());
 
 Python::attach(|py| {
@@ -163,8 +163,8 @@ Python::attach(|py| {
 will abort if the list not explicitly disposed via
 
 ```rust
-# use pyforge::prelude::*;
-# use pyforge::types::PyList;
+# use clarax::prelude::*;
+# use clarax::types::PyList;
 let numbers: Py<PyList> = Python::attach(|py| PyList::empty(py).unbind());
 
 Python::attach(|py| {

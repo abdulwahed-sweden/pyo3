@@ -1,4 +1,4 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 fn test_not_send_detach(py: Python<'_>) {
     py.detach(|| { drop(py); });

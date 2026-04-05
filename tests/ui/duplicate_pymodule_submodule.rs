@@ -1,6 +1,6 @@
-#[pyforge::pymodule]
+#[clarax::pymodule]
 mod mymodule {
-	#[pyforge::pymodule(submodule)]
+	#[clarax::pymodule(submodule)]
 	mod submod {}
 }
 

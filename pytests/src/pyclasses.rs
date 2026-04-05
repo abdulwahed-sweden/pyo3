@@ -1,11 +1,11 @@
 use std::{thread, time};
 
-use pyforge::basic::CompareOp;
-use pyforge::exceptions::{PyAttributeError, PyStopIteration, PyValueError};
-use pyforge::prelude::*;
-use pyforge::types::{PyComplex, PyType};
+use clarax::basic::CompareOp;
+use clarax::exceptions::{PyAttributeError, PyStopIteration, PyValueError};
+use clarax::prelude::*;
+use clarax::types::{PyComplex, PyType};
 #[cfg(not(Py_LIMITED_API))]
-use pyforge::types::{PyDict, PyTuple};
+use clarax::types::{PyDict, PyTuple};
 
 #[pyclass(from_py_object)]
 #[derive(Clone, Default)]

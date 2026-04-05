@@ -8,7 +8,7 @@ use std::{
     task::{Context, Poll, Waker},
 };
 
-use pyforge_macros::{pyclass, pymethods};
+use clarax_macros::{pyclass, pymethods};
 
 use crate::{
     coroutine::{cancel::ThrowCallback, waker::AsyncioWaker},

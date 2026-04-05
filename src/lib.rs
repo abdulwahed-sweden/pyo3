@@ -28,22 +28,22 @@
 
 //! Rust bindings to the Python interpreter.
 //!
-//! PyForge can be used to write native Python modules or run Python code and modules from Rust.
+//! ClaraX can be used to write native Python modules or run Python code and modules from Rust.
 //!
 //! See [the guide] for a detailed introduction.
 //!
-//! # PyForge's object types
+//! # ClaraX's object types
 //!
-//! PyForge has several core types that you should familiarize yourself with:
+//! ClaraX has several core types that you should familiarize yourself with:
 //!
 //! ## The `Python<'py>` object, and the `'py` lifetime
 //!
 //! Holding the [global interpreter lock] (GIL) is modeled with the [`Python<'py>`](Python) token. Many
-//! Python APIs require that the GIL is held, and PyForge uses this token as proof that these APIs
-//! can be called safely. It can be explicitly acquired and is also implicitly acquired by PyForge
+//! Python APIs require that the GIL is held, and ClaraX uses this token as proof that these APIs
+//! can be called safely. It can be explicitly acquired and is also implicitly acquired by ClaraX
 //! as it wraps Rust functions and structs into Python functions and objects.
 //!
-//! The [`Python<'py>`](Python) token's lifetime `'py` is common to many PyForge APIs:
+//! The [`Python<'py>`](Python) token's lifetime `'py` is common to many ClaraX APIs:
 //! - Types that also have the `'py` lifetime, such as the [`Bound<'py, T>`](Bound) smart pointer, are
 //!   bound to the Python GIL and rely on this to offer their functionality. These types often
 //!   have a [`.py()`](Bound::py) method to get the associated [`Python<'py>`](Python) token.
@@ -56,7 +56,7 @@
 //!
 //! ## Python object smart pointers
 //!
-//! PyForge has two core smart pointers to refer to Python objects, [`Py<T>`](Py) and its GIL-bound
+//! ClaraX has two core smart pointers to refer to Python objects, [`Py<T>`](Py) and its GIL-bound
 //! form [`Bound<'py, T>`](Bound) which carries the `'py` lifetime. (There is also
 //! [`Borrowed<'a, 'py, T>`](instance::Borrowed), but it is used much more rarely).
 //!
@@ -74,11 +74,11 @@
 //! This is an alias for the type `Result<..., PyErr>`.
 //!
 //! A `PyErr` represents a Python exception. A `PyErr` returned to Python code will be raised as a
-//! Python exception. Errors from `PyForge` itself are also exposed as Python exceptions.
+//! Python exception. Errors from `ClaraX` itself are also exposed as Python exceptions.
 //!
 //! # Feature flags
 //!
-//! PyForge uses [feature flags] to enable you to opt-in to additional functionality. For a detailed
+//! ClaraX uses [feature flags] to enable you to opt-in to additional functionality. For a detailed
 //! description, see the [Features chapter of the guide].
 //!
 //! ## Default feature flags
@@ -88,9 +88,9 @@
 //!
 //! ## Optional feature flags
 //!
-//! The following features customize PyForge's behavior:
+//! The following features customize ClaraX's behavior:
 //!
-//! - `abi3`: Restricts PyForge's API to a subset of the full Python API which is guaranteed by
+//! - `abi3`: Restricts ClaraX's API to a subset of the full Python API which is guaranteed by
 //! [PEP 384] to be forward-compatible with future Python versions.
 //! - `auto-initialize`: Changes [`Python::attach`] to automatically initialize the Python
 //! interpreter if needed.
@@ -141,21 +141,21 @@
 //! println!("only runs if python was compiled with Py_DEBUG")
 //! ```
 //! To use these attributes, add [`pyo3-build-config`] as a build dependency in
-//! your `Cargo.toml` and call `pyforge_build_config::use_pyo3_cfgs()` in a
+//! your `Cargo.toml` and call `clarax_build_config::use_pyo3_cfgs()` in a
 //! `build.rs` file.
 //!
 //! # Minimum supported Rust and Python versions
 //!
 //! Requires Rust 1.63 or greater.
 //!
-//! PyForge supports the following Python distributions:
+//! ClaraX supports the following Python distributions:
 //!   - CPython 3.8 or greater
 //!   - PyPy 7.3 (Python 3.11+)
 //!   - GraalPy 24.0 or greater (Python 3.10+)
 //!
 //! # Example: Building a native Python module
 //!
-//! PyForge can be used to generate a native Python module. The easiest way to try this out for the
+//! ClaraX can be used to generate a native Python module. The easiest way to try this out for the
 //! first time is to use [`maturin`]. `maturin` is a tool for building and publishing Rust-based
 //! Python packages with minimal configuration. The following steps set up some files for an example
 //! Python module, install `maturin`, and then show how to build and import the Python module.
@@ -185,7 +185,7 @@
 //!
 //! **`src/lib.rs`**
 //! ```rust,no_run
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //!
 //! /// Formats the sum of two numbers as string.
 //! #[pyfunction]
@@ -247,9 +247,9 @@
 //!
 //! Example program displaying the value of `sys.version` and the current user name:
 //! ```rust
-//! use pyforge::prelude::*;
-//! use pyforge::types::IntoPyDict;
-//! use pyforge::ffi::c_str;
+//! use clarax::prelude::*;
+//! use clarax::types::IntoPyDict;
+//! use clarax::ffi::c_str;
 //!
 //! fn main() -> PyResult<()> {
 //!     Python::attach(|py| {
@@ -270,14 +270,14 @@
 //!
 //! # Other Examples
 //!
-//! The PyForge [README](https://github.com/PyForge/pyo3#readme) contains quick-start examples for both
+//! The ClaraX [README](https://github.com/ClaraX/pyo3#readme) contains quick-start examples for both
 //! using [Rust from Python] and [Python from Rust].
 //!
-//! The PyForge repository's [examples subdirectory]
-//! contains some basic packages to demonstrate usage of PyForge.
+//! The ClaraX repository's [examples subdirectory]
+//! contains some basic packages to demonstrate usage of ClaraX.
 //!
-//! There are many projects using PyForge - see a list of some at
-//! <https://github.com/PyForge/pyo3#examples>.
+//! There are many projects using ClaraX - see a list of some at
+//! <https://github.com/ClaraX/pyo3#examples>.
 //!
 //! [anyhow]: https://docs.rs/anyhow/ "A trait object based error system for easy idiomatic error handling in Rust applications."
 //! [anyhow_error]: https://docs.rs/anyhow/latest/anyhow/struct.Error.html "Anyhows `Error` type, a wrapper around a dynamic error type"
@@ -305,7 +305,7 @@
 //! [`eyre`]: ./eyre/index.html "Documentation about the `eyre` feature."
 //! [`hashbrown`]: ./hashbrown/index.html "Documentation about the `hashbrown` feature."
 //! [indexmap_feature]: ./indexmap/index.html "Documentation about the `indexmap` feature."
-//! [`maturin`]: https://github.com/PyForge/maturin "Build and publish crates with pyo3, rust-cpython and cffi bindings as well as rust binaries as python packages"
+//! [`maturin`]: https://github.com/ClaraX/maturin "Build and publish crates with pyo3, rust-cpython and cffi bindings as well as rust binaries as python packages"
 //! [`num-bigint`]: ./num_bigint/index.html "Documentation about the `num-bigint` feature."
 //! [`num-complex`]: ./num_complex/index.html "Documentation about the `num-complex` feature."
 //! [`num-rational`]: ./num_rational/index.html "Documentation about the `num-rational` feature."
@@ -315,27 +315,27 @@
 //! [`rust_decimal`]: ./rust_decimal/index.html "Documentation about the `rust_decimal` feature."
 //! [`Decimal`]: https://docs.rs/rust_decimal/latest/rust_decimal/struct.Decimal.html
 //! [`serde`]: <./serde/index.html> "Documentation about the `serde` feature."
-#![doc = concat!("[calling_rust]: https://github.com/abdulwahed-sweden/pyforge/v", env!("CARGO_PKG_VERSION"), "/python-from-rust.html \"Calling Python from Rust - PyForge user guide\"")]
-//! [examples subdirectory]: https://github.com/PyForge/pyo3/tree/main/examples
+#![doc = concat!("[calling_rust]: https://github.com/abdulwahed-sweden/clarax/v", env!("CARGO_PKG_VERSION"), "/python-from-rust.html \"Calling Python from Rust - ClaraX user guide\"")]
+//! [examples subdirectory]: https://github.com/ClaraX/pyo3/tree/main/examples
 //! [feature flags]: https://doc.rust-lang.org/cargo/reference/features.html "Features - The Cargo Book"
 //! [global interpreter lock]: https://docs.python.org/3/glossary.html#term-global-interpreter-lock
 //! [hashbrown]: https://docs.rs/hashbrown
 //! [smallvec]: https://docs.rs/smallvec
 //! [uuid]: https://docs.rs/uuid
 //! [indexmap]: https://docs.rs/indexmap
-#![doc = concat!("[manual_builds]: https://github.com/abdulwahed-sweden/pyforge/v", env!("CARGO_PKG_VERSION"), "/building-and-distribution.html#manual-builds \"Manual builds - Building and Distribution - PyForge user guide\"")]
+#![doc = concat!("[manual_builds]: https://github.com/abdulwahed-sweden/clarax/v", env!("CARGO_PKG_VERSION"), "/building-and-distribution.html#manual-builds \"Manual builds - Building and Distribution - ClaraX user guide\"")]
 //! [num-bigint]: https://docs.rs/num-bigint
 //! [num-complex]: https://docs.rs/num-complex
 //! [num-rational]: https://docs.rs/num-rational
 //! [ordered-float]: https://docs.rs/ordered-float
 //! [serde]: https://docs.rs/serde
-//! [setuptools-rust]: https://github.com/PyForge/setuptools-rust "Setuptools plugin for Rust extensions"
-//! [the guide]: https://github.com/abdulwahed-sweden/pyforge "PyForge user guide"
-#![doc = concat!("[types]: https://github.com/abdulwahed-sweden/pyforge/v", env!("CARGO_PKG_VERSION"), "/types.html \"GIL lifetimes, mutability and Python object types\"")]
+//! [setuptools-rust]: https://github.com/ClaraX/setuptools-rust "Setuptools plugin for Rust extensions"
+//! [the guide]: https://github.com/abdulwahed-sweden/clarax "ClaraX user guide"
+#![doc = concat!("[types]: https://github.com/abdulwahed-sweden/clarax/v", env!("CARGO_PKG_VERSION"), "/types.html \"GIL lifetimes, mutability and Python object types\"")]
 //! [PEP 384]: https://www.python.org/dev/peps/pep-0384 "PEP 384 -- Defining a Stable ABI"
-//! [Python from Rust]: https://github.com/PyForge/pyo3#using-python-from-rust
-//! [Rust from Python]: https://github.com/PyForge/pyo3#using-rust-from-python
-#![doc = concat!("[Features chapter of the guide]: https://github.com/abdulwahed-sweden/pyforge/v", env!("CARGO_PKG_VERSION"), "/features.html#features-reference \"Features Reference - PyForge user guide\"")]
+//! [Python from Rust]: https://github.com/ClaraX/pyo3#using-python-from-rust
+//! [Rust from Python]: https://github.com/ClaraX/pyo3#using-rust-from-python
+#![doc = concat!("[Features chapter of the guide]: https://github.com/abdulwahed-sweden/clarax/v", env!("CARGO_PKG_VERSION"), "/features.html#features-reference \"Features Reference - ClaraX user guide\"")]
 //! [`Ungil`]: crate::marker::Ungil
 pub use crate::class::*;
 pub use crate::conversion::{FromPyObject, IntoPyObject, IntoPyObjectExt};
@@ -358,8 +358,8 @@ pub(crate) mod sealed;
 
 /// Old module which contained some implementation details of the `#[pyproto]` module.
 ///
-/// Prefer using the same content from `pyforge::pyclass`, e.g. `use pyforge::pyclass::CompareOp` instead
-/// of `use pyforge::class::basic::CompareOp`.
+/// Prefer using the same content from `clarax::pyclass`, e.g. `use clarax::pyclass::CompareOp` instead
+/// of `use clarax::class::basic::CompareOp`.
 ///
 /// For compatibility reasons this has not yet been removed, however will be done so
 /// once <https://github.com/rust-lang/rust/issues/30827> is resolved.
@@ -368,8 +368,8 @@ pub mod class {
 
     /// Old module which contained some implementation details of the `#[pyproto]` module.
     ///
-    /// Prefer using the same content from `pyforge::pyclass`, e.g. `use pyforge::pyclass::CompareOp` instead
-    /// of `use pyforge::class::basic::CompareOp`.
+    /// Prefer using the same content from `clarax::pyclass`, e.g. `use clarax::pyclass::CompareOp` instead
+    /// of `use clarax::class::basic::CompareOp`.
     ///
     /// For compatibility reasons this has not yet been removed, however will be done so
     /// once <https://github.com/rust-lang/rust/issues/30827> is resolved.
@@ -379,8 +379,8 @@ pub mod class {
 
     /// Old module which contained some implementation details of the `#[pyproto]` module.
     ///
-    /// Prefer using the same content from `pyforge::pyclass`, e.g. `use pyforge::pyclass::PyTraverseError` instead
-    /// of `use pyforge::class::gc::PyTraverseError`.
+    /// Prefer using the same content from `clarax::pyclass`, e.g. `use clarax::pyclass::PyTraverseError` instead
+    /// of `use clarax::class::gc::PyTraverseError`.
     ///
     /// For compatibility reasons this has not yet been removed, however will be done so
     /// once <https://github.com/rust-lang/rust/issues/30827> is resolved.
@@ -393,7 +393,7 @@ pub mod class {
 #[doc(hidden)]
 pub use inventory; // Re-exported for `#[pyclass]` and `#[pymethods]` with `multiple-pymethods`.
 
-/// Tests and helpers which reside inside PyForge's main library. Declared first so that macros
+/// Tests and helpers which reside inside ClaraX's main library. Declared first so that macros
 /// are available in unit tests.
 #[cfg(test)]
 mod test_utils;
@@ -442,7 +442,7 @@ mod version;
 pub use crate::conversions::*;
 
 #[cfg(feature = "macros")]
-pub use pyforge_macros::{
+pub use clarax_macros::{
     pyfunction, pymethods, pymodule, FromPyObject, IntoPyObject, IntoPyObjectRef,
 };
 
@@ -453,9 +453,9 @@ pub use pyforge_macros::{
 /// For more on creating Python classes,
 /// see the [class section of the guide][1].
 ///
-#[doc = concat!("[1]: https://github.com/abdulwahed-sweden/pyforge/v", env!("CARGO_PKG_VERSION"), "/class.html")]
+#[doc = concat!("[1]: https://github.com/abdulwahed-sweden/clarax/v", env!("CARGO_PKG_VERSION"), "/class.html")]
 #[cfg(feature = "macros")]
-pub use pyforge_macros::pyclass;
+pub use clarax_macros::pyclass;
 
 #[cfg(feature = "macros")]
 #[macro_use]
@@ -465,7 +465,7 @@ mod macros;
 pub mod inspect;
 
 // Putting the declaration of prelude at the end seems to help encourage rustc and rustdoc to prefer using
-// other paths to the same items. (e.g. `pyforge::types::PyAnyMethods` instead of `pyforge::prelude::PyAnyMethods`).
+// other paths to the same items. (e.g. `clarax::types::PyAnyMethods` instead of `clarax::prelude::PyAnyMethods`).
 pub mod prelude;
 
 /// Test readme and user guide

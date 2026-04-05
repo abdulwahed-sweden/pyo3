@@ -1,6 +1,6 @@
 #[cfg(feature = "serde")]
 mod test_serde {
-    use pyforge::prelude::*;
+    use clarax::prelude::*;
 
     use serde::{Deserialize, Serialize};
 

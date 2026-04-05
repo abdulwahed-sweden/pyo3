@@ -4,8 +4,8 @@
 
 ## Which layer
 
-- [ ] Rust core (pyforge-django/src/)
-- [ ] Python bridge (django_pyforge/)
+- [ ] Rust core (clarax-django/src/)
+- [ ] Python bridge (django_clarax/)
 - [ ] Documentation
 - [ ] Benchmarks
 - [ ] CI / build

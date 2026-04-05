@@ -1,5 +1,5 @@
-use pyforge::prelude::*;
-use pyforge::types::{PyDict, PyString, PyTuple};
+use clarax::prelude::*;
+use clarax::types::{PyDict, PyString, PyTuple};
 
 #[pyfunction]
 fn generic_function<T>(_value: T) {}

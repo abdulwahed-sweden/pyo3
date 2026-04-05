@@ -4,7 +4,7 @@ use std::convert::Infallible;
 
 /// Represents a Python `int` object.
 ///
-/// Values of this type are accessed via PyForge's smart pointers, e.g. as
+/// Values of this type are accessed via ClaraX's smart pointers, e.g. as
 /// [`Py<PyInt>`][crate::Py] or [`Bound<'py, PyInt>`][crate::Bound].
 ///
 /// You can usually avoid directly working with this type by using

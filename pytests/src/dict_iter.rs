@@ -1,10 +1,10 @@
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 #[pymodule]
 pub mod dict_iter {
-    use pyforge::exceptions::PyRuntimeError;
-    use pyforge::prelude::*;
-    use pyforge::types::PyDict;
+    use clarax::exceptions::PyRuntimeError;
+    use clarax::prelude::*;
+    use clarax::types::PyDict;
 
     #[pyclass]
     pub struct DictSize {

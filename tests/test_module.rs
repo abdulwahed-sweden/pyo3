@@ -1,10 +1,10 @@
 #![cfg(feature = "macros")]
 
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
-use pyforge::py_run;
-use pyforge::types::PyString;
-use pyforge::types::{IntoPyDict, PyDict, PyTuple};
+use clarax::py_run;
+use clarax::types::PyString;
+use clarax::types::{IntoPyDict, PyDict, PyTuple};
 
 mod test_utils;
 
@@ -35,7 +35,7 @@ fn double(x: usize) -> usize {
 
 #[test]
 fn test_module_with_functions() {
-    use pyforge::wrap_pymodule;
+    use clarax::wrap_pymodule;
 
     /// This module is implemented in Rust.
     #[pymodule]
@@ -122,7 +122,7 @@ fn test_module_with_functions() {
 #[test]
 #[allow(deprecated)]
 fn test_module_with_pyfn() {
-    use pyforge::wrap_pymodule;
+    use clarax::wrap_pymodule;
 
     /// This module is implemented in Rust.
     #[pymodule]
@@ -209,7 +209,7 @@ fn module_with_explicit_py_arg(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyRe
 
 #[test]
 fn test_module_with_explicit_py_arg() {
-    use pyforge::wrap_pymodule;
+    use clarax::wrap_pymodule;
 
     Python::attach(|py| {
         let d = [(
@@ -231,7 +231,7 @@ fn some_name(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
 #[test]
 fn test_module_renaming() {
-    use pyforge::wrap_pymodule;
+    use clarax::wrap_pymodule;
 
     Python::attach(|py| {
         let d = [("different_name", wrap_pymodule!(some_name)(py))]
@@ -279,7 +279,7 @@ fn raw_ident_module(module: &Bound<'_, PyModule>) -> PyResult<()> {
 
 #[test]
 fn test_raw_idents() {
-    use pyforge::wrap_pymodule;
+    use clarax::wrap_pymodule;
 
     Python::attach(|py| {
         let module = wrap_pymodule!(raw_ident_module)(py);
@@ -303,7 +303,7 @@ fn test_custom_names() {
     }
 
     Python::attach(|py| {
-        let module = pyforge::wrap_pymodule!(custom_names)(py);
+        let module = clarax::wrap_pymodule!(custom_names)(py);
 
         py_assert!(py, module, "not hasattr(module, 'custom_named_fn')");
         py_assert!(py, module, "module.foobar() == 42");
@@ -319,7 +319,7 @@ fn test_module_dict() {
     }
 
     Python::attach(|py| {
-        let module = pyforge::wrap_pymodule!(module_dict)(py);
+        let module = clarax::wrap_pymodule!(module_dict)(py);
 
         py_assert!(py, module, "module.yay == 'me'");
     });
@@ -335,7 +335,7 @@ fn test_module_dunder_all() {
             Ok(())
         }
 
-        let module = pyforge::wrap_pymodule!(dunder_all)(py);
+        let module = clarax::wrap_pymodule!(dunder_all)(py);
 
         py_assert!(py, module, "module.__all__ == ['foobar']");
     });
@@ -376,7 +376,7 @@ fn supermodule(module: &Bound<'_, PyModule>) -> PyResult<()> {
 
 #[test]
 fn test_module_nesting() {
-    use pyforge::wrap_pymodule;
+    use clarax::wrap_pymodule;
 
     Python::attach(|py| {
         let supermodule = wrap_pymodule!(supermodule)(py);
@@ -444,7 +444,7 @@ fn test_module_with_constant() {
     }
 
     Python::attach(|py| {
-        let m = pyforge::wrap_pymodule!(module_with_constant)(py);
+        let m = clarax::wrap_pymodule!(module_with_constant)(py);
         py_assert!(py, m, "isinstance(m.ANON, m.AnonClass)");
     });
 }
@@ -518,7 +518,7 @@ fn module_with_functions_with_module(m: &Bound<'_, PyModule>) -> PyResult<()> {
 #[test]
 fn test_module_functions_with_module() {
     Python::attach(|py| {
-        let m = pyforge::wrap_pymodule!(module_with_functions_with_module)(py);
+        let m = clarax::wrap_pymodule!(module_with_functions_with_module)(py);
         py_assert!(
             py,
             m,
@@ -559,7 +559,7 @@ fn test_module_doc_hidden() {
     }
 
     Python::attach(|py| {
-        let m = pyforge::wrap_pymodule!(my_module)(py);
+        let m = clarax::wrap_pymodule!(my_module)(py);
         py_assert!(py, m, "m.__doc__ == ''");
     })
 }

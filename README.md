@@ -1,11 +1,11 @@
-[![PyPI django](https://img.shields.io/pypi/v/pyforge-django.svg)](https://pypi.org/project/pyforge-django)
-[![PyPI core](https://img.shields.io/pypi/v/pyforge-core.svg)](https://pypi.org/project/pyforge-core)
-[![crates.io](https://img.shields.io/crates/v/pyforge-core.svg)](https://crates.io/crates/pyforge-core)
+[![PyPI django](https://img.shields.io/pypi/v/clarax-django.svg)](https://pypi.org/project/clarax-django)
+[![PyPI core](https://img.shields.io/pypi/v/clarax-core.svg)](https://pypi.org/project/clarax-core)
+[![crates.io](https://img.shields.io/crates/v/clarax-core.svg)](https://crates.io/crates/clarax-core)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE-MIT)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org)
 [![Django 4.2+](https://img.shields.io/badge/django-4.2%2B-green.svg)](https://www.djangoproject.com)
 
-# PyForge
+# ClaraX
 
 Rust-accelerated serialization and validation for Python. Drop-in for Django REST Framework, standalone for everything else.
 
@@ -13,29 +13,29 @@ Rust-accelerated serialization and validation for Python. Drop-in for Django RES
 
 Measured against DRF `ModelSerializer` on a 9-field model (CPython 3.12, Django 6.0):
 
-| Scenario | DRF | PyForge | Speedup |
+| Scenario | DRF | ClaraX | Speedup |
 |---|---|---|---|
 | Serialize 100 instances | 40.8 ms | 1.2 ms | **33x** |
 | Serialize 1,000 instances | 475 ms | 14.6 ms | **33x** |
 | Serialize 3,000 via `values_list()` | 166 ms | 47.6 ms | **3.5x** |
 | Validate 1,000 instances | 506 ms | 10.2 ms | **50x** |
 
-Database query time excluded. Raw dict comprehensions show no benefit — PyForge replaces DRF, not Python itself.
+Database query time excluded. Raw dict comprehensions show no benefit — ClaraX replaces DRF, not Python itself.
 
 ## Install
 
 ```bash
-pip install pyforge-django        # Django projects
-pip install pyforge-core           # Any Python project
+pip install clarax-django        # Django projects
+pip install clarax-core           # Any Python project
 ```
 
-Add to `INSTALLED_APPS`: `"django_pyforge"`
+Add to `INSTALLED_APPS`: `"django_clarax"`
 
 ## Django Quickstart
 
 ```python
 # Add to any existing DRF serializer — one line change
-from django_pyforge.serializers import RustSerializerMixin
+from django_clarax.serializers import RustSerializerMixin
 
 class MySerializer(RustSerializerMixin, serializers.ModelSerializer):
     class Meta:
@@ -43,14 +43,14 @@ class MySerializer(RustSerializerMixin, serializers.ModelSerializer):
         fields = "__all__"
 
 # Check which serializers benefit:
-# python manage.py pyforge_doctor
+# python manage.py clarax_doctor
 ```
 
 ## Python Quickstart
 
 ```python
 from dataclasses import dataclass
-from pyforge_core import from_dataclass, serialize
+from clarax_core import from_dataclass, serialize
 
 @dataclass
 class User:
@@ -65,9 +65,9 @@ result = serialize({"name": "Erik", "age": 30, "email": "erik@x.com"}, schema)
 ## What's New in v0.3.0
 
 - `serialize_values_list()` — single Rust call for entire querysets (3.5x over DRF)
-- `pyforge_doctor` — audit which serializers benefit (`--app`, `--json`, `--threshold`)
+- `clarax_doctor` — audit which serializers benefit (`--app`, `--json`, `--threshold`)
 - `from_dataclass()` / `from_typeddict()` — auto-generate Schema from type hints
-- `PyForgeMetricsMiddleware` — `X-PyForge-Stats` header per request
+- `ClaraXMetricsMiddleware` — `X-ClaraX-Stats` header per request
 - N+1 detection — warns on missing `select_related` during serialization
 - `serialize_stream()` — constant-memory streaming for large exports
 - Schema validation — catches invalid `Field()` constraints at definition time
@@ -86,24 +86,24 @@ result = serialize({"name": "Erik", "age": 30, "email": "erik@x.com"}, schema)
 | JSONField | Nested structures preserved |
 | BinaryField | Base64 encoded |
 
-## When PyForge Helps
+## When ClaraX Helps
 
 - DRF list views returning 50+ records
 - Bulk create/update with validation
 - Export jobs processing thousands of records
 - High-traffic APIs where serialization is the bottleneck
 
-## When PyForge Does NOT Help
+## When ClaraX Does NOT Help
 
 - Raw dict comprehensions or `.values()` without DRF
 - Single-record detail views (bridge overhead ~10us)
-- Database-bound views — PyForge does not touch query time
+- Database-bound views — ClaraX does not touch query time
 
 ## Requirements
 
 - Python 3.11+ — no Rust installation needed (pre-built wheels)
-- Django 4.2 LTS or 5.x (for pyforge-django)
-- Any Python project (for pyforge-core)
+- Django 4.2 LTS or 5.x (for clarax-django)
+- Any Python project (for clarax-core)
 
 ## License
 

@@ -30,12 +30,12 @@ Traceback (most recent call last):
 OverflowError: Python int too large to convert to C long
 ```
 
-Instead of relying on the default [`FromPyObject`] extraction to parse arguments, we can specify our own extraction function, using the `#[pyforge(from_py_with = ...)]` attribute.
-Unfortunately PyForge doesn't provide a way to wrap Python integers out of the box, but we can do a Python call to mask it and cast it to an `i32`.
+Instead of relying on the default [`FromPyObject`] extraction to parse arguments, we can specify our own extraction function, using the `#[clarax(from_py_with = ...)]` attribute.
+Unfortunately ClaraX doesn't provide a way to wrap Python integers out of the box, but we can do a Python call to mask it and cast it to an `i32`.
 
 ```rust,no_run
 # #![allow(dead_code)]
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 fn wrap(obj: &Bound<'_, PyAny>) -> PyResult<i32> {
     let val = obj.call_method1("__and__", (0xFFFFFFFF_u32,))?;
@@ -49,7 +49,7 @@ We also add documentation, via `///` comments, which are visible to Python users
 
 ```rust,no_run
 # #![allow(dead_code)]
-use pyforge::prelude::*;
+use clarax::prelude::*;
 
 fn wrap(obj: &Bound<'_, PyAny>) -> PyResult<i32> {
     let val = obj.call_method1("__and__", (0xFFFFFFFF_u32,))?;
@@ -65,7 +65,7 @@ struct Number(i32);
 #[pymethods]
 impl Number {
     #[new]
-    fn new(#[pyforge(from_py_with = wrap)] value: i32) -> Self {
+    fn new(#[clarax(from_py_with = wrap)] value: i32) -> Self {
         Self(value)
     }
 }
@@ -74,9 +74,9 @@ impl Number {
 With that out of the way, let's implement some operators:
 
 ```rust,no_run
-use pyforge::exceptions::{PyZeroDivisionError, PyValueError};
+use clarax::exceptions::{PyZeroDivisionError, PyValueError};
 
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #
 # #[pyclass]
 # struct Number(i32);
@@ -128,7 +128,7 @@ impl Number {
 ### Unary arithmetic operations
 
 ```rust,no_run
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #
 # #[pyclass]
 # struct Number(i32);
@@ -156,12 +156,12 @@ impl Number {
 ### Support for the `complex()`, `int()` and `float()` built-in functions
 
 ```rust,no_run
-# use pyforge::prelude::*;
+# use clarax::prelude::*;
 #
 # #[pyclass]
 # struct Number(i32);
 #
-use pyforge::types::PyComplex;
+use clarax::types::PyComplex;
 
 #[pymethods]
 impl Number {
@@ -209,10 +209,10 @@ assert hash_djb2('l50_50') == Number(-1152549421)
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
-use pyforge::exceptions::{PyValueError, PyZeroDivisionError};
-use pyforge::prelude::*;
-use pyforge::class::basic::CompareOp;
-use pyforge::types::{PyComplex, PyString};
+use clarax::exceptions::{PyValueError, PyZeroDivisionError};
+use clarax::prelude::*;
+use clarax::class::basic::CompareOp;
+use clarax::types::{PyComplex, PyString};
 
 fn wrap(obj: &Bound<'_, PyAny>) -> PyResult<i32> {
     let val = obj.call_method1("__and__", (0xFFFFFFFF_u32,))?;
@@ -227,7 +227,7 @@ struct Number(i32);
 #[pymethods]
 impl Number {
     #[new]
-    fn new(#[pyforge(from_py_with = wrap)] value: i32) -> Self {
+    fn new(#[clarax(from_py_with = wrap)] value: i32) -> Self {
         Self(value)
     }
 
@@ -384,7 +384,7 @@ mod my_module {
 "#;
 
 #
-# use pyforge::PyTypeInfo;
+# use clarax::PyTypeInfo;
 #
 # fn main() -> PyResult<()> {
 #     Python::attach(|py| -> PyResult<()> {
@@ -399,14 +399,14 @@ mod my_module {
 
 ## Appendix: Writing some unsafe code
 
-At the beginning of this chapter we said that PyForge doesn't provide a way to wrap Python integers out of the box but that's a half truth.
-There's not a PyForge API for it, but there's a Python C API function that does:
+At the beginning of this chapter we said that ClaraX doesn't provide a way to wrap Python integers out of the box but that's a half truth.
+There's not a ClaraX API for it, but there's a Python C API function that does:
 
 ```c
 unsigned long PyLong_AsUnsignedLongMask(PyObject *obj)
 ```
 
-We can call this function from Rust by using [`pyforge::ffi::PyLong_AsUnsignedLongMask`].
+We can call this function from Rust by using [`clarax::ffi::PyLong_AsUnsignedLongMask`].
 This is an *unsafe* function, which means we have to use an unsafe block to call it and take responsibility for upholding the contracts of this function.
 Let's review those contracts:
 
@@ -424,8 +424,8 @@ The signature has to be `fn(&Bound<'_, PyAny>) -> PyResult<T>`.
 ```rust,no_run
 # #![allow(dead_code)]
 use std::ffi::c_ulong;
-use pyforge::prelude::*;
-use pyforge::ffi;
+use clarax::prelude::*;
+use clarax::ffi;
 
 fn wrap(obj: &Bound<'_, PyAny>) -> Result<i32, PyErr> {
     let py: Python<'_> = obj.py();
@@ -445,7 +445,7 @@ fn wrap(obj: &Bound<'_, PyAny>) -> Result<i32, PyErr> {
 }
 ```
 
-[`PyErr::take`]: {{#PYO3_DOCS_URL}}/pyforge/prelude/struct.PyErr.html#method.take
-[`Python`]: {{#PYO3_DOCS_URL}}/pyforge/marker/struct.Python.html
-[`FromPyObject`]: {{#PYO3_DOCS_URL}}/pyforge/conversion/trait.FromPyObject.html
-[`pyforge::ffi::PyLong_AsUnsignedLongMask`]: {{#PYO3_DOCS_URL}}/pyforge/ffi/fn.PyLong_AsUnsignedLongMask.html
+[`PyErr::take`]: {{#PYO3_DOCS_URL}}/clarax/prelude/struct.PyErr.html#method.take
+[`Python`]: {{#PYO3_DOCS_URL}}/clarax/marker/struct.Python.html
+[`FromPyObject`]: {{#PYO3_DOCS_URL}}/clarax/conversion/trait.FromPyObject.html
+[`clarax::ffi::PyLong_AsUnsignedLongMask`]: {{#PYO3_DOCS_URL}}/clarax/ffi/fn.PyLong_AsUnsignedLongMask.html

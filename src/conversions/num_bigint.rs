@@ -13,8 +13,8 @@
 #![doc = concat!("pyo3 = { version = \"", env!("CARGO_PKG_VERSION"),  "\", features = [\"num-bigint\"] }")]
 //! ```
 //!
-//! Note that you must use compatible versions of num-bigint and PyForge.
-//! The required num-bigint version may vary based on the version of PyForge.
+//! Note that you must use compatible versions of num-bigint and ClaraX.
+//! The required num-bigint version may vary based on the version of ClaraX.
 //!
 //! ## Examples
 //!
@@ -23,7 +23,7 @@
 //! in which case it will fail its conversion and raise `OverflowError`.
 //! ```rust,no_run
 //! use num_bigint::BigInt;
-//! use pyforge::prelude::*;
+//! use clarax::prelude::*;
 //!
 //! #[pyfunction]
 //! fn add_one(n: BigInt) -> BigInt {
@@ -344,7 +344,7 @@ mod tests {
     use crate::exceptions::PyTypeError;
     use crate::test_utils::generate_unique_module_name;
     use crate::types::{PyAnyMethods as _, PyDict, PyModule};
-    use pyforge_ffi::c_str;
+    use clarax_ffi::c_str;
 
     fn rust_fib<T>() -> impl Iterator<Item = T>
     where
