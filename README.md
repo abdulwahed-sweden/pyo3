@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.png" alt="ClaraX" width="200">
+  <img src="assets/logo-full.png" alt="ClaraX" width="420">
 </p>
 
 <p align="center">
