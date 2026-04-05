@@ -39,15 +39,11 @@ jobs:
           path: target/wheels/*.whl
 
   django-macos:
-    runs-on: ${{ matrix.platform.runner }}
+    runs-on: macos-14
     strategy:
       fail-fast: false
       matrix:
-        platform:
-          - runner: macos-13
-            target: x86_64
-          - runner: macos-14
-            target: aarch64
+        target: [x86_64-apple-darwin, aarch64-apple-darwin]
         python-version: ["3.11", "3.12", "3.13"]
     env:
       MACOSX_DEPLOYMENT_TARGET: "11.0"
@@ -59,11 +55,11 @@ jobs:
       - name: Build clarax-django wheel
         uses: PyO3/maturin-action@v1
         with:
-          target: ${{ matrix.platform.target == 'aarch64' && 'aarch64-apple-darwin' || 'x86_64-apple-darwin' }}
+          target: ${{ matrix.target }}
           args: --release --strip -m clarax-django/Cargo.toml -i python${{ matrix.python-version }}
       - uses: actions/upload-artifact@v4
         with:
-          name: django-macos-${{ matrix.platform.target }}-py${{ matrix.python-version }}
+          name: django-macos-${{ matrix.target }}-py${{ matrix.python-version }}
           path: target/wheels/*.whl
 
   django-windows:
@@ -131,15 +127,11 @@ jobs:
           path: target/wheels/*.whl
 
   core-macos:
-    runs-on: ${{ matrix.platform.runner }}
+    runs-on: macos-14
     strategy:
       fail-fast: false
       matrix:
-        platform:
-          - runner: macos-13
-            target: x86_64
-          - runner: macos-14
-            target: aarch64
+        target: [x86_64-apple-darwin, aarch64-apple-darwin]
         python-version: ["3.11", "3.12", "3.13"]
     env:
       MACOSX_DEPLOYMENT_TARGET: "11.0"
@@ -151,11 +143,11 @@ jobs:
       - name: Build clarax-core wheel
         uses: PyO3/maturin-action@v1
         with:
-          target: ${{ matrix.platform.target == 'aarch64' && 'aarch64-apple-darwin' || 'x86_64-apple-darwin' }}
+          target: ${{ matrix.target }}
           args: --release --strip -m clarax-core/Cargo.toml -i python${{ matrix.python-version }}
       - uses: actions/upload-artifact@v4
         with:
-          name: core-macos-${{ matrix.platform.target }}-py${{ matrix.python-version }}
+          name: core-macos-${{ matrix.target }}-py${{ matrix.python-version }}
           path: target/wheels/*.whl
 
   core-windows:
