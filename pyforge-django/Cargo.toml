@@ -16,13 +16,13 @@ name = "pyforge_django"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+pyforge-core = { path = "../pyforge-core", version = "0.2.0" }
 pyforge = { path = "..", version = "0.1.0", features = ["macros", "experimental-async", "chrono", "rust_decimal", "uuid", "serde"] }
 chrono = { version = "0.4.25", features = ["serde"] }
 rust_decimal = { version = "1.15", features = ["serde-with-str"] }
 uuid = { version = "1.12.0", features = ["v4", "serde"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-rayon = "1.6"
 thiserror = "2"
 
 [dev-dependencies]

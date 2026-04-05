@@ -1,87 +1,66 @@
 // Author: Abdulwahed Mansour
-//! Rust-native equivalents of Django model field types.
+//! Django-specific field type mapping.
 //!
-//! Each variant in `DjangoFieldType` corresponds to a Django model field class
-//! and carries the metadata needed to validate and serialize values without
-//! round-tripping through Python.
-//!
-//! Design decisions:
-//! - DecimalField maps to `rust_decimal::Decimal`, never to `f64`, because
-//!   Django's DecimalField guarantees arbitrary precision via Python's `decimal` module.
-//! - DateTimeField uses `chrono::DateTime<chrono::Utc>` — timezone-aware by default,
-//!   matching Django's `USE_TZ = True` recommendation.
-//! - JSONField stores `serde_json::Value` for zero-copy access to nested structures.
+//! Provides `DjangoFieldType` which maps Django's model field classes to
+//! pyforge-core's `FieldType`. The actual serialization and validation
+//! logic lives in pyforge-core — this module only handles the mapping.
 
-use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
-use rust_decimal::Decimal;
+use pyforge_core::types::{FieldDescriptor as CoreDescriptor, FieldType as CoreFieldType};
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 /// Describes a single Django model field, including its type and constraints.
 ///
-/// Extracted from Django's model `_meta` API at initialization time, then used
-/// by the serializer and validator to process values without touching Python.
+/// This is the Django-specific wrapper. It stores the Django field type name
+/// for error messages and round-tripping, and converts to pyforge-core's
+/// `FieldDescriptor` for actual processing.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FieldDescriptor {
-    /// The Python attribute name on the Django model (e.g., "email", "created_at").
     pub name: String,
-    /// The Rust-mapped field type with its constraints.
     pub field_type: DjangoFieldType,
-    /// Whether Django allows `None` for this field (`null=True` in the model).
     pub nullable: bool,
-    /// Whether the field has a default value and can be omitted from input.
     pub has_default: bool,
+}
+
+impl FieldDescriptor {
+    /// Converts this Django descriptor to a pyforge-core descriptor.
+    pub fn to_core(&self) -> CoreDescriptor {
+        CoreDescriptor {
+            name: self.name.clone(),
+            field_type: self.field_type.to_core_type(),
+            nullable: self.nullable,
+            has_default: self.has_default,
+        }
+    }
 }
 
 /// Enumeration of Django field types with their associated validation constraints.
 ///
-/// Constraints are embedded directly in the enum variants so that the validator
-/// can check them without additional lookups.
+/// Each variant maps to a pyforge-core `FieldType` via `to_core_type()`.
+/// This layer exists so that Django-specific type names (CharField vs TextField,
+/// EmailField, SlugField, etc.) are preserved for error messages and
+/// descriptor round-tripping.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum DjangoFieldType {
-    /// `django.db.models.CharField` — bounded-length text.
     CharField { max_length: usize },
-    /// `django.db.models.TextField` — unbounded text.
     TextField,
-    /// `django.db.models.IntegerField` — signed 32-bit integer.
     IntegerField,
-    /// `django.db.models.BigIntegerField` — signed 64-bit integer.
     BigIntegerField,
-    /// `django.db.models.FloatField` — IEEE 754 double-precision.
     FloatField,
-    /// `django.db.models.DecimalField` — arbitrary-precision decimal.
-    /// `max_digits` and `decimal_places` mirror Django's field arguments.
-    DecimalField {
-        max_digits: u32,
-        decimal_places: u32,
-    },
-    /// `django.db.models.BooleanField`.
+    DecimalField { max_digits: u32, decimal_places: u32 },
     BooleanField,
-    /// `django.db.models.DateField` — date without time or timezone.
     DateField,
-    /// `django.db.models.TimeField` — time without date or timezone.
     TimeField,
-    /// `django.db.models.DateTimeField` — timezone-aware datetime.
     DateTimeField,
-    /// `django.db.models.UUIDField` — RFC 4122 UUID.
     UuidField,
-    /// `django.db.models.JSONField` — arbitrary JSON structure.
     JsonField,
-    /// `django.db.models.BinaryField` — raw byte data.
     BinaryField { max_length: Option<usize> },
-    /// `django.db.models.EmailField` — CharField with email validation.
     EmailField { max_length: usize },
-    /// `django.db.models.URLField` — CharField with URL validation.
     UrlField { max_length: usize },
-    /// `django.db.models.SlugField` — CharField restricted to slug characters.
     SlugField { max_length: usize },
 }
 
 impl DjangoFieldType {
     /// Returns the Django `get_internal_type()` name for this field type.
-    ///
-    /// Used when emitting field descriptors back to Python — must match the
-    /// strings that `extract_descriptor_list` parses on the way in.
     pub fn django_type_name(&self) -> &'static str {
         match self {
             DjangoFieldType::CharField { .. } => "CharField",
@@ -102,63 +81,69 @@ impl DjangoFieldType {
             DjangoFieldType::SlugField { .. } => "SlugField",
         }
     }
-}
 
-/// A concrete Rust value extracted from a Django model instance.
-///
-/// This is the runtime representation of a field's value, used as input
-/// to the serializer and validator. `Null` is a first-class variant
-/// rather than wrapping everything in `Option` — this matches Django's
-/// model where `None` and missing-field are semantically distinct.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum FieldValue {
-    Text(String),
-    Integer(i32),
-    BigInteger(i64),
-    Float(f64),
-    Decimal(Decimal),
-    Boolean(bool),
-    Date(NaiveDate),
-    Time(NaiveTime),
-    DateTime(DateTime<Utc>),
-    Uuid(Uuid),
-    Json(serde_json::Value),
-    Binary(Vec<u8>),
-    /// Represents Python `None` — a field that exists but has no value.
-    Null,
-}
-
-impl FieldValue {
-    /// Returns a human-readable type name for error messages.
-    ///
-    /// Used by the validator to produce clear type-mismatch errors like
-    /// "expected Integer, got Text" rather than opaque Rust type names.
-    pub fn type_name(&self) -> &'static str {
+    /// Converts this Django field type to a pyforge-core `FieldType`.
+    pub fn to_core_type(&self) -> CoreFieldType {
         match self {
-            FieldValue::Text(_) => "Text",
-            FieldValue::Integer(_) => "Integer",
-            FieldValue::BigInteger(_) => "BigInteger",
-            FieldValue::Float(_) => "Float",
-            FieldValue::Decimal(_) => "Decimal",
-            FieldValue::Boolean(_) => "Boolean",
-            FieldValue::Date(_) => "Date",
-            FieldValue::Time(_) => "Time",
-            FieldValue::DateTime(_) => "DateTime",
-            FieldValue::Uuid(_) => "UUID",
-            FieldValue::Json(_) => "JSON",
-            FieldValue::Binary(_) => "Binary",
-            FieldValue::Null => "Null",
+            DjangoFieldType::CharField { max_length } => CoreFieldType::Str {
+                max_length: Some(*max_length),
+                min_length: None,
+            },
+            DjangoFieldType::TextField => CoreFieldType::Str {
+                max_length: None,
+                min_length: None,
+            },
+            DjangoFieldType::IntegerField => CoreFieldType::Int {
+                min_value: Some(i32::MIN as i64),
+                max_value: Some(i32::MAX as i64),
+            },
+            DjangoFieldType::BigIntegerField => CoreFieldType::Int {
+                min_value: None,
+                max_value: None,
+            },
+            DjangoFieldType::FloatField => CoreFieldType::Float {
+                min_value: None,
+                max_value: None,
+            },
+            DjangoFieldType::DecimalField { max_digits, decimal_places } => CoreFieldType::Decimal {
+                max_digits: Some(*max_digits),
+                decimal_places: Some(*decimal_places),
+            },
+            DjangoFieldType::BooleanField => CoreFieldType::Bool,
+            DjangoFieldType::DateField => CoreFieldType::Date,
+            DjangoFieldType::TimeField => CoreFieldType::Time,
+            DjangoFieldType::DateTimeField => CoreFieldType::DateTime,
+            DjangoFieldType::UuidField => CoreFieldType::Uuid,
+            DjangoFieldType::JsonField => CoreFieldType::Dict,
+            DjangoFieldType::BinaryField { max_length } => CoreFieldType::Bytes {
+                max_length: *max_length,
+            },
+            DjangoFieldType::EmailField { max_length } => CoreFieldType::Str {
+                max_length: Some(*max_length),
+                min_length: None,
+            },
+            DjangoFieldType::UrlField { max_length } => CoreFieldType::Str {
+                max_length: Some(*max_length),
+                min_length: None,
+            },
+            DjangoFieldType::SlugField { max_length } => CoreFieldType::Str {
+                max_length: Some(*max_length),
+                min_length: None,
+            },
         }
     }
 }
+
+// Re-export FieldValue from pyforge-core — no Django-specific wrapper needed.
+pub use pyforge_core::types::FieldValue;
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn field_descriptor_serializes_to_json() {
-        let field = FieldDescriptor {
+    fn field_descriptor_converts_to_core() {
+        let desc = FieldDescriptor {
             name: "price".into(),
             field_type: DjangoFieldType::DecimalField {
                 max_digits: 10,
@@ -167,22 +152,24 @@ mod tests {
             nullable: false,
             has_default: false,
         };
-        let json = serde_json::to_string(&field).unwrap();
-        assert!(json.contains("price"));
-        assert!(json.contains("DecimalField"));
+        let core = desc.to_core();
+        assert_eq!(core.name, "price");
+        assert!(matches!(core.field_type, CoreFieldType::Decimal { .. }));
     }
 
     #[test]
-    fn field_value_type_names_are_descriptive() {
-        assert_eq!(FieldValue::Text("hello".into()).type_name(), "Text");
-        assert_eq!(FieldValue::Null.type_name(), "Null");
-        assert_eq!(FieldValue::Decimal(Decimal::new(100, 2)).type_name(), "Decimal");
-        assert_eq!(FieldValue::Uuid(Uuid::new_v4()).type_name(), "UUID");
+    fn django_type_names_round_trip() {
+        assert_eq!(DjangoFieldType::CharField { max_length: 100 }.django_type_name(), "CharField");
+        assert_eq!(DjangoFieldType::UuidField.django_type_name(), "UUIDField");
+        assert_eq!(DjangoFieldType::JsonField.django_type_name(), "JSONField");
     }
 
     #[test]
-    fn null_is_distinct_from_missing() {
-        let val = FieldValue::Null;
-        assert!(matches!(val, FieldValue::Null));
+    fn charfield_maps_to_str_with_max_length() {
+        let ct = DjangoFieldType::CharField { max_length: 50 }.to_core_type();
+        match ct {
+            CoreFieldType::Str { max_length, .. } => assert_eq!(max_length, Some(50)),
+            _ => panic!("expected Str"),
+        }
     }
 }

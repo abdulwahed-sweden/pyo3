@@ -17,7 +17,8 @@ use pyforge::prelude::*;
 use pyforge::types::{PyBool, PyDict, PyFloat, PyInt, PyList, PyString};
 
 use crate::error::DjangoError;
-use crate::field_types::{DjangoFieldType, FieldDescriptor, FieldValue};
+use crate::field_types::{DjangoFieldType, FieldDescriptor};
+use pyforge_core::types::FieldValue;
 
 // ─── ModelSchema: compiled descriptor cache ─────────────────────────────────
 

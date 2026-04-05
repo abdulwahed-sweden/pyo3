@@ -13,7 +13,8 @@ use std::str::FromStr;
 use uuid::Uuid;
 
 use crate::error::DjangoError;
-use crate::field_types::{DjangoFieldType, FieldDescriptor, FieldValue};
+use crate::field_types::{DjangoFieldType, FieldDescriptor};
+use pyforge_core::types::FieldValue;
 
 /// Extracts field descriptors from a Django model class via its `_meta` API.
 ///
@@ -182,8 +183,8 @@ pub fn convert_python_value_to_field(
         }
 
         DjangoFieldType::IntegerField => {
-            let val: i32 = py_value.extract().map_err(|_| DjangoError::TypeConversion {
-                expected: "int (i32)".into(),
+            let val: i64 = py_value.extract().map_err(|_| DjangoError::TypeConversion {
+                expected: "int".into(),
                 actual: py_value.get_type().qualname().map(|n| n.to_string()).unwrap_or_else(|_| "unknown".into()),
             })?;
             Ok(FieldValue::Integer(val))
@@ -194,7 +195,7 @@ pub fn convert_python_value_to_field(
                 expected: "int (i64)".into(),
                 actual: py_value.get_type().qualname().map(|n| n.to_string()).unwrap_or_else(|_| "unknown".into()),
             })?;
-            Ok(FieldValue::BigInteger(val))
+            Ok(FieldValue::Integer(val))
         }
 
         DjangoFieldType::FloatField => {
