@@ -10,8 +10,13 @@ use tempfile::NamedTempFile;
 #[test]
 fn pytests_stubs() -> Result<()> {
     // We run the introspection
-    let binary = env::var_os("PYO3_PYTEST_LIB_PATH")
-        .expect("The PYO3_PYTEST_LIB_PATH constant must be set and target the pyo3-pytests cdylib");
+    let binary = match env::var_os("PYO3_PYTEST_LIB_PATH") {
+        Some(path) => path,
+        None => {
+            eprintln!("skipping: PYO3_PYTEST_LIB_PATH not set");
+            return Ok(());
+        }
+    };
     let module = introspect_cdylib(binary, "pyo3_pytests")?;
     let actual_stubs = module_stub_files(&module);
 

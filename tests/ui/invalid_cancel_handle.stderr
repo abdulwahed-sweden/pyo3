@@ -19,7 +19,7 @@ error: `cancel_handle` attribute can only be used with `async fn`
 error: `from_py_with` and `cancel_handle` cannot be specified together
   --> tests/ui/invalid_cancel_handle.rs:24:12
    |
-24 |     #[pyo3(cancel_handle, from_py_with = cancel_handle)] _param: pyforge::coroutine::CancelHandle,
+24 |     #[pyo3(cancel_handle, from_py_with = cancel_handle)] _param: clarax::coroutine::CancelHandle,
    |            ^^^^^^^^^^^^^
 
 error[E0308]: mismatched types
@@ -41,12 +41,12 @@ note: function defined here
 error[E0277]: `CancelHandle` cannot be used as a Python function argument
   --> tests/ui/invalid_cancel_handle.rs:20:50
    |
-20 | async fn missing_cancel_handle_attribute(_param: pyforge::coroutine::CancelHandle) {}
-   |                                                  ^^^^^^^ the trait `PyClass` is not implemented for `CancelHandle`
+20 | async fn missing_cancel_handle_attribute(_param: clarax::coroutine::CancelHandle) {}
+   |                                                  ^^^^^^ the trait `PyClass` is not implemented for `CancelHandle`
    |
    = note: implement `FromPyObject` to enable using `CancelHandle` as a function argument
    = note: `Python<'py>` is also a valid argument type to pass the Python token into `#[pyfunction]`s and `#[pymethods]`
-help: the trait `PyClass` is implemented for `pyforge::coroutine::Coroutine`
+help: the trait `PyClass` is implemented for `clarax::coroutine::Coroutine`
   --> src/coroutine.rs
    |
    | #[pyclass(crate = "crate")]
@@ -66,8 +66,8 @@ note: required by a bound in `extract_argument`
 error[E0277]: `CancelHandle` cannot be used as a Python function argument
   --> tests/ui/invalid_cancel_handle.rs:20:50
    |
-20 | async fn missing_cancel_handle_attribute(_param: pyforge::coroutine::CancelHandle) {}
-   |                                                  ^^^^^^^ the trait `Clone` is not implemented for `CancelHandle`
+20 | async fn missing_cancel_handle_attribute(_param: clarax::coroutine::CancelHandle) {}
+   |                                                  ^^^^^^ the trait `Clone` is not implemented for `CancelHandle`
    |
    = note: implement `FromPyObject` to enable using `CancelHandle` as a function argument
    = note: `Python<'py>` is also a valid argument type to pass the Python token into `#[pyfunction]`s and `#[pymethods]`
@@ -78,7 +78,7 @@ help: the following other types implement trait `PyFunctionArgument<'a, 'holder,
    | |     for &'holder Bound<'py, T>
    | | where
    | |     T: PyTypeCheck,
-   | |___________________^ `&'holder pyforge::Bound<'py, T>` implements `PyFunctionArgument<'a, 'holder, 'py, false>`
+   | |___________________^ `&'holder clarax::Bound<'py, T>` implements `PyFunctionArgument<'a, 'holder, 'py, false>`
 ...
    | / impl<'a, 'holder, 'py, T> PyFunctionArgument<'a, 'holder, 'py, false> for Option<T>
    | | where
@@ -105,12 +105,12 @@ note: required by a bound in `extract_argument`
 error[E0277]: `CancelHandle` cannot be used as a Python function argument
   --> tests/ui/invalid_cancel_handle.rs:20:50
    |
-20 | async fn missing_cancel_handle_attribute(_param: pyforge::coroutine::CancelHandle) {}
-   |                                                  ^^^^^^^ the trait `ExtractPyClassWithClone` is not implemented for `CancelHandle`
+20 | async fn missing_cancel_handle_attribute(_param: clarax::coroutine::CancelHandle) {}
+   |                                                  ^^^^^^ the trait `ExtractPyClassWithClone` is not implemented for `CancelHandle`
    |
    = note: implement `FromPyObject` to enable using `CancelHandle` as a function argument
    = note: `Python<'py>` is also a valid argument type to pass the Python token into `#[pyfunction]`s and `#[pymethods]`
-help: the trait `ExtractPyClassWithClone` is implemented for `pyforge::coroutine::Coroutine`
+help: the trait `ExtractPyClassWithClone` is implemented for `clarax::coroutine::Coroutine`
   --> src/coroutine.rs
    |
    | #[pyclass(crate = "crate")]

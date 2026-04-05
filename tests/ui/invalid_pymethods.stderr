@@ -1,4 +1,4 @@
-error: #[classattr] can only have one argument (of type pyforge::Python)
+error: #[classattr] can only have one argument (of type clarax::Python)
  --> tests/ui/invalid_pymethods.rs:9:35
   |
 9 |     fn class_attr_with_args(_foo: i32) {}
@@ -197,15 +197,15 @@ error: Expected `&Bound<PyType>` or `Py<PyType>` as the first argument to `#[cla
 173 |     fn multiple_errors_classmethod_with_receiver(&self) {}
     |                                                 ^^^^^^^
 
-error[E0277]: the trait bound `NotATypeObject: From<&pyforge::Bound<'_, PyType>>` is not satisfied
+error[E0277]: the trait bound `NotATypeObject: From<&clarax::Bound<'_, PyType>>` is not satisfied
   --> tests/ui/invalid_pymethods.rs:33:45
    |
 33 |     fn classmethod_wrong_first_argument(_t: NotATypeObject) -> Self {
    |                                             ^^^^^^^^^^^^^^ unsatisfied trait bound
    |
-help: the trait `From<&pyforge::Bound<'_, PyType>>` is not implemented for `NotATypeObject`
+help: the trait `From<&clarax::Bound<'_, PyType>>` is not implemented for `NotATypeObject`
   --> tests/ui/invalid_pymethods.rs:28:1
    |
 28 | struct NotATypeObject;
    | ^^^^^^^^^^^^^^^^^^^^^
-   = note: required for `&pyforge::Bound<'_, PyType>` to implement `Into<NotATypeObject>`
+   = note: required for `&clarax::Bound<'_, PyType>` to implement `Into<NotATypeObject>`

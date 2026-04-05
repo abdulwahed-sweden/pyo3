@@ -40,11 +40,11 @@ error: expected `&PyModule` or `Py<PyModule>` as first argument with `pass_modul
 29 | fn pass_module_but_no_arguments<'py>() {}
    |                                     ^^
 
-error[E0277]: the trait bound `&str: From<&pyforge::Bound<'_, pyforge::types::PyModule>>` is not satisfied
+error[E0277]: the trait bound `&str: From<&clarax::Bound<'_, clarax::types::PyModule>>` is not satisfied
   --> tests/ui/invalid_pyfunctions.rs:33:14
    |
 33 |     _string: &str,
-   |              ^ the trait `From<&pyforge::Bound<'_, pyforge::types::PyModule>>` is not implemented for `&str`
+   |              ^ the trait `From<&clarax::Bound<'_, clarax::types::PyModule>>` is not implemented for `&str`
    |
    = help: the following other types implement trait `From<T>`:
              `String` implements `From<&String>`
@@ -53,4 +53,4 @@ error[E0277]: the trait bound `&str: From<&pyforge::Bound<'_, pyforge::types::Py
              `String` implements `From<Box<str>>`
              `String` implements `From<Cow<'_, str>>`
              `String` implements `From<char>`
-   = note: required for `&pyforge::Bound<'_, pyforge::types::PyModule>` to implement `Into<&str>`
+   = note: required for `&clarax::Bound<'_, clarax::types::PyModule>` to implement `Into<&str>`

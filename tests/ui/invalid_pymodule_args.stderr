@@ -5,25 +5,25 @@ error: expected one of: `name`, `crate`, `module`, `submodule`, `gil_used`
   |            ^^^^^^^^
 
 error: `gil_used` may only be specified once
- --> tests/ui/invalid_pymodule_args.rs:8:39
+ --> tests/ui/invalid_pymodule_args.rs:8:38
   |
-8 | #[pyforge::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
-  |                                       ^^^^^^^^
+8 | #[clarax::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
+  |                                      ^^^^^^^^
 
 error: `name` may only be specified once
- --> tests/ui/invalid_pymodule_args.rs:8:70
+ --> tests/ui/invalid_pymodule_args.rs:8:69
   |
-8 | #[pyforge::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
-  |                                                                      ^^^^
+8 | #[clarax::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
+  |                                                                     ^^^^
 
 error: `gil_used` may only be specified once
-  --> tests/ui/invalid_pymodule_args.rs:13:39
+  --> tests/ui/invalid_pymodule_args.rs:13:38
    |
-13 | #[pyforge::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
-   |                                       ^^^^^^^^
+13 | #[clarax::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
+   |                                      ^^^^^^^^
 
 error: `name` may only be specified once
-  --> tests/ui/invalid_pymodule_args.rs:13:70
+  --> tests/ui/invalid_pymodule_args.rs:13:69
    |
-13 | #[pyforge::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
-   |                                                                      ^^^^
+13 | #[clarax::pymodule(gil_used = false, gil_used = true, name = "foo", name = "bar")]
+   |                                                                     ^^^^

@@ -3,8 +3,8 @@
 **Author & Sole Maintainer:** Abdulwahed Mansour  
 **Repository:** github.com/abdulwahed-sweden/clarax  
 **License:** MIT  
-**Version:** 0.1.0  
-**Status:** Pre-Publication — Audit Complete
+**Version:** 0.3.0  
+**Status:** Pre-Publication — Restructured
 
 ---
 

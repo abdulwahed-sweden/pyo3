@@ -11,16 +11,16 @@ error: missing `message` in `warn` attribute
   |             ^
 
 error: missing `message` in `warn` attribute
-  --> tests/ui/invalid_pyfunction_warn.rs:12:65
+  --> tests/ui/invalid_pyfunction_warn.rs:12:64
    |
-12 | #[pyo3(warn(category = pyforge::exceptions::PyDeprecationWarning))]
-   |                                                                 ^
+12 | #[pyo3(warn(category = clarax::exceptions::PyDeprecationWarning))]
+   |                                                                ^
 
 error: expected string literal
-  --> tests/ui/invalid_pyfunction_warn.rs:16:77
+  --> tests/ui/invalid_pyfunction_warn.rs:16:76
    |
-16 | #[pyo3(warn(category = pyforge::exceptions::PyDeprecationWarning, message = ,))]
-   |                                                                             ^
+16 | #[pyo3(warn(category = clarax::exceptions::PyDeprecationWarning, message = ,))]
+   |                                                                            ^
 
 error: expected identifier
   --> tests/ui/invalid_pyfunction_warn.rs:20:57
