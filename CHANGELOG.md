@@ -5,6 +5,34 @@ All notable changes to PyForge will be documented here.
 Format: [keepachangelog.com](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] — 2026-04-05
+
+### Added
+- **pyforge-core**: framework-agnostic Rust serialization and validation engine
+  - `Schema`, `Field`, `serialize`, `serialize_many`, `validate`, `validate_many`
+  - 12 supported types: str, int, float, bool, Decimal, datetime, date, time, UUID, list, dict, bytes
+  - Rayon parallel validation at 128-entry threshold
+  - 34 Rust unit tests
+- Python package `pyforge-core` on PyPI — works without Django
+
+### Changed
+- **pyforge-django** now delegates all serialization and validation to pyforge-core
+  - 750 lines of duplicated logic removed
+  - 150 lines of thin delegation wrappers added
+  - `DjangoFieldType.to_core_type()` maps Django's 16 field types to pyforge-core's 12 types
+- `RustSerializerMixin` rewritten: cached field classification + DRF bypass on `many=True`
+  - 2.3-3.2x speedup over DRF (up from 1.4-1.5x in v0.1.x)
+- All crate versions bumped to 0.2.0
+
+### Fixed
+- Benchmark methodology: now measured against DRF ModelSerializer (real baseline),
+  not raw dict comprehensions
+
+### Stats
+- 1,350 tests passing across the workspace
+- Zero clippy warnings
+- Zero code duplication between pyforge-core and pyforge-django
+
 ## [0.1.0] — 2026-04-04
 
 ### Added

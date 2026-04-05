@@ -1,7 +1,7 @@
 # Author: Abdulwahed Mansour
 [package]
 name = "pyforge-django"
-version = "0.1.3"
+version = "0.2.0"
 edition = "2021"
 authors = ["Abdulwahed Mansour"]
 description = "High-performance Django integration layer — Rust-accelerated serialization, validation, and field mapping for Django 5.x+"
@@ -17,7 +17,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 pyforge-core = { path = "../pyforge-core", version = "0.2.0" }
-pyforge = { path = "..", version = "0.1.0", features = ["macros", "experimental-async", "chrono", "rust_decimal", "uuid", "serde"] }
+pyforge = { path = "..", version = "0.2.0", features = ["macros", "experimental-async", "chrono", "rust_decimal", "uuid", "serde"] }
 chrono = { version = "0.4.25", features = ["serde"] }
 rust_decimal = { version = "1.15", features = ["serde-with-str"] }
 uuid = { version = "1.12.0", features = ["v4", "serde"] }
@@ -26,7 +26,7 @@ serde_json = "1.0"
 thiserror = "2"
 
 [dev-dependencies]
-pyforge = { path = "..", version = "0.1.0", features = ["macros", "auto-initialize", "experimental-async", "chrono", "rust_decimal", "uuid", "serde"] }
+pyforge = { path = "..", version = "0.2.0", features = ["macros", "auto-initialize", "experimental-async", "chrono", "rust_decimal", "uuid", "serde"] }
 criterion = { version = "0.5", features = ["html_reports"] }
 
 [[bench]]

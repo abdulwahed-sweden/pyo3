@@ -16,7 +16,7 @@ name = "pyforge_core"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-pyforge = { path = "..", version = "0.1.0", features = ["macros", "chrono", "rust_decimal", "uuid", "serde"] }
+pyforge = { path = "..", version = "0.2.0", features = ["macros", "chrono", "rust_decimal", "uuid", "serde"] }
 chrono = { version = "0.4.25", features = ["serde"] }
 rust_decimal = { version = "1.15", features = ["serde-with-str"] }
 uuid = { version = "1.12.0", features = ["v4", "serde"] }
@@ -26,7 +26,7 @@ rayon = "1.6"
 thiserror = "2"
 
 [dev-dependencies]
-pyforge = { path = "..", version = "0.1.0", features = ["macros", "auto-initialize", "chrono", "rust_decimal", "uuid", "serde"] }
+pyforge = { path = "..", version = "0.2.0", features = ["macros", "auto-initialize", "chrono", "rust_decimal", "uuid", "serde"] }
 
 [lints]
 workspace = true

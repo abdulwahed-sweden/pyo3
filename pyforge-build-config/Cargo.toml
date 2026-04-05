@@ -1,6 +1,6 @@
 [package]
 name = "pyforge-build-config"
-version = "0.1.0"
+version = "0.2.0"
 description = "Build configuration for the PyForge ecosystem — CPython 3.11+ only"
 authors = ["Abdulwahed Mansour"]
 keywords = ["pyforge", "python", "cpython", "build"]
