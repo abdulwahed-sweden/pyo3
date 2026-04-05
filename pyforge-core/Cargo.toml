@@ -1,0 +1,32 @@
+# Author: Abdulwahed Mansour
+[package]
+name = "pyforge-core"
+version = "0.2.0"
+edition = "2021"
+authors = ["Abdulwahed Mansour"]
+description = "Rust-accelerated serialization and validation for Python — framework-agnostic"
+license = "MIT"
+repository = "https://github.com/abdulwahed-sweden/pyforge"
+keywords = ["python", "serialization", "validation", "rust", "performance"]
+categories = ["api-bindings", "web-programming"]
+rust-version = "1.83"
+
+[lib]
+name = "pyforge_core"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pyforge = { path = "..", version = "0.1.0", features = ["macros", "chrono", "rust_decimal", "uuid", "serde"] }
+chrono = { version = "0.4.25", features = ["serde"] }
+rust_decimal = { version = "1.15", features = ["serde-with-str"] }
+uuid = { version = "1.12.0", features = ["v4", "serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+rayon = "1.6"
+thiserror = "2"
+
+[dev-dependencies]
+pyforge = { path = "..", version = "0.1.0", features = ["macros", "auto-initialize", "chrono", "rust_decimal", "uuid", "serde"] }
+
+[lints]
+workspace = true

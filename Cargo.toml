@@ -172,6 +172,7 @@ members = [
     "pyforge-macros",
     "pyforge-macros-backend",
     "pyforge-introspection",
+    "pyforge-core",
     "pyforge-django",
     "pytests",
     "examples",
