@@ -51,7 +51,7 @@ fn bench_integerfield(c: &mut Criterion) {
     let (d, v) = make_single(
         "score",
         DjangoFieldType::IntegerField,
-        FieldValue::Integer(750),
+        FieldValue::Integer(750i64),
     );
     c.bench_function("field_type/IntegerField", |b| {
         b.iter(|| serialize_model_fields(black_box(&d), black_box(&v)))

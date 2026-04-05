@@ -90,7 +90,7 @@ fn rental_application_row(index: usize) -> Vec<FieldValue> {
         } else {
             String::new()
         }),
-        FieldValue::Integer((700 + (index % 200)) as i32),
+        FieldValue::Integer((700 + (index % 200)) as i64),
     ]
 }
 
@@ -139,7 +139,7 @@ fn bench_serialize_worst_case(c: &mut Criterion) {
         FieldValue::Uuid(Uuid::new_v4()),
         FieldValue::Boolean(true),
         FieldValue::Text("X".repeat(10_000)),                      // large TextField
-        FieldValue::Integer(i32::MAX),
+        FieldValue::Integer(i32::MAX as i64),
     ];
 
     c.bench_function("serialize_worst_case_rental_application", |b| {

@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug Rust tests (pyforge-core)",
+            "cargo": {
+                "args": ["test", "-p", "pyforge-core", "--no-run"],
+                "filter": {
+                    "kind": "lib"
+                }
+            },
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug Rust tests (pyforge-django)",
+            "cargo": {
+                "args": ["test", "-p", "pyforge-django", "--no-run"],
+                "filter": {
+                    "kind": "lib"
+                }
+            },
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug Python tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["-v"],
+            "cwd": "${workspaceFolder}",
+            "python": "${workspaceFolder}/.venv/bin/python"
+        }
+    ]
+}

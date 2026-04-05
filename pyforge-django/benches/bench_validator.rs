@@ -97,7 +97,7 @@ fn rental_application_entry_set() -> Vec<(FieldDescriptor, FieldValue)> {
                 nullable: false,
                 has_default: false,
             },
-            FieldValue::Integer(750),
+            FieldValue::Integer(750i64),
         ),
     ]
 }
@@ -111,7 +111,7 @@ fn build_validation_batch(record_count: usize) -> Vec<(FieldDescriptor, FieldVal
         for (desc, val) in &template {
             let adjusted_val = match val {
                 FieldValue::Text(s) => FieldValue::Text(format!("{s}_{i}")),
-                FieldValue::Integer(n) => FieldValue::Integer(n + i as i32),
+                FieldValue::Integer(n) => FieldValue::Integer(*n + i as i64),
                 other => other.clone(),
             };
             batch.push((desc.clone(), adjusted_val));
