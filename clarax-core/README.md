@@ -41,7 +41,7 @@ schema = Schema({
 ## Supported Types
 
 | Type | Constraints |
-|---|---|
+| ---------- | --------------------------------- |
 | `str` | `max_length`, `min_length` |
 | `int` | `min_value`, `max_value` |
 | `float` | `min_value`, `max_value` |

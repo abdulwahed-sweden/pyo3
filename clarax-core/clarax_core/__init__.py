@@ -10,7 +10,7 @@ Usage:
 """
 
 __author__ = "Abdulwahed Mansour"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 from clarax_core._native import (
     Schema,
