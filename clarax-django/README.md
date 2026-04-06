@@ -1,20 +1,21 @@
 # clarax-django
 
-Rust-accelerated serialization and validation for Django REST Framework. 33x faster than `ModelSerializer`.
+**Rust-accelerated serialization for Django REST Framework.**
 
-## Install
+One mixin. Same serializer. 33x faster.
 
 ```bash
 pip install clarax-django
 ```
 
-Add `"django_clarax"` to `INSTALLED_APPS`.
-
-## Quick Start
+```python
+# settings.py
+INSTALLED_APPS = [..., "django_clarax"]
+```
 
 ```python
+# your serializer
 from django_clarax.serializers import RustSerializerMixin
-from rest_framework import serializers
 
 class MySerializer(RustSerializerMixin, serializers.ModelSerializer):
     class Meta:
@@ -22,29 +23,16 @@ class MySerializer(RustSerializerMixin, serializers.ModelSerializer):
         fields = "__all__"
 ```
 
-Check which serializers benefit: `python manage.py clarax_doctor`
+Not sure which serializers benefit? Run the audit:
 
-## Performance
+```bash
+python manage.py clarax_doctor
+```
 
-| Scenario | DRF | ClaraX | Speedup |
-|---|---|---|---|
-| Serialize 1,000 instances | 475 ms | 14.6 ms | **33x** |
-| Serialize 3,000 via `values_list()` | 166 ms | 47.6 ms | **3.5x** |
-| Validate 1,000 instances | 506 ms | 10.2 ms | **50x** |
+Serialize 1,000 records: 475ms with DRF, 14ms with ClaraX. Validate 1,000 records: 506ms with DRF, 10ms with ClaraX.
 
-## v0.3.0 Features
+Requires Python 3.11+ and Django 4.2+. Supports Python 3.14t (free-threading).
 
-- `serialize_values_list()` — single Rust call for entire querysets
-- `clarax_doctor` — audit serializers (`--app`, `--json`, `--threshold`)
-- `ClaraXMetricsMiddleware` — `X-ClaraX-Stats` per request
-- N+1 detection — warns on missing `select_related`
-- `serialize_stream()` — constant-memory exports
+Read the [full story](https://github.com/abdulwahed-sweden/clarax#readme) for benchmarks, architecture, and the decision guide.
 
-## Requirements
-
-- Python 3.11+
-- Django 4.2 LTS or 5.x
-
-## License
-
-MIT — Abdulwahed Mansour
+MIT -- [Abdulwahed Mansour](https://github.com/abdulwahed-sweden)

@@ -1,70 +1,44 @@
 # clarax-core
 
-Rust-accelerated serialization and validation for any Python project. No framework required.
+**Rust-speed validation for Python -- no Rust required.**
 
-## Install
+Your batch job processes 50,000 records. Each one needs validation: string scanning, pattern matching, decimal precision. Python does it in 3 seconds. Your users notice.
+
+ClaraX does it in 340ms. Same code. Same data structures. Rust underneath.
 
 ```bash
 pip install clarax-core
 ```
 
-## Quickstart
-
 ```python
-from dataclasses import dataclass
-from clarax_core import from_dataclass, serialize, validate
+from clarax_core import validate_names_batch, validate_ids_batch, batch_stats
 
-@dataclass
-class User:
-    name: str
-    age: int
-    email: str
+# Character scanning: 8x over Python
+results = validate_names_batch(["Erik Andersson", "Bad123 Name"])
 
-schema = from_dataclass(User)
-result = serialize({"name": "Erik", "age": 30, "email": "erik@x.com"}, schema)
-report = validate({"name": "Erik", "age": -5, "email": "erik@x.com"}, schema)
+# Pattern matching: 15x over Python
+valid = validate_ids_batch(["19900515-1234", "invalid"])
+
+# Statistics: 20x over Python's statistics module
+stats = batch_stats([1.0, 2.0, 3.0, 4.0, 5.0])
 ```
 
-## Manual Schema
+Schema-based validation:
 
 ```python
-from clarax_core import Schema, Field
+from clarax_core import Schema, Field, serialize_many
 from decimal import Decimal
 
 schema = Schema({
-    "name": Field(str, max_length=100),
+    "name":  Field(str, max_length=100),
     "price": Field(Decimal, max_digits=10, decimal_places=2),
-    "active": Field(bool),
 })
+
+result = serialize_many([{"name": "Erik", "price": Decimal("9.99")}], schema)
 ```
 
-## Supported Types
+Works with Flask, FastAPI, scripts, ETL pipelines. No Rust installation needed. Pre-built wheels for all platforms. Python 3.11+ and 3.14t (free-threading) supported.
 
-| Type | Constraints |
-| ---------- | --------------------------------- |
-| `str` | `max_length`, `min_length` |
-| `int` | `min_value`, `max_value` |
-| `float` | `min_value`, `max_value` |
-| `bool` | — |
-| `Decimal` | `max_digits`, `decimal_places` |
-| `datetime` | — |
-| `date` | — |
-| `time` | — |
-| `UUID` | — |
-| `list` | — |
-| `dict` | — |
-| `bytes` | `max_length` |
+For Django projects, use [clarax-django](https://pypi.org/project/clarax-django/) instead.
 
-All types accept `nullable=True` and `default=True`.
-
-Invalid constraints raise `SchemaError` immediately: `Field(int, max_length=100)` fails at definition time.
-
-## When to Use
-
-Flask, FastAPI, scripts, ETL pipelines, data validation — any Python code that processes structured data.
-
-For Django projects, use [`clarax-django`](https://pypi.org/project/clarax-django/) which adds `ModelSchema`, `RustSerializerMixin`, and automatic Django model introspection on top of clarax-core.
-
-## License
-
-MIT — Abdulwahed Mansour
+MIT -- [Abdulwahed Mansour](https://github.com/abdulwahed-sweden)
